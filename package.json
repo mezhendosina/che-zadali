@@ -1,10 +1,6 @@
 {
   "name": "new-che-zadali",
-<<<<<<< HEAD
   "version": "0.1.2",
-=======
-  "version": "0.1.1",
->>>>>>> e75be4d8d198ae0fdd3792205b94cd2130699a6c
   "description": "Достает домашнее задание из Сетевого Города и отпарвляет в бота во ВКонтакте",
   "main": "main.js",
   "scripts": {
@@ -14,11 +10,8 @@
   "license": "ISC",
   "dependencies": {
     "node-vk-bot-api": "^3.5.0",
-<<<<<<< HEAD
     "pg": "^8.6.0",
     "puppeteer": "^10.1.0",
-=======
     "pg": "^8.6.0"
->>>>>>> e75be4d8d198ae0fdd3792205b94cd2130699a6c
   }
 }

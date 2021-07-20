@@ -5,10 +5,9 @@ var login = require('./login')
 async function firstStep(){
 	var process = spawn('python',[/*Path to py script*/], homework);
 	const homework = login().then(
-		result => process.stdout.on('data', function(data){
+		process.stdout.on('data', function(data){
     		console.log('homework parsed')
 		})
-		error => console.log('error')
 	);
 }
 

@@ -1,6 +1,5 @@
 const {Client} = require('pg')
 const VkBot = require('node-vk-bot-api');
-const { Client } = require("@notionhq/client")
 
 const client = new Client()
 await client.connect()
@@ -24,39 +23,6 @@ async function sendHomework() {
 			return selectHomework()
 			}
 	}
-async function addHomeworkToNotion (nameHomewok, lesson) {
-		const notion = new Client({
-			auth: 'secret_FDBc6pzcRviubDPD74eB9Hkhkyd2ZEi4Ist2oyqQksO',
-		});
-
-		const response = await notion.pages.create({
-			parent: {
-				database_id: '5f6926e375844a7db3a1fc0fefa2d7ad',
-			},
-			properties: {
-				'Задание': {
-					title: [{
-						text: {
-							content: nameHomewok,
-						},
-					},
-					]
-				},
-				'Status': {
-					select: {
-						name: 'Скоро сдавать',
-					},
-				},
-				'Предмет': {
-					select: {
-						name: lesson,
-					}
-				},
-			}
-		});
-		console.log(response);
-	}
-
 async function vkBot() {
 		const bot = new VkBot('a9fc970aabe2a7043e253216e66889c81c9f79bc597f15c1c629cfc5ea96760d3c962645be7327b86f6a3');
 

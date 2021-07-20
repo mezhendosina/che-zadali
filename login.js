@@ -1,9 +1,8 @@
-import { launch } from 'puppeteer';
+const puppeteer = require('puppeteer');  ///setup browser
 
 async function homework(){
-  ///setup browser
   const url = 'https://sgo.edu-74.ru/'
-  const browser = await launch({ args: ['--no-sandbox'] });
+  const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
   const page = await browser.newPage();
   await page.setCookie({
       url: url,

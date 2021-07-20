@@ -1,13 +1,15 @@
 const VkBot = require('node-vk-bot-api');
 const {Client} = require('pg')
 
+const urlDatabase = 'postgres://xbwoosfturwnmu:4f3f0a25361cac11df1af8a3dfe11469029a422f85e055fa1f6072cb1c4b48c3@ec2-54-73-68-39.eu-west-1.compute.amazonaws.com:5432/d4g1mkv1jennht';
 const client = new Client({
-			user: 'xbwoosfturwnmu',
-			host: 'ec2-54-73-68-39.eu-west-1.compute.amazonaws.com',
-			database: 'd4g1mkv1jennht',
-			password: '4f3f0a25361cac11df1af8a3dfe11469029a422f85e055fa1f6072cb1c4b48c3',
-			port: '5432'
-	})
+	host: 'ec2-54-73-68-39.eu-west-1.compute.amazonaws.com',
+	user: 'xbwoosfturwnmu',
+	password: '4f3f0a25361cac11df1af8a3dfe11469029a422f85e055fa1f6072cb1c4b48c3',
+	database: 'd4g1mkv1jennht',
+	port: '5432',
+	ssl: true
+})
 
 async function sendHomework() {
 	var date = new Date()

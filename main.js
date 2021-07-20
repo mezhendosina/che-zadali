@@ -1,4 +1,4 @@
-/// TO-DO: import js files 
+
 var spawn = require("child_process").spawn;
 var vkBot = require('./bots')
 var login = require('./login')
@@ -17,9 +17,3 @@ setTimeout(function() {
 setTimeout(function(){
 	vkBot()
 }, 0);
-/* "dependencies": {
-    "puppeteer": "^10.1.0",
-    "node-vk-bot-api": "^3.5.0",
-    "@notionhq/client": "^0.2.2"
-  },
-  */

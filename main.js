@@ -8,7 +8,7 @@ async function firstStep(){
 		result => process.stdout.on('data', function(data){
     		console.log('homework parsed')
 		})
-		error => console.error('error')
+		error => console.log('error')
 	);
 }
 
@@ -18,3 +18,9 @@ setTimeout(function() {
 setTimeout(function(){
 	vkBot()
 }, 0);
+/* "dependencies": {
+    "puppeteer": "^10.1.0",
+    "node-vk-bot-api": "^3.5.0",
+    "@notionhq/client": "^0.2.2"
+  },
+  */

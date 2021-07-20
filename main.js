@@ -5,10 +5,9 @@ var login = require('./login')
 async function firstStep(){
 	var process = spawn('python',[/*Path to py script*/], homework);
 	const homework = login().then(
-		result => process.stdout.on('data', function(data){
+		process.stdout.on('data', function(data){
     		console.log('homework parsed')
 		})
-		error => console.error('error')
 	);
 }
 
@@ -18,3 +17,9 @@ setTimeout(function() {
 setTimeout(function(){
 	vkBot()
 }, 0);
+/* "dependencies": {
+    "puppeteer": "^10.1.0",
+    "node-vk-bot-api": "^3.5.0",
+    "@notionhq/client": "^0.2.2"
+  },
+  */

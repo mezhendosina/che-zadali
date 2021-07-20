@@ -1,0 +1,114 @@
+2021-07-20T17:48:36.230354+00:00 app[web.1]:     at Object.Module._extensions..js (internal/modules/cjs/loader.js:1114:10)
+2021-07-20T17:48:36.230354+00:00 app[web.1]:     at Module.load (internal/modules/cjs/loader.js:950:32)
+2021-07-20T17:48:36.230355+00:00 app[web.1]:     at Function.Module._load (internal/modules/cjs/loader.js:790:14)
+2021-07-20T17:48:36.230355+00:00 app[web.1]:     at Module.require (internal/modules/cjs/loader.js:974:19)
+2021-07-20T17:48:36.230355+00:00 app[web.1]:     at require (internal/modules/cjs/helpers.js:92:18)
+2021-07-20T17:48:36.230356+00:00 app[web.1]:     at Object.<anonymous> (/app/main.js:4:13)
+2021-07-20T17:48:36.230356+00:00 app[web.1]:     at Module._compile (internal/modules/cjs/loader.js:1085:14)
+2021-07-20T17:48:36.230356+00:00 app[web.1]:     at Object.Module._extensions..js (internal/modules/cjs/loader.js:1114:10)
+2021-07-20T17:48:36.274528+00:00 heroku[web.1]: Process exited with status 1
+2021-07-20T17:48:36.343798+00:00 heroku[web.1]: State changed from starting to crashed
+2021-07-20T18:18:19.000000+00:00 app[api]: Build started by user mensh.zheya@gmail.com
+2021-07-20T18:21:15.296450+00:00 app[api]: Release v8 created by user mensh.zheya@gmail.com
+2021-07-20T18:21:15.296450+00:00 app[api]: Deploy 95694044 by user mensh.zheya@gmail.com
+2021-07-20T18:21:18.084144+00:00 heroku[web.1]: State changed from crashed to starting
+2021-07-20T18:21:43.583635+00:00 heroku[web.1]: Starting process with command `node main.js`
+2021-07-20T18:21:43.000000+00:00 app[api]: Build succeeded
+2021-07-20T18:21:48.061540+00:00 app[web.1]: (node:4) UnhandledPromiseRejectionWarning: Error: self signed certificate
+2021-07-20T18:21:48.061559+00:00 app[web.1]:     at TLSSocket.onConnectSecure (_tls_wrap.js:1514:34)
+2021-07-20T18:21:48.061559+00:00 app[web.1]:     at TLSSocket.emit (events.js:375:28)
+2021-07-20T18:21:48.061560+00:00 app[web.1]:     at TLSSocket._finishInit (_tls_wrap.js:936:8)
+2021-07-20T18:21:48.061560+00:00 app[web.1]:     at TLSWrap.ssl.onhandshakedone (_tls_wrap.js:708:12)
+2021-07-20T18:21:48.061561+00:00 app[web.1]: (Use `node --trace-warnings ...` to show where the warning was created)
+2021-07-20T18:21:48.061681+00:00 app[web.1]: (node:4) UnhandledPromiseRejectionWarning: Unhandled promise rejection. This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). To terminate the node process on unhandled promise rejection, use the CLI flag `--unhandled-rejections=strict` (see https://nodejs.org/api/cli.html#cli_unhandled_rejections_mode). (rejection id: 1)
+2021-07-20T18:21:48.063731+00:00 app[web.1]: (node:4) [DEP0018] DeprecationWarning: Unhandled promise rejections are deprecated. In the future, promise rejections that are not handled will terminate the Node.js process with a non-zero exit code.
+2021-07-20T18:21:49.025446+00:00 heroku[web.1]: Process exited with status 0
+2021-07-20T18:21:48.919002+00:00 app[web.1]: (node:4) UnhandledPromiseRejectionWarning: ReferenceError: Cannot access 'homework' before initialization
+2021-07-20T18:21:48.919029+00:00 app[web.1]:     at firstStep (/app/main.js:6:56)
+2021-07-20T18:21:48.919029+00:00 app[web.1]:     at Timeout._onTimeout (/app/main.js:15:2)
+2021-07-20T18:21:48.919031+00:00 app[web.1]:     at listOnTimeout (internal/timers.js:557:17)
+2021-07-20T18:21:48.919031+00:00 app[web.1]:     at processTimers (internal/timers.js:500:7)
+2021-07-20T18:21:48.928926+00:00 app[web.1]: (node:4) UnhandledPromiseRejectionWarning: Unhandled promise rejection. This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). To terminate the node process on unhandled promise rejection, use the CLI flag `--unhandled-rejections=strict` (see https://nodejs.org/api/cli.html#cli_unhandled_rejections_mode). (rejection id: 2)
+2021-07-20T18:21:49.105056+00:00 heroku[web.1]: State changed from starting to crashed
+2021-07-20T18:21:49.111096+00:00 heroku[web.1]: State changed from crashed to starting
+2021-07-20T18:22:09.312282+00:00 heroku[web.1]: Starting process with command `node main.js`
+2021-07-20T18:22:11.841368+00:00 app[web.1]: (node:4) UnhandledPromiseRejectionWarning: Error: self signed certificate
+2021-07-20T18:22:11.841390+00:00 app[web.1]:     at TLSSocket.onConnectSecure (_tls_wrap.js:1514:34)
+2021-07-20T18:22:11.841390+00:00 app[web.1]:     at TLSSocket.emit (events.js:375:28)
+2021-07-20T18:22:11.841390+00:00 app[web.1]:     at TLSSocket._finishInit (_tls_wrap.js:936:8)
+2021-07-20T18:22:11.841391+00:00 app[web.1]:     at TLSWrap.ssl.onhandshakedone (_tls_wrap.js:708:12)
+2021-07-20T18:22:11.841391+00:00 app[web.1]: (Use `node --trace-warnings ...` to show where the warning was created)
+2021-07-20T18:22:11.841428+00:00 app[web.1]: (node:4) UnhandledPromiseRejectionWarning: Unhandled promise rejection. This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). To terminate the node process on unhandled promise rejection, use the CLI flag `--unhandled-rejections=strict` (see https://nodejs.org/api/cli.html#cli_unhandled_rejections_mode). (rejection id: 1)
+2021-07-20T18:22:11.841497+00:00 app[web.1]: (node:4) [DEP0018] DeprecationWarning: Unhandled promise rejections are deprecated. In the future, promise rejections that are not handled will terminate the Node.js process with a non-zero exit code.
+2021-07-20T18:22:12.790133+00:00 app[web.1]: (node:4) UnhandledPromiseRejectionWarning: ReferenceError: Cannot access 'homework' before initialization
+2021-07-20T18:22:12.790162+00:00 app[web.1]:     at firstStep (/app/main.js:6:56)
+2021-07-20T18:22:12.790162+00:00 app[web.1]:     at Timeout._onTimeout (/app/main.js:15:2)
+2021-07-20T18:22:12.790163+00:00 app[web.1]:     at listOnTimeout (internal/timers.js:557:17)
+2021-07-20T18:22:12.790163+00:00 app[web.1]:     at processTimers (internal/timers.js:500:7)
+2021-07-20T18:22:12.790220+00:00 app[web.1]: (node:4) UnhandledPromiseRejectionWarning: Unhandled promise rejection. This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). To terminate the node process on unhandled promise rejection, use the CLI flag `--unhandled-rejections=strict` (see https://nodejs.org/api/cli.html#cli_unhandled_rejections_mode). (rejection id: 2)
+2021-07-20T18:22:12.847982+00:00 heroku[web.1]: Process exited with status 0
+2021-07-20T18:22:12.965569+00:00 heroku[web.1]: State changed from starting to crashed
+2021-07-20T18:37:27.000000+00:00 app[api]: Build started by user mensh.zheya@gmail.com
+2021-07-20T18:40:08.195868+00:00 heroku[web.1]: State changed from crashed to starting
+2021-07-20T18:40:06.863051+00:00 app[api]: Release v9 created by user mensh.zheya@gmail.com
+2021-07-20T18:40:06.863051+00:00 app[api]: Deploy ceca1151 by user mensh.zheya@gmail.com
+2021-07-20T18:40:29.787578+00:00 heroku[web.1]: Starting process with command `node main.js`
+2021-07-20T18:40:32.397258+00:00 app[web.1]: (node:4) UnhandledPromiseRejectionWarning: Error: Client has already been connected. You cannot reuse a client.
+2021-07-20T18:40:32.397272+00:00 app[web.1]:     at Client._connect (/app/node_modules/pg/lib/client.js:94:19)
+2021-07-20T18:40:32.397272+00:00 app[web.1]:     at /app/node_modules/pg/lib/client.js:166:12
+2021-07-20T18:40:32.397273+00:00 app[web.1]:     at new Promise (<anonymous>)
+2021-07-20T18:40:32.397273+00:00 app[web.1]:     at Client.connect (/app/node_modules/pg/lib/client.js:165:12)
+2021-07-20T18:40:32.397273+00:00 app[web.1]:     at BotVk (/app/bots.js:36:16)
+2021-07-20T18:40:32.397273+00:00 app[web.1]:     at Timeout._onTimeout (/app/main.js:17:2)
+2021-07-20T18:40:32.397273+00:00 app[web.1]:     at listOnTimeout (internal/timers.js:557:17)
+2021-07-20T18:40:32.397274+00:00 app[web.1]:     at processTimers (internal/timers.js:500:7)
+2021-07-20T18:40:32.397274+00:00 app[web.1]: (Use `node --trace-warnings ...` to show where the warning was created)
+2021-07-20T18:40:32.397770+00:00 app[web.1]: (node:4) UnhandledPromiseRejectionWarning: Unhandled promise rejection. This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). To terminate the node process on unhandled promise rejection, use the CLI flag `--unhandled-rejections=strict` (see https://nodejs.org/api/cli.html#cli_unhandled_rejections_mode). (rejection id: 1)
+2021-07-20T18:40:32.397867+00:00 app[web.1]: (node:4) [DEP0018] DeprecationWarning: Unhandled promise rejections are deprecated. In the future, promise rejections that are not handled will terminate the Node.js process with a non-zero exit code.
+2021-07-20T18:40:32.420118+00:00 app[web.1]: (node:4) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
+2021-07-20T18:40:35.979054+00:00 app[web.1]: go to sgo.edu-74.ru
+2021-07-20T18:40:35.000000+00:00 app[api]: Build succeeded
+2021-07-20T18:40:46.870855+00:00 app[web.1]: type loginlo
+2021-07-20T18:40:46.879559+00:00 app[web.1]: type password
+2021-07-20T18:40:46.882659+00:00 app[web.1]: click login button
+2021-07-20T18:40:52.245312+00:00 app[web.1]: Security warn is not found😒
+2021-07-20T18:41:04.752705+00:00 app[web.1]: Promise { <pending> }
+2021-07-20T18:41:05.863858+00:00 app[web.1]: :(
+2021-07-20T18:41:05.930285+00:00 app[web.1]: (node:4) UnhandledPromiseRejectionWarning: TypeError [ERR_INVALID_ARG_TYPE]: The "options" argument must be of type object. Received type string ('<!DOCTYPE html><html><he...)
+2021-07-20T18:41:05.930288+00:00 app[web.1]:     at normalizeSpawnArguments (child_process.js:457:11)
+2021-07-20T18:41:05.930289+00:00 app[web.1]:     at spawn (child_process.js:578:13)
+2021-07-20T18:41:05.930289+00:00 app[web.1]:     at spawnWithSignal (child_process.js:717:17)
+2021-07-20T18:41:05.930290+00:00 app[web.1]:     at firstStep (/app/main.js:7:16)
+2021-07-20T18:41:05.930339+00:00 app[web.1]: (node:4) UnhandledPromiseRejectionWarning: Unhandled promise rejection. This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). To terminate the node process on unhandled promise rejection, use the CLI flag `--unhandled-rejections=strict` (see https://nodejs.org/api/cli.html#cli_unhandled_rejections_mode). (rejection id: 2)
+2021-07-20T18:41:30.121402+00:00 heroku[web.1]: Error R10 (Boot timeout) -> Web process failed to bind to $PORT within 60 seconds of launch
+2021-07-20T18:41:30.165067+00:00 heroku[web.1]: Stopping process with SIGKILL
+2021-07-20T18:41:30.248236+00:00 heroku[web.1]: Process exited with status 137
+2021-07-20T18:41:30.321061+00:00 heroku[web.1]: State changed from starting to crashed
+2021-07-20T18:41:30.328001+00:00 heroku[web.1]: State changed from crashed to starting
+2021-07-20T18:41:50.544407+00:00 heroku[web.1]: Starting process with command `node main.js`
+2021-07-20T18:41:52.934123+00:00 app[web.1]: (node:4) UnhandledPromiseRejectionWarning: Error: Client has already been connected. You cannot reuse a client.
+2021-07-20T18:41:52.934148+00:00 app[web.1]:     at Client._connect (/app/node_modules/pg/lib/client.js:94:19)
+2021-07-20T18:41:52.934149+00:00 app[web.1]:     at /app/node_modules/pg/lib/client.js:166:12
+2021-07-20T18:41:52.934149+00:00 app[web.1]:     at new Promise (<anonymous>)
+2021-07-20T18:41:52.934150+00:00 app[web.1]:     at Client.connect (/app/node_modules/pg/lib/client.js:165:12)
+2021-07-20T18:41:52.934151+00:00 app[web.1]:     at BotVk (/app/bots.js:36:16)
+2021-07-20T18:41:52.934151+00:00 app[web.1]:     at Timeout._onTimeout (/app/main.js:17:2)
+2021-07-20T18:41:52.934152+00:00 app[web.1]:     at listOnTimeout (internal/timers.js:557:17)
+2021-07-20T18:41:52.934152+00:00 app[web.1]:     at processTimers (internal/timers.js:500:7)
+2021-07-20T18:41:52.934152+00:00 app[web.1]: (Use `node --trace-warnings ...` to show where the warning was created)
+2021-07-20T18:41:52.934767+00:00 app[web.1]: (node:4) UnhandledPromiseRejectionWarning: Unhandled promise rejection. This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). To terminate the node process on unhandled promise rejection, use the CLI flag `--unhandled-rejections=strict` (see https://nodejs.org/api/cli.html#cli_unhandled_rejections_mode). (rejection id: 1)
+2021-07-20T18:41:52.934900+00:00 app[web.1]: (node:4) [DEP0018] DeprecationWarning: Unhandled promise rejections are deprecated. In the future, promise rejections that are not handled will terminate the Node.js process with a non-zero exit code.
+2021-07-20T18:41:52.967510+00:00 app[web.1]: (node:4) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
+2021-07-20T18:41:54.956852+00:00 app[web.1]: go to sgo.edu-74.ru
+2021-07-20T18:42:00.449711+00:00 app[web.1]: type loginlo
+2021-07-20T18:42:00.464258+00:00 app[web.1]: type password
+2021-07-20T18:42:00.470071+00:00 app[web.1]: click login button
+2021-07-20T18:42:05.993702+00:00 app[web.1]: Access is allowed🔓
+2021-07-20T18:42:18.489155+00:00 app[web.1]: Promise { <pending> }
+2021-07-20T18:42:19.555355+00:00 app[web.1]: :(
+2021-07-20T18:42:19.683555+00:00 app[web.1]: (node:4) UnhandledPromiseRejectionWarning: TypeError [ERR_INVALID_ARG_TYPE]: The "options" argument must be of type object. Received type string ('<!DOCTYPE html><html><he...)
+2021-07-20T18:42:19.683557+00:00 app[web.1]:     at normalizeSpawnArguments (child_process.js:457:11)
+2021-07-20T18:42:19.683557+00:00 app[web.1]:     at spawn (child_process.js:578:13)
+2021-07-20T18:42:19.683558+00:00 app[web.1]:     at spawnWithSignal (child_process.js:717:17)
+2021-07-20T18:42:19.683558+00:00 app[web.1]:     at firstStep (/app/main.js:7:16)
+2021-07-20T18:42:19.683960+00:00 app[web.1]: (node:4) UnhandledPromiseRejectionWarning: Unhandled promise rejection. This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). To terminate the node process on unhandled promise rejection, use the CLI flag `--unhandled-rejections=strict` (see https://nodejs.org/api/cli.html#cli_unhandled_rejections_mode). (rejection id: 2)

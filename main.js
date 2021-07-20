@@ -3,12 +3,11 @@ var spawn = require("child_process").spawn;
 var vkBot = require('./bots')
 var login = require('./login')
 async function firstStep(){
+	const homework = await login()
 	var process = spawn('python',[/*Path to py script*/], homework);
-	const homework = login().then(
-		process.stdout.on('data', function(data){
+	process.stdout.on('data', function(data){
     		console.log('homework parsed')
 		})
-	);
 }
 
 setTimeout(function() {

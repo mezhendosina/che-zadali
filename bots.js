@@ -1,6 +1,6 @@
 const VkBot = require('node-vk-bot-api');
 const {Client} = require('pg')
-
+process.env.NODE_TLS_REJECT_UNAUTHORIZED='0'
 const urlDatabase = 'postgres://xbwoosfturwnmu:4f3f0a25361cac11df1af8a3dfe11469029a422f85e055fa1f6072cb1c4b48c3@ec2-54-73-68-39.eu-west-1.compute.amazonaws.com:5432/d4g1mkv1jennht';
 const client = new Client({
 	host: 'ec2-54-73-68-39.eu-west-1.compute.amazonaws.com',
@@ -38,15 +38,19 @@ async function BotVk() {
 		const bot = new VkBot('a9fc970aabe2a7043e253216e66889c81c9f79bc597f15c1c629cfc5ea96760d3c962645be7327b86f6a3');
 
 		bot.command('/', (ctx) => {
+			console.log('Someone send /. I send /')
 			ctx.reply('/');
 		});
 
 		bot.command('Че задали', (ctx) => {
+			console.log('Someone send request for homework')
 			var date = new Date();
 			switch (date.getMonth()) {
 				case 6:
 				case 7:
 				case 8:
+					console.log('Someone are stupid')
+					
 					ctx.reply('Ты чё, какая домаха? Сейчас лето же - иди отдыхай')
 					break
 				default:
@@ -60,4 +64,5 @@ async function BotVk() {
 				}
 			});
 }
+BotVk();
 module.exports = BotVk;

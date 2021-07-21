@@ -1,2 +1,2 @@
 beautifulsoup4
-psycopg4
+psycopg2

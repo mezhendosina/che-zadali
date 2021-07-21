@@ -17,9 +17,16 @@ async function homework(){
 
   ///type login/password
   await console.log('type loginlo')
-  await page.$eval('#message > div > div > div:nth-child(8) > input', (el, value) => el.value = value, 'МеньшенинЕ1');
+  await page.$eval(
+    '#message > div > div > div:nth-child(8) > input', 
+    (el, value) => el.value = value, 
+    process.env.SGO_LOGIN);
   await console.log('type password')
-  await page.$eval('#message > div > div > div:nth-child(9) > input', (el, value) => el.value = value, '787970');
+  await page.$eval(
+    '#message > div > div > div:nth-child(9) > input',
+    (el, value) => el.value = value,
+    process.env.SGO_PASSWORD
+    );
 
   ///click login button
   await console.log('click login button')
@@ -29,7 +36,9 @@ async function homework(){
 
   //Security warn
   try{
-      await page.click('body > div.block-content > div > div > div > div > div:nth-child(5) > div > div > div > div > button:nth-child(2)')
+      await page.click(
+        'body > div.block-content > div > div > div > div > div:nth-child(5) > div > div > div > div > button:nth-child(2)'
+        )
       await console.log('Access is allowed🔓')
   }
   catch(e){
@@ -39,13 +48,16 @@ async function homework(){
   await page.waitForTimeout(5000); ///wait
   
   for(let i = 0;i <10;i++ ){
-      await page.click('#view > div:nth-child(5) > div > div > div.schooljournal_content.column > div.controls_box > div.week_switcher > div.button_prev > i')
+      await page.click(
+        '#view > div:nth-child(5) > div > div > div.schooljournal_content.column > div.controls_box > div.week_switcher > div.button_prev > i'
+        )
       await page.waitForTimeout(1000); ///wait
   }
   await page.waitForTimeout(3000); ///wait
 
   const content = page.content(); /// get page content
   console.log(content)
+/*
   ///logout
   try{
   await page.click('body > div.header > div.block-personal-cabinet > ul > li.no_separator > a')
@@ -56,10 +68,11 @@ async function homework(){
       console.log(':(')
   }
   await browser.close();
-  
+*/
   return content
 }
 module.exports = homework;
 
 
 
+1626860603557841397

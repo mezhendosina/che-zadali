@@ -1,6 +1,9 @@
 from bs4 import BeautifulSoup
 import psycopg2
+from urllib.parse import urlparse
 import sys
+import os 
+
 def months(month):
 	return {
 		'января': 1,
@@ -25,11 +28,14 @@ def days(day):
 		'Пт': 5,
 		'Сб': 6
 	}[day]
-connection = psycopg2.connect(user="postgres",
-                                  # пароль, который указали при установке PostgreSQL
-                                  password="1111",
-                                  host="127.0.0.1",
-                                  port="5432")
+result = urlparse(os.environ.get('DATABASE_URL'))
+connection = psycopg2.connect(
+	user=result.password,
+   	password=result.password,
+   	database=result.path[1:],
+	host=result.hostname,
+    port = result.port
+)
 cursor = connection.cursor()
 #with open('homework.html', 'r', encoding = 'utf-8') as f:
 soup =  BeautifulSoup(sys.argv[1], features = 'lxml')

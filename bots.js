@@ -62,6 +62,12 @@ async function BotVk() {
 				console.error(err);
 				}
 			});
+		bot.command('/CheZadali', (ctx) =>{
+			ctx.reply(sendHomework())
+		} )
+		bot.command('/настройки', (ctx) =>{
+			/*settings*/
+		})
 }
 BotVk();
 module.exports = BotVk;

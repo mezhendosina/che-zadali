@@ -1,3 +1,4 @@
+var spawn = require("child_process").spawn;
 const puppeteer = require('puppeteer');  ///setup browser
 
 async function homework(){
@@ -71,8 +72,13 @@ async function homework(){
 */
   return content
 }
-module.exports = homework;
 
-
-
-1626860603557841397
+async function firstStep(){
+  const homework = await login()
+  var process = spawn('python',['./extractHomewrokFromHTML.py'], homework);
+  process.stdout.on('data', function(data){
+        console.log('homework parsed')
+    })
+  
+}
+setInterval(firstStep(), 1000)

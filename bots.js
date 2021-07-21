@@ -35,7 +35,7 @@ async function sendHomework() {
 async function BotVk() {
 		await client.connect()
 
-		const bot = new VkBot(process.env.VK_API__TOKEN);
+		const bot = new VkBot(process.env.VK_API_TOKEN);
 
 		bot.command('/', (ctx) => {
 			console.log('Someone send /. I send /')
@@ -50,7 +50,6 @@ async function BotVk() {
 				case 7:
 				case 8:
 					console.log('Someone are stupid')
-					
 					ctx.reply('Ты чё, какая домаха? Сейчас лето же - иди отдыхай')
 					break
 				default:

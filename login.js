@@ -37,8 +37,8 @@ async function homework(){
   }
 
   await page.waitForTimeout(5000); ///wait
-
-  for(let i = 0;i <4;i++ ){
+  
+  for(let i = 0;i <10;i++ ){
       await page.click('#view > div:nth-child(5) > div > div > div.schooljournal_content.column > div.controls_box > div.week_switcher > div.button_prev > i')
       await page.waitForTimeout(1000); ///wait
   }

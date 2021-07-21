@@ -12,6 +12,6 @@
     "node-vk-bot-api": "^3.5.0",
     "pg": "^8.6.0",
     "puppeteer": "^10.1.0",
-    "pg": "^8.6.0"
+    "python-shell": "^3.0.0"
   }
 }

@@ -1,5 +1,7 @@
-var spawn = require("child_process").spawn;
+const python = require('python-shell');
 const puppeteer = require('puppeteer');  ///setup browser
+SGO_LOGIN = 'МеньшенинЕ1';
+SGO_PASSWORD = '787970';
 
 async function homework(){
   const url = 'https://sgo.edu-74.ru/'
@@ -21,12 +23,12 @@ async function homework(){
   await page.$eval(
     '#message > div > div > div:nth-child(8) > input', 
     (el, value) => el.value = value, 
-    process.env.SGO_LOGIN);
+    SGO_LOGIN);
   await console.log('type password')
   await page.$eval(
     '#message > div > div > div:nth-child(9) > input',
     (el, value) => el.value = value,
-    process.env.SGO_PASSWORD
+    SGO_PASSWORD
     );
 
   ///click login button
@@ -46,12 +48,10 @@ async function homework(){
       await console.log('Security warn is not found😒')
   }
 
-  await page.waitForTimeout(5000); ///wait
+  await page.waitForTimeout(10000); ///wait
   
   for(let i = 0;i <10;i++ ){
-      await page.click(
-        '#view > div:nth-child(5) > div > div > div.schooljournal_content.column > div.controls_box > div.week_switcher > div.button_prev > i'
-        )
+      await page.click('#view > div:nth-child(5) > div > div > div.schooljournal_content.column > div.controls_box > div.week_switcher > div.button_prev > i')
       await page.waitForTimeout(1000); ///wait
   }
   await page.waitForTimeout(3000); ///wait
@@ -68,15 +68,12 @@ async function homework(){
       console.log(':(')
   }
   await browser.close();
-*/
-  var process = await spawn('python', ['./extractHomewrokFromHTML.py'], content)
-  process.stdout.on('data', function (data) {
-    console.log('homework parsed')
+  */ 
+  const { spawn } = require('child_process');
+  const pyProg = spawn('python', ["extractHomeworkFromHTML.py", content]);
+  pyProg.stdout.on('data', function(data) {
+    console.log('done')
   })
-  return content
 }
-
-setInterval(
-  homework()
-  .catch(console.log(Error)), 
-  1000)
+let h = homework()
+console.log(h)

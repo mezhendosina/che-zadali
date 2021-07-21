@@ -57,7 +57,6 @@ async function homework(){
   await page.waitForTimeout(3000); ///wait
 
   const content = page.content(); /// get page content
-  console.log(content)
 /*
   ///logout
   try{
@@ -70,17 +69,14 @@ async function homework(){
   }
   await browser.close();
 */
+  var process = await spawn('python', ['./extractHomewrokFromHTML.py'], content)
+  process.stdout.on('data', function (data) {
+    console.log('homework parsed')
+  })
   return content
 }
 
-async function firstStep(){
-  const homework = await homework()
-  var process = await spawn('python',['./extractHomewrokFromHTML.py'], homework);
-  process.stdout.on('data', function(data){
-        console.log('homework parsed')
-    })
-}
 setInterval(
-  firstStep()
+  homework()
   .catch(console.log(Error)), 
   1000)

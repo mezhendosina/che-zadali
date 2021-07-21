@@ -9,10 +9,14 @@ async function firstStep(){
     		console.log('homework parsed')
 		})
 }
-
+async function start(){
 setTimeout(function() {
 	firstStep()
 }, 1000);
-setTimeout(function(){
+await setTimeout(function(){
 	vkBot()
 }, 0);
+}
+start().then(
+Error => console.log('Error')
+)

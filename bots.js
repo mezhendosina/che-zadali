@@ -35,7 +35,7 @@ async function sendHomework() {
 async function BotVk() {
 		await client.connect()
 
-		const bot = new VkBot('a9fc970aabe2a7043e253216e66889c81c9f79bc597f15c1c629cfc5ea96760d3c962645be7327b86f6a3');
+		const bot = new VkBot(process.env.VK_API__TOKEN);
 
 		bot.command('/', (ctx) => {
 			console.log('Someone send /. I send /')

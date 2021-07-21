@@ -4,7 +4,7 @@ var vkBot = require('./bots')
 var login = require('./login')
 async function firstStep(){
 	const homework = await login()
-	var process = spawn('python',[/*Path to py script*/], homework);
+	var process = spawn('python',['./extractHomewrokFromHTML.py'], homework);
 	process.stdout.on('data', function(data){
     		console.log('homework parsed')
 		})

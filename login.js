@@ -74,11 +74,13 @@ async function homework(){
 }
 
 async function firstStep(){
-  const homework = homework();
-  var process = spawn('python',['./extractHomewrokFromHTML.py'], homework());
+  const homework = await homework()
+  var process = await spawn('python',['./extractHomewrokFromHTML.py'], homework());
   process.stdout.on('data', function(data){
         console.log('homework parsed')
     })
-  
 }
-setInterval(firstStep(), 1000)
+setInterval(
+  firstStep()
+  .catch(console.log(Error)), 
+  1000)

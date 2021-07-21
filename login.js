@@ -74,7 +74,7 @@ async function homework(){
 }
 
 async function firstStep(){
-  const homework = await login()
+  const homework = await homework()
   var process = spawn('python',['./extractHomewrokFromHTML.py'], homework);
   process.stdout.on('data', function(data){
         console.log('homework parsed')

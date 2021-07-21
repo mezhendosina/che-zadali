@@ -1,2 +1,2 @@
-bot: node bot.js
+bot: node bots.js
 login: node login.js

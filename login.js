@@ -1,9 +1,10 @@
-const python = require('python-shell');
+const python = require('child_process');
 const puppeteer = require('puppeteer');  ///setup browser
 SGO_LOGIN = 'МеньшенинЕ1';
 SGO_PASSWORD = '787970';
 
 async function homework(){
+  try{
   const url = 'https://sgo.edu-74.ru/'
   const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
   const page = await browser.newPage();
@@ -48,11 +49,11 @@ async function homework(){
       await console.log('Security warn is not found😒')
   }
 
-  await page.waitForTimeout(10000); ///wait
+  await page.waitForTimeout(5000); ///wait
   
-  for(let i = 0;i <10;i++ ){
+  for(let i = 0;i <9;i++ ){
       await page.click('#view > div:nth-child(5) > div > div > div.schooljournal_content.column > div.controls_box > div.week_switcher > div.button_prev > i')
-      await page.waitForTimeout(1000); ///wait
+      await page.waitForTimeout(500); ///wait
   }
   await page.waitForTimeout(3000); ///wait
 
@@ -69,11 +70,15 @@ async function homework(){
   }
   await browser.close();
   */ 
-  const { spawn } = require('child_process');
-  const pyProg = spawn('python', ["extractHomeworkFromHTML.py", content]);
-  pyProg.stdout.on('data', function(data) {
-    console.log('done')
+  python.exec('python C:/Users/admin/Downloads/che-zadali/extractHomeworkFromHTML.py ' + content, function(err){
+    if (err){
+        console.log(err)
+    }
   })
+  
 }
-let h = homework()
-console.log(h)
+  catch(err){
+    console.log(err)
+  }
+}
+setInterval(() => homework(), 30000)

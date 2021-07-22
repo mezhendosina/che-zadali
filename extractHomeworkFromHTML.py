@@ -9,8 +9,9 @@ def months(month):
 		'января': 1,
 		'февраля': 2,
 		'марта': 3,
+		'апр.': 4,
 		'апреля': 4,
-		'мая': 5
+		'мая': 5,
 		'инюня': 6,
 		'июля': 7,
 		'августа': 8,
@@ -28,27 +29,26 @@ def days(day):
 		'Пт': 5,
 		'Сб': 6
 	}[day]
-result = urlparse(os.environ.get('DATABASE_URL'))
+#result = urlparse(os.environ.get('DATABASE_URL'))
 connection = psycopg2.connect(
-	user=result.password,
-   	password=result.password,
-   	database=result.path[1:],
-	host=result.hostname,
-    port = result.port
+	user='xbwoosfturwnmu',#result.password,
+   	password='4f3f0a25361cac11df1af8a3dfe11469029a422f85e055fa1f6072cb1c4b48c3',#result.password,
+   	database='d4g1mkv1jennht',#result.path[1:],
+	host='ec2-54-73-68-39.eu-west-1.compute.amazonaws.com',#result.hostname,
+    port='5432'#result.port
 )
 cursor = connection.cursor()
-#with open('homework.html', 'r', encoding = 'utf-8') as f:
-soup =  BeautifulSoup(sys.argv[1], features = 'lxml')
+with open('homework.html', 'r', encoding = 'utf-8') as f:
+	soup =  BeautifulSoup(f, features = 'lxml')
 data = []
 schoolJournal = soup.find('div', 'schooljournal_content column')
-for i in schoolJournal.find_all('div', class_ = 'day_table')
-:
+dayTable = schoolJournal.find_all('div', class_ = 'day_table')
+for i in dayTable:
     day= i.find('span', 'ng-binding').get_text()
     dayName = days(day.split(',')[0])
-    dayNum = int(day.split(',')[1][:3])
-    dayMonth = months(day.split(',')[1][4:].split(' ')[0])
-    dayYear = day.split(',')[1][4:].split(' ')[1]
-    
+    dayNum = int(day.split(' ')[1])
+    dayMonth = months(day.split(' ')[2])
+    dayYear = int(day.split(' ')[3])
     for a in i.find_all('tr', class_ = 'ng-scope'):
         try:
             lesson = a.find('a', 'subject ng-binding ng-scope').get_text()
@@ -57,7 +57,7 @@ for i in schoolJournal.find_all('div', class_ = 'day_table')
             except AttributeError:
                 homework = None
 
-            connection.execute('INSERT {}, {}, {}, {}, {}, {} INTO homeworktable ON CONFLICT DO NOTHING'.format(
+            cursor.execute("INSERT INTO homeworktable VALUES('{}', '{}', '{}', {}, {}, {}, {})  ON CONFLICT DO NOTHING".format(
             day, 
             lesson, 
             homework, 

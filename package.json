@@ -1,8 +1,8 @@
 {
-  "name": "new-che-zadali",
-  "version": "0.1.2",
+  "name": "che-zadali",
+  "version": "0.2",
   "description": "Достает домашнее задание из Сетевого Города и отпарвляет в бота во ВКонтакте",
-  "main": "main.js",
+  "main": "bots.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -11,7 +11,6 @@
   "dependencies": {
     "node-vk-bot-api": "^3.5.0",
     "pg": "^8.6.0",
-    "puppeteer": "^10.1.0",
-    "python-shell": "^3.0.0"
+    "puppeteer": "^10.1.0"
   }
 }

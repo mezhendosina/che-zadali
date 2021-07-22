@@ -3,6 +3,7 @@ import psycopg2
 from urllib.parse import urlparse
 import sys
 import os 
+DATABASE_URL = os.environ['DATABASE_URL']
 
 def months(month):
 	return {
@@ -29,15 +30,10 @@ def days(day):
 		'Пт': 5,
 		'Сб': 6
 	}[day]
-#result = urlparse(os.environ.get('DATABASE_URL'))
-connection = psycopg2.connect(
-	user='xbwoosfturwnmu',#result.password,
-   	password='4f3f0a25361cac11df1af8a3dfe11469029a422f85e055fa1f6072cb1c4b48c3',#result.password,
-   	database='d4g1mkv1jennht',#result.path[1:],
-	host='ec2-54-73-68-39.eu-west-1.compute.amazonaws.com',#result.hostname,
-    port='5432'#result.port
-)
+
+connection = psycopg2.connect(DATABASE_URL, sslmode='require')
 cursor = connection.cursor()
+
 with open('homework.html', 'r', encoding = 'utf-8') as f:
 	soup =  BeautifulSoup(f, features = 'lxml')
 data = []

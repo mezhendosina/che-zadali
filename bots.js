@@ -1,15 +1,12 @@
 const VkBot = require('node-vk-bot-api');
 const {Client} = require('pg')
 process.env.NODE_TLS_REJECT_UNAUTHORIZED='0'
-const urlDatabase = 'postgres://xbwoosfturwnmu:4f3f0a25361cac11df1af8a3dfe11469029a422f85e055fa1f6072cb1c4b48c3@ec2-54-73-68-39.eu-west-1.compute.amazonaws.com:5432/d4g1mkv1jennht';
+
 const client = new Client({
-	user: 'xbwoosfturwnmu',
-	host: 'ec2-54-73-68-39.eu-west-1.compute.amazonaws.com',
-	password: '4f3f0a25361cac11df1af8a3dfe11469029a422f85e055fa1f6072cb1c4b48c3',
-	database: 'd4g1mkv1jennht',
-	port: '5432',
-	ssl: true
-})
+	connectionString: process.env.DATABASE_URL,
+  	ssl: {
+    	rejectUnauthorized: false
+  }})
 function selectHomework(date, dayMonth, dayYear=new Date().getYear())
 {
 	try{
@@ -58,7 +55,7 @@ async function BotVk() {
 	try{
 		await client.connect()
 
-		const bot = new VkBot('a9fc970aabe2a7043e253216e66889c81c9f79bc597f15c1c629cfc5ea96760d3c962645be7327b86f6a3');
+		const bot = new VkBot(process.env.VK_API_TOKEN);
 
 		/*bot.command('/', (ctx) => {
 			console.log('Someone send /. I send /')
@@ -69,7 +66,6 @@ async function BotVk() {
 			console.log('Someone send request for homework')
 			var date = new Date();
 			ctx.reply(sendHomework(27,4))
-			/*
 			switch (date.getMonth()) {
 				case 6:
 				case 7:
@@ -80,15 +76,13 @@ async function BotVk() {
 				default:
 					ctx.reply(sendHomework())
 					break
-				}*/
+				}
 			});
-		/*
+		
 		bot.command('/CheZadali1',(ctx) =>{
-			sendHomework(2,27,4).then(
-				ctx.reply());
 			console.log('Someone send /CheZadali1')
-			ctx.reply()
-		});*/
+			ctx.reply(sendHomework(27,4))
+		});
 		await bot.startPolling((err) => {
 				if (err) {
 				console.error(err);

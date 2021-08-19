@@ -70,7 +70,7 @@ async function homework(){
   }
   await browser.close();
   */ 
-  python.exec('python C:/Users/admin/Downloads/che-zadali/extractHomeworkFromHTML.py ' + content, function(err){
+  python.exec('python /extractHomeworkFromHTML.py ' + content, function(err){
     if (err){
         console.log(err)
     }

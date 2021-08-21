@@ -12,7 +12,6 @@ chrome_options.add_argument("--no-sandbox")
 chrome_options.binary_location = os.environ.get('GOOGLE_CHROME_SHIM')
 driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chrome_options)
 
-
 driver.get('https://sgo.edu-74.ru')
 
 Select(driver.find_element_by_id('schools')).select_by_value("89")

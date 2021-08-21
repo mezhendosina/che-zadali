@@ -1,2 +1,3 @@
-bot: node bots.js
-login: node login.js
+vkbot: python vkBot.py
+telegrambot: python telegramBot.py
+login: python login.py

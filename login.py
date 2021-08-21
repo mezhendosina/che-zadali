@@ -1,0 +1,32 @@
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import Select
+from extractHomeworkFromHTML import extractHomework
+import os 
+import time
+'''
+chrome_options = webdriver.ChromeOptions()
+chrome_options.binary_location = os.environ.get('GOOGLE_CHROME_SHIM', None)
+driver = webdriver.Chrome(executable_path="chromedriver", chrome_options=chrome_options)
+'''
+driver = webdriver.Chrome("C:/Users/mensh/che-zadali/che-zadali/chromedriver.exe")
+driver.get('https://sgo.edu-74.ru')
+
+Select(driver.find_element_by_id('schools')).select_by_value("89")
+
+driver.find_element_by_name('UN').send_keys( os.environ.get('SGO_LOGIN'))
+driver.find_element_by_name('PW').send_keys(os.environ.get('SGO_PASSWORD'))
+
+driver.find_element_by_xpath('//*[@id="message"]/div/div/div[11]/a/span').click()
+time.sleep(5)
+try:
+    driver.find_element_by_xpath('/html/body/div[1]/div/div/div/div/div[4]/div/div/div/div/button[2]').click()
+    time.sleep(2)
+except:
+    time.sleep(2)
+Select(driver.find_element_by_xpath('//*[@id="view"]/div[2]/div/div/div[2]/div[1]/div[2]/div[2]/div/select')).select_by_value('object:34')
+time.sleep(2)
+a = driver.page_source
+driver.close()
+
+extractHomework(a)

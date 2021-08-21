@@ -2,6 +2,9 @@ node_modules/
 __pycache__/
 .vs/
 .vscode/
+js/
 
 .html 
 che-zadali.zip
+chromedriver.exe
+login.js

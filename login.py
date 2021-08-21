@@ -25,7 +25,7 @@ try:
     time.sleep(2)
 except:
     time.sleep(2)
-Select(driver.find_element_by_xpath('//*[@id="view"]/div[2]/div/div/div[2]/div[1]/div[2]/div[2]/div/select')).select_by_value('object:34')
+
 time.sleep(2)
 a = driver.page_source
 driver.close()

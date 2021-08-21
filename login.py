@@ -4,12 +4,15 @@ from selenium.webdriver.support.ui import Select
 from extractHomeworkFromHTML import extractHomework
 import os 
 import time
-'''
+
 chrome_options = webdriver.ChromeOptions()
-chrome_options.binary_location = os.environ.get('GOOGLE_CHROME_SHIM', None)
-driver = webdriver.Chrome(executable_path="chromedriver", chrome_options=chrome_options)
-'''
-driver = webdriver.Chrome("C:/Users/mensh/che-zadali/che-zadali/chromedriver.exe")
+chrome_options.add_argument("--headless")
+chrome_options.add_argument("--disable-dev-shm-usage")
+chrome_options.add_argument("--no-sandbox")
+chrome_options.binary_location = os.environ.get('GOOGLE_CHROME_SHIM')
+driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chrome_options)
+
+
 driver.get('https://sgo.edu-74.ru')
 
 Select(driver.find_element_by_id('schools')).select_by_value("89")

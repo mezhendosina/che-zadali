@@ -2,4 +2,4 @@ beautifulsoup4
 psycopg2
 lxml
 selenium
-https://github.com/timoniq/vkbottle/archive/master.zip
+vkbottle

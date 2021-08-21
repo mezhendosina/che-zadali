@@ -1,5 +1,4 @@
 from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
 from extractHomeworkFromHTML import extractHomework
 import os 
@@ -16,8 +15,8 @@ driver.get('https://sgo.edu-74.ru')
 time.sleep(5)
 Select(driver.find_element_by_id('schools')).select_by_value("89")
 
-driver.find_element_by_name('UN').send_keys( os.environ.get('SGO_LOGIN'))
-driver.find_element_by_name('PW').send_keys(os.environ.get('SGO_PASSWORD'))
+driver.find_element_by_name('UN').send_keys(os.getenv('SGO_LOGIN'))
+driver.find_element_by_name('PW').send_keys(os.getenv('SGO_PASSWORD'))
 
 driver.find_element_by_xpath('//*[@id="message"]/div/div/div[11]/a/span').click()
 time.sleep(5)

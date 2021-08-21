@@ -1,24 +1,19 @@
 from bs4 import BeautifulSoup
 import psycopg2
-import sys
 import os 
-DATABASE_URL = os.environ['DATABASE_URL']
+from datetime import datetime, timedelta
 def extractHomework(code):
 	def months(month):
 		return {
-			'января': 1,
-			'февраля': 2,
-			'марта': 3,
+			'янв.': 1,
+			'февр.': 2,
+			'мар.': 3,
 			'апр.': 4,
-			'апреля': 4,
 			'мая': 5,
-			'инюня': 6,
-			'июля': 7,
-			'августа': 8,
-			'сентября': 9,
-			'октября': 10,
-			'ноября': 11,
-			'декабря': 12,
+			'сент.': 9,
+			'окт.': 10,
+			'нояб.': 11,
+			'дек.': 12,
 		}[month]
 	def days(day):
 		return {
@@ -30,7 +25,7 @@ def extractHomework(code):
 			'Сб': 6
 		}[day]
 
-	connection = psycopg2.connect(DATABASE_URL, sslmode='require')
+	connection = psycopg2.connect(os.getenv('DATABASE_URL'), sslmode='require')
 	cursor = connection.cursor()
 
 	soup =  BeautifulSoup(code, features = 'lxml')
@@ -51,14 +46,18 @@ def extractHomework(code):
 					homework = None
 
 				cursor.execute("INSERT INTO homeworktable VALUES('{}', '{}', '{}', {}, {}, {}, {})  ON CONFLICT DO NOTHING".format(
-				day, 
-				lesson, 
-				homework, 
-				dayName, 
-				dayNum, 
-				dayMonth, 
-				dayYear
-	))
-			except AttributeError:
-				print('AttributeError')
+					day, 
+					lesson, 
+					homework, 
+					dayName, 
+					dayNum, 
+					dayMonth, 
+					dayYear
+				))
+			except AttributeError as e:
+				print('AttributeError:', e)
+	date = datetime.now() + timedelta(days=-7)
+	cursor.execute("DELETE FROM homeworktable WHERE dayname=%s and daymonth=%s and dayYear=%s", 
+	(date.strftime('%d'), date.strftime('%m'), date.strftime('%Y'))
+	)
 	connection.commit()

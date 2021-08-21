@@ -16,8 +16,8 @@ def selectHomework():
     cursor = connection.cursor()
     
     cursor.execute(
-            'SELECT lesson, homework FROM homeworktable WHERE daynum=31 and daymonth=3 and dayYear=2021;'
-            #(date.strftime('%d'), date.strftime('%m'), date.strftime('%Y'))
+            'SELECT lesson, homework FROM homeworktable WHERE daynum=%s and daymonth=%s and dayYear=%s;'
+            (date.strftime('%d'), date.strftime('%m'), date.strftime('%Y'))
     )
     b = cursor.fetchall()
     print(b)

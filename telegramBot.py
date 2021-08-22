@@ -3,11 +3,23 @@ from telebot import types
 import os 
 from extractHomeworkFromHTML import extractHomework, selectHomework
 
-bot = telebot.TeleBot("1950280557:AAEGpmKCGIHZsoxzH5ndIJDTB5rMdGPoLN8", parse_mode=None)
+bot = telebot.TeleBot(os.getenv("TELEGRAM_API_TOKEN"), parse_mode=None)
 
 @bot.message_handler(commands=['che'])
 def send_welcome(message):
 	bot.reply_to(message, selectHomework())
+
+@bot.message_handler(commands=['yesterday'])
+def send_welcome(message):
+	bot.reply_to(message, selectHomework(-1))
+
+@bot.message_handler(commands=['today'])
+def send_welcome(message):
+	bot.reply_to(message, selectHomework(0))
+'''
+@bot.message_handler(commcommand['selectHomework'])
+def send_selectedHomework
+'''
 @bot.inline_handler(func=lambda query: len(query.query) > 0)
 def query_text(query):
     try:
@@ -27,7 +39,7 @@ def query_text(query):
         )
         yesterday = types.InlineQueryResultArticle(
             id='3', title='вчера',
-            description='узнать вчеранюю домаху',
+            description='узнать вчерашнюю домаху',
             input_message_content=types.InputTextMessageContent(
                 message_text=selectHomework(-1)
             )

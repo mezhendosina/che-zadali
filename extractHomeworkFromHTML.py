@@ -65,4 +65,4 @@ def selectHomework(day=1):
             'SELECT lesson, homework FROM homeworktable WHERE daynum=%s and daymonth=%s and dayYear=%s;',
             (date.strftime('%d'), date.strftime('%m'), date.strftime('%Y'))
     )
-	return '\n'.join(map(lambda x: '{}: {}'.format(x[0], x[1]), cursor.fetchall()))
+	a = date.strftime('Домаха на %d.%m.%Y: \n')+'\n'.join(map(lambda x: '{}: {}'.format(x[0], x[1]), cursor.fetchall()))

@@ -25,8 +25,6 @@ try:
     time.sleep(2)
 except:
     time.sleep(2)
-
-time.sleep(2)
 a = driver.page_source
 driver.close()
 

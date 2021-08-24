@@ -5,17 +5,20 @@ from extractHomeworkFromHTML import extractHomework, selectHomework
 
 bot = telebot.TeleBot(os.getenv("TELEGRAM_API_TOKEN"), parse_mode=None)
 
-@bot.message_handler(commands=['che'])
-def send_welcome(message):
+@bot.message_handler(commands=['che', 'Che'])
+def send_che(message):
 	bot.reply_to(message, selectHomework())
 
 @bot.message_handler(commands=['yesterday'])
-def send_welcome(message):
+def send_yesterday(message):
 	bot.reply_to(message, selectHomework(-1))
 
 @bot.message_handler(commands=['today'])
-def send_welcome(message):
+def send_today(message):
 	bot.reply_to(message, selectHomework(0))
+@bot.message(commands=['help', 'start'])
+def send_help(message):
+	bot.reply_to(message, 'Даров :)\n Ты попал к боту, который достанет тебе домашку из Сетевого Города и скинет тебе, чтобы воспользоваться моей основной функцией напиши /che')
 '''
 @bot.message_handler(commcommand['selectHomework'])
 def send_selectedHomework

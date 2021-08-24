@@ -16,7 +16,7 @@ def send_yesterday(message):
 @bot.message_handler(commands=['today'])
 def send_today(message):
 	bot.reply_to(message, selectHomework(0))
-@bot.message(commands=['help', 'start'])
+@bot.message_handler(commands=['help', 'start'])
 def send_help(message):
 	bot.reply_to(message, 'Даров :)\n Ты попал к боту, который достанет тебе домашку из Сетевого Города и скинет тебе, чтобы воспользоваться моей основной функцией напиши /che')
 '''

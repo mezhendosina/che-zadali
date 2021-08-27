@@ -28,4 +28,4 @@ except:
 a = driver.page_source
 driver.close()
 
-extractHomework(a)
+c = extractHomework(a)

@@ -3,6 +3,14 @@ import psycopg2
 import os 
 from datetime import datetime, timedelta
 import time 
+
+summerHolidays = ['06', '07', '08']
+holidays = [
+	'27.10.2021', '28.10.2021', '29.03.2021,', '30.10.2021', '31.10.2021', 
+	'01.11.2021', '02.11.2021', '03.11.2021', '29.12.2021', '30.12.2021', '31.12.2021', '01.01.2022', '02.01.2022', '03.01.2022', '04.01.2022', '05.01.2022', '06.01.2022', '07.01.2022', '08.01.2022', '09.01.2022', '10.01.2022', '11.01.2022', '12.01.2022', 
+	'22.03.2022', '23.03.2022', '24.03.2022', '25.03.2022', '26.03.2022', '27.03.2022', '28.03.2022', '29.03.2022'
+	]
+
 def extractHomework(code):
 	def months(month):
 		return {
@@ -21,7 +29,7 @@ def extractHomework(code):
 		}[month]
 	connection = psycopg2.connect(os.getenv('DATABASE_URL'), sslmode='require')
 	cursor = connection.cursor()
-
+	countLines = cursor.execute('SELECT count(*) FROM table;')
 	soup =  BeautifulSoup(code, features = 'lxml')
 	schoolJournal = soup.find('div', 'schooljournal_content column')
 	dayTable = schoolJournal.find_all('div', class_ = 'day_table')
@@ -44,21 +52,30 @@ def extractHomework(code):
 			except AttributeError as e:
 				print('AttributeError:', e)
 	date = datetime.now() + timedelta(days=-7)
-	cursor.execute("DELETE FROM homeworktable WHERE dayname=%s and daymonth=%s and dayYear=%s", 
+	connection.commit()
+	countLinesAfter = cursor.execute('SELECT count(*) FROM table;')
+	if countLines != countLinesAfter:
+		cursor.execute("DELETE FROM homeworktable WHERE dayname=%s and daymonth=%s and dayYear=%s", 
 	(date.strftime('%d'), date.strftime('%m'), date.strftime('%Y'))
 	)
-	connection.commit()
+		connection.commit()
+		return "New"
+	else:
+		cursor.execute("DELETE FROM homeworktable WHERE dayname=%s and daymonth=%s and dayYear=%s", 
+	(date.strftime('%d'), date.strftime('%m'), date.strftime('%Y'))
+	)
+		connection.commit()
+		return "Old"
 
 def selectHomework(day=1):
-	if day == 0:
-		date = datetime.now()
-	if day == 1:
-		date = datetime.now() + timedelta(days=1)
-	if day == -1:
-		date = datetime.now() + timedelta(days=-1)
-
-	if time.strftime('%m') == '06' or time.strftime('%m') == '07' or time.strftime('%m') == '08':
-		return 'Какая домаха, лето жеж'
+	date = datetime.now() + timedelta(days=day)
+	
+	for i in summerHolidays:
+		if time.strftime('%m') == i:
+			return 'Какая домаха, лето жеж'
+	for i in holidays:
+		if time.strftime('%d.%m.%Y') == i:
+			return 'Какая домаха, каникулы жеж'
 	if time.strftime('%w') == 6:
 		date = datetime.now() + timedelta(days=2)
 
@@ -66,6 +83,7 @@ def selectHomework(day=1):
 	cursor = connection.cursor()
 	cursor.execute(
             'SELECT lesson, homework FROM homeworktable WHERE daynum=%s and daymonth=%s and dayYear=%s;',
-            (date.strftime('%d'), date.strftime('%m'), date.strftime('%Y'))
+            (int(date.strftime(' %d').replace(' 0', '')), int(date.strftime(' %m').replace(' 0' '')), date.strftime('%Y'))
     )
 	a = date.strftime('Домаха на %d.%m.%Y: \n')+'\n'.join(map(lambda x: '{}: {}'.format(x[0], x[1]), cursor.fetchall()))
+	return a

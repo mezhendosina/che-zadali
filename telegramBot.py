@@ -18,7 +18,9 @@ def send_today(message):
 	bot.reply_to(message, selectHomework(0))
 @bot.message_handler(commands=['help', 'start'])
 def send_help(message):
-	bot.reply_to(message, 'Даров :)\n Ты попал к боту, который достанет тебе домашку из Сетевого Города и скинет тебе, чтобы воспользоваться моей основной функцией напиши /che')
+	bot.reply_to(message, 'Даров :)\nТы попал к боту, который достанет тебе домашку из Сетевого Города и скинет тебе.\nчтобы воспользоваться моей основной функцией напиши /che')
+
+def send_new_homework()
 '''
 @bot.message_handler(commcommand['selectHomework'])
 def send_selectedHomework

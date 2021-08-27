@@ -29,3 +29,6 @@ a = driver.page_source
 driver.close()
 
 c = extractHomework(a)
+'''
+if c == 'New': 
+'''

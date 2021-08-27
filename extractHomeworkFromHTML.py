@@ -29,7 +29,7 @@ def extractHomework(code):
 		}[month]
 	connection = psycopg2.connect(os.getenv('DATABASE_URL'), sslmode='require')
 	cursor = connection.cursor()
-	countLines = cursor.execute('SELECT count(*) FROM table;')
+	countLines = int(cursor.execute('SELECT count(*) FROM table;'))
 	soup =  BeautifulSoup(code, features = 'lxml')
 	schoolJournal = soup.find('div', 'schooljournal_content column')
 	dayTable = schoolJournal.find_all('div', class_ = 'day_table')
@@ -46,25 +46,18 @@ def extractHomework(code):
 					homework = a.find('a', 'ng-binding ng-scope').get_text()
 				except AttributeError:
 					homework = None
-				cursor.execute("INSERT INTO homeworktable VALUES('{}', '{}', '{}', {}, {}, {}, {})  ON CONFLICT DO NOTHING".format(
-					day, lesson, homework, dayName, dayNum, dayMonth, dayYear
-				))
+				cursor.execute(f"INSERT INTO homeworktable VALUES('{day}', '{lesson}', '{homework}', '{dayName}', {dayNum}, {dayMonth}, {dayYear})  ON CONFLICT DO NOTHING"
+				)
 			except AttributeError as e:
 				print('AttributeError:', e)
 	date = datetime.now() + timedelta(days=-7)
-	connection.commit()
 	countLinesAfter = cursor.execute('SELECT count(*) FROM table;')
+	cursor.execute("DELETE FROM homeworktable WHERE dayname=%s and daymonth=%s and dayYear=%s",    
+		(int(date.strftime(' %d').replace(' 0', '')), int(date.strftime(' %m').replace(' 0' '')), date.strftime('%Y'))
+	connection.commit()
 	if countLines != countLinesAfter:
-		cursor.execute("DELETE FROM homeworktable WHERE dayname=%s and daymonth=%s and dayYear=%s", 
-	(date.strftime('%d'), date.strftime('%m'), date.strftime('%Y'))
-	)
-		connection.commit()
 		return "New"
 	else:
-		cursor.execute("DELETE FROM homeworktable WHERE dayname=%s and daymonth=%s and dayYear=%s", 
-	(date.strftime('%d'), date.strftime('%m'), date.strftime('%Y'))
-	)
-		connection.commit()
 		return "Old"
 
 def selectHomework(day=1):

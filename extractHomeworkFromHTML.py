@@ -52,7 +52,7 @@ def extractHomework(code):
 	else:
 		return "Old"
 
-def selectHomework(day=1) -> text:
+def selectHomework(day=1):
 	date = datetime.now(pytz.timezone('Russia/Yekaterinburg')) + timedelta(days=day)
 	
 	for i in summerHolidays:

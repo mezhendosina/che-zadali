@@ -5,6 +5,9 @@ from extractHomeworkFromHTML import extractHomework, selectHomework
 
 bot = telebot.TeleBot(os.getenv("TELEGRAM_API_TOKEN"), parse_mode=None)
 
+
+markup = types.ReplyKeyboardMarkup()
+
 @bot.message_handler(commands=['che', 'Che'])
 def send_che(message):
 	bot.reply_to(message, selectHomework())
@@ -26,6 +29,7 @@ def s(message):
 		message, 
 		selectHomework(message.text.split(' ')[1])
 	)
+
 '''
 def send_new_homework():
 	@bot.message_handler(commcommand['selectHomework'])

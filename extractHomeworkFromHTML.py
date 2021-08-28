@@ -53,6 +53,7 @@ def extractHomework(code):
 		return "Old"
 
 def selectHomework(day=1):
+<<<<<<< HEAD
 	connection = psycopg2.connect(os.getenv('DATABASE_URL'), sslmode='require')
 	cursor = connection.cursor()
 	if len(day) > 2:
@@ -63,6 +64,10 @@ def selectHomework(day=1):
 				)
 		)
 	date = datetime.now(pytz.timezone('Asia/Yekaterinburg')) + timedelta(days=day)
+=======
+	date = datetime.now(pytz.timezone('Asia/Yekaterinburg')) + timedelta(days=day)
+	
+>>>>>>> de040353ed792472d2cf0da0c69c601f74f8b33d
 	for i in summerHolidays:
 		if date.strftime('%m') == i:
 			return 'Какая домаха, лето жеж'

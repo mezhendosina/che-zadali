@@ -62,10 +62,8 @@ def selectHomework(day=1):
 				day.split('.')[0], day.split('.')[1], day.split('.')[2]
 				)
 		)
-	date = datetime.now(pytz.timezone('Asia/Yekaterinburg')) + timedelta(days=day)
-
-	date = datetime.now(pytz.timezone('Asia/Yekaterinburg')) + timedelta(days=day)
-	
+		a = date.strftime('Домаха на %d.%m.%Y: \n')+'\n'.join(map(lambda x: '{}: {}'.format(x[0], x[1]), cursor.fetchall()))
+		return a
 	for i in summerHolidays:
 		if date.strftime('%m') == i:
 			return 'Какая домаха, лето жеж'

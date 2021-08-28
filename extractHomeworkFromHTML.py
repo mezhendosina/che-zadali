@@ -65,6 +65,7 @@ def selectHomework(day=1):
 		)
 		a = f'Домаха на {d}.{m}.{y}: \n'+'\n'.join(map(lambda x: f'{x[0]}: {x[1]}', cursor.fetchall()))
 		return a
+	date = datetime.now(pytz.timezone('Asia/Yekaterinburg')) + timedelta(days=int(day))
 	for i in summerHolidays:
 		if date.strftime('%m') == i:
 			return 'Какая домаха, лето жеж'
@@ -72,7 +73,7 @@ def selectHomework(day=1):
 		if date.strftime('%d.%m.%Y') == i:
 			return 'Какая домаха, каникулы жеж'
 	if date.strftime('%w') == 0:
-		date = datetime.now(pytz.timezone('Asia/Yekaterinburg')) + timedelta(days=2)
+		date = datetime.now(pytz.timezone('Asia/Yekaterinburg')) + timedelta(days=2) 
 
 	cursor.execute(
             'SELECT lesson, homework FROM homeworktable WHERE daynum=%s and daymonth=%s and dayYear=%s;',

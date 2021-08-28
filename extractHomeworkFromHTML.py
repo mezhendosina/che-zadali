@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 import psycopg2
 import os 
 from datetime import datetime, timedelta
-import time 
+import pytz
 
 summerHolidays = ['06', '07', '08']
 holidays = [
@@ -14,18 +14,10 @@ holidays = [
 def extractHomework(code):
 	def months(month):
 		return {
-			'янв.': 1,
-			'февр.': 2,
-			'мар.': 3,
-			'апр.': 4,
-			'мая': 5,
-			'июн.': 6,
-			'июл.': 7,
-			'авг.': 8,
-			'сент.': 9,
-			'окт.': 10,
-			'нояб.': 11,
-			'дек.': 12,
+			'дек.': 12,'янв.': 1, 'февр.': 2,
+			'мар.': 3,'апр.': 4,'мая': 5,
+			'июн.': 6, 'июл.': 7, 'авг.': 8,
+			'сент.': 9, 'окт.': 10, 'нояб.': 11
 		}[month]
 	connection = psycopg2.connect(os.getenv('DATABASE_URL'), sslmode='require')
 	cursor = connection.cursor()
@@ -50,27 +42,27 @@ def extractHomework(code):
 				)
 			except AttributeError as e:
 				print('AttributeError:', e)
-	date = datetime.now() + timedelta(days=-7)
+	date = datetime.now(pytz.timezone('Russia/Yekaterinburg')) + timedelta(days=-7)
 	countLinesAfter = cursor.execute('SELECT count(*) FROM table;')
-	cursor.execute("DELETE FROM homeworktable WHERE dayname=%s and daymonth=%s and dayYear=%s",    
-		(int(date.strftime(' %d').replace(' 0', '')), int(date.strftime(' %m').replace(' 0' '')), date.strftime('%Y'))
+	cursor.execute("DELETE FROM homeworktable WHERE dayname=%s and daymonth=%s and dayYear=%s", (int(date.strftime(' %d').replace(' 0', '')), int(date.strftime(' %m').replace(' 0' '')), date.strftime('%Y'))
+	)
 	connection.commit()
 	if countLines != countLinesAfter:
 		return "New"
 	else:
 		return "Old"
 
-def selectHomework(day=1):
-	date = datetime.now() + timedelta(days=day)
+def selectHomework(day=1) -> text:
+	date = datetime.now(pytz.timezone('Russia/Yekaterinburg')) + timedelta(days=day)
 	
 	for i in summerHolidays:
-		if time.strftime('%m') == i:
+		if date.strftime('%m') == i:
 			return 'Какая домаха, лето жеж'
 	for i in holidays:
-		if time.strftime('%d.%m.%Y') == i:
+		if date.strftime('%d.%m.%Y') == i:
 			return 'Какая домаха, каникулы жеж'
-	if time.strftime('%w') == 6:
-		date = datetime.now() + timedelta(days=2)
+	if date.strftime('%w') == 0:
+		date = datetime.now(pytz.timezone('Russia/Yekaterinburg')) + timedelta(days=2)
 
 	connection = psycopg2.connect(os.getenv('DATABASE_URL'), sslmode='require')
 	cursor = connection.cursor()

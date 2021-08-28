@@ -18,15 +18,16 @@ def send_today(message):
 	bot.reply_to(message, selectHomework(0))
 @bot.message_handler(commands=['help', 'start'])
 def send_help(message):
-	bot.reply_to(message, 'Даров :)\nТы попал к боту, который достанет тебе домашку из Сетевого Города и скинет тебе.\nчтобы воспользоваться моей основной функцией напиши /che')
+	bot.reply_to(message, 'Даров :)\nТы попал к боту, который достанет тебе домашку из Сетевого Города и скинет тебе.\nчтобы воспользоваться моей основной функцией напиши/che')
 
 
 '''
-def send_new_homework()
-@bot.message_handler(commcommand['selectHomework'])
-def send_selectedHomework
+def send_new_homework():
+	@bot.message_handler(commcommand['selectHomework'])
+	def send_selectedHomework:
+		
 '''
-@bot.inline_handler(func=lambda query: len(query.query) > 0)
+@bot.inline_handler(func=lambda query: len(query.query) >= 0)
 def query_text(query):
     try:
         che = types.InlineQueryResultArticle(

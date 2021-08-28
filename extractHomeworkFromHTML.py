@@ -42,7 +42,7 @@ def extractHomework(code):
 				)
 			except AttributeError as e:
 				print('AttributeError:', e)
-	date = datetime.now(pytz.timezone('Russia/Yekaterinburg')) + timedelta(days=-7)
+	date = datetime.now(pytz.timezone('Asia/Yekaterinburg')) + timedelta(days=-7)
 	countLinesAfter = cursor.execute('SELECT count(*) FROM table;')
 	cursor.execute("DELETE FROM homeworktable WHERE dayname=%s and daymonth=%s and dayYear=%s", (int(date.strftime(' %d').replace(' 0', '')), int(date.strftime(' %m').replace(' 0' '')), date.strftime('%Y'))
 	)
@@ -53,7 +53,7 @@ def extractHomework(code):
 		return "Old"
 
 def selectHomework(day=1):
-	date = datetime.now(pytz.timezone('Russia/Yekaterinburg')) + timedelta(days=day)
+	date = datetime.now(pytz.timezone('Asia/Yekaterinburg')) + timedelta(days=day)
 	
 	for i in summerHolidays:
 		if date.strftime('%m') == i:
@@ -62,7 +62,7 @@ def selectHomework(day=1):
 		if date.strftime('%d.%m.%Y') == i:
 			return 'Какая домаха, каникулы жеж'
 	if date.strftime('%w') == 0:
-		date = datetime.now(pytz.timezone('Russia/Yekaterinburg')) + timedelta(days=2)
+		date = datetime.now(pytz.timezone('Asia/Yekaterinburg')) + timedelta(days=2)
 
 	connection = psycopg2.connect(os.getenv('DATABASE_URL'), sslmode='require')
 	cursor = connection.cursor()

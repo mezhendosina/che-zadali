@@ -24,7 +24,7 @@ def send_help(message):
 def s(message):
 	bot.reply_to(
 		message, 
-		selectHomework(message[text].split(' ')[1])
+		selectHomework(message.text.split(' ')[1])
 	)
 '''
 def send_new_homework():

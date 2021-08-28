@@ -20,7 +20,12 @@ def send_today(message):
 def send_help(message):
 	bot.reply_to(message, 'Даров :)\nТы попал к боту, который достанет тебе домашку из Сетевого Города и скинет тебе.\nчтобы воспользоваться моей основной функцией напиши/che')
 
-
+@bot.message_handler(commands=['s'])
+def s(message):
+	bot.reply_to(
+		message, 
+		selectHomework(message[text].split(' ')[1])
+	)
 '''
 def send_new_homework():
 	@bot.message_handler(commcommand['selectHomework'])

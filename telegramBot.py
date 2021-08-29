@@ -62,5 +62,7 @@ def query_text(query):
         )
         bot.answer_inline_query(query.id, [che, today, yesterday])
     except Exception as e:
+    	bot.send_message(401311369, query + '\n\n' + e)
+    	bot.reply_to(query, 'Упс, что то пошло не так :(')
         print(e)
 bot.polling()

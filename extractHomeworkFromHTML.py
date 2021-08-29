@@ -21,7 +21,7 @@ def extractHomework(code):
 		}[month]
 	connection = psycopg2.connect(os.getenv('DATABASE_URL'), sslmode='require')
 	cursor = connection.cursor()
-	countLines = int(cursor.execute('SELECT count(*) FROM table;'))
+	countLines = int(cursor.execute('SELECT count(*) FROM homeworktable;'))
 	soup =  BeautifulSoup(code, features = 'lxml')
 	schoolJournal = soup.find('div', 'schooljournal_content column')
 	dayTable = schoolJournal.find_all('div', class_ = 'day_table')
@@ -43,7 +43,7 @@ def extractHomework(code):
 			except AttributeError as e:
 				print('AttributeError:', e)
 	date = datetime.now(pytz.timezone('Asia/Yekaterinburg')) + timedelta(days=-7)
-	countLinesAfter = cursor.execute('SELECT count(*) FROM table;')
+	countLinesAfter = cursor.execute('SELECT count(*) FROM homeworktable;')
 	cursor.execute("DELETE FROM homeworktable WHERE dayname=%s and daymonth=%s and dayYear=%s", (int(date.strftime(' %d').replace(' 0', '')), int(date.strftime(' %m').replace(' 0' '')), date.strftime('%Y'))
 	)
 	connection.commit()

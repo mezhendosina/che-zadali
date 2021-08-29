@@ -56,15 +56,17 @@ def selectHomework(day=1):
 	connection = psycopg2.connect(os.getenv('DATABASE_URL'), sslmode='require')
 	cursor = connection.cursor()
 	if len(str(day)) > 2:
-		d = day.split('.')[0]
-		m = day.split('.')[1]
-		y = day.split('.')[2]
 		cursor.execute(
 			'SELECT lesson, homework FROM homeworktable WHERE daynum=%s and daymonth=%s and dayYear=%s;',
-			(d, m, y)
+			(
+				day.split('.')[0],
+				day.split('.')[1],
+				day.split('.')[2]
+			)
 		)
-		a = f'Домаха на {d}.{m}.{y}: \n'+'\n'.join(map(lambda x: f'{x[0]}: {x[1]}', cursor.fetchall()))
+		a = f'Домаха на {day}: \n'+'\n'.join(map(lambda x: f'{x[0]}: {x[1]}', cursor.fetchall()))
 		return a
+
 	date = datetime.now(pytz.timezone('Asia/Yekaterinburg')) + timedelta(days=int(day))
 	for i in summerHolidays:
 		if date.strftime('%m') == i:
@@ -81,3 +83,4 @@ def selectHomework(day=1):
     )
 	a = date.strftime('Домаха на %d.%m.%Y: \n')+'\n'.join(map(lambda x: '{}: {}'.format(x[0], x[1]), cursor.fetchall()))
 	return a
+

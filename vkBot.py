@@ -20,9 +20,8 @@ async def sendYesterdayHomework(message: Message):
 @bot.on.message(text=['/today'])
 async def sendTodayHomework(message: Message):
     await message.answer(str(selectHomework(0)))
-'''
-@bot.on.message
+
 async def sendTimeHomework():
     await bot.api.messages.send(peer_id=2000000163, random_id=0, message='.')
-'''
+sendTimeHomework()
 bot.run_forever()

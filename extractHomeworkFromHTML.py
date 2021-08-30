@@ -57,7 +57,9 @@ def extractHomework(code):
 def selectHomework(day=1):
 	connection = psycopg2.connect(os.getenv('DATABASE_URL'), sslmode='require')
 	cursor = connection.cursor()
-	if len(str(day)) > 2:
+	if len(str(day)) == 0:
+		return 'Чтобы выбрать день нужно после команды указать дату в формате ```день.месяц.год```'
+	elif len(str(day)) > 2:
 		try: 
 			cursor.execute(
 			'SELECT lesson, homework FROM homeworktable WHERE daynum=%s and daymonth=%s and dayYear=%s;',
@@ -69,23 +71,24 @@ def selectHomework(day=1):
 		)
 		except IndexError:
 			return 'Неподдерживаемый формат даты. Пример даты:\n```/s день.месяц.год```'
-		a = f'Домаха на ```{day}```: \n'+'\n'.join(map(lambda x: f'**{x[0]}**: {x[1]}', cursor.fetchall()))
-		return a
-
-	date = datetime.now(pytz.timezone('Asia/Yekaterinburg')) + timedelta(days=int(day))
-	for i in summerHolidays:
-		if date.strftime('%m') == i:
-			return 'Какая домаха, лето жеж'
-	for i in holidays:
-		if date.strftime('%d.%m.%Y') == i:
-			return 'Какая домаха, каникулы жеж'
-	if date.strftime('%w') == 0:
-		date = datetime.now(pytz.timezone('Asia/Yekaterinburg')) + timedelta(days=2) 
-
-	cursor.execute(
-            'SELECT lesson, homework FROM homeworktable WHERE daynum=%s and daymonth=%s and dayYear=%s;',
-            (int(date.strftime(' %d').replace(' 0', '')), int(date.strftime(' %m').replace(' 0' '')), date.strftime('%Y'))
-    )
-	a = date.strftime('Домаха на %d.%m.%Y: \n')+'\n'.join(map(lambda x: '{}: {}'.format(x[0], x[1]), cursor.fetchall()))
+		except psycopg2.Error as e:
+			return 'Возможно вы пытаетесь получить слишком раннюю домаху, т.к. бот хранит только последние 7 дней домашки '
+	else:
+		date = datetime.now(pytz.timezone('Asia/Yekaterinburg')) + timedelta(days=int(day))
+		for i in summerHolidays:
+			if date.strftime('%m') == i:
+				return 'Какая домаха, лето жеж'
+		for i in holidays:
+			if date.strftime('%d.%m.%Y') == i:
+				return 'Какая домаха, каникулы жеж'
+		if date.strftime('%w') == 0:
+			date = datetime.now(pytz.timezone('Asia/Yekaterinburg')) + timedelta(days=2) 
+	
+		cursor.execute(
+	            'SELECT lesson, homework FROM homeworktable WHERE daynum=%s and daymonth=%s and dayYear=%s;',
+	            (int(date.strftime(' %d').replace(' 0', '')), int(date.strftime(' %m').replace(' 0' '')), date.strftime('%Y'))
+		)
+		
+	a = f'Домаха на ```{day}```: \n'+'\n'.join(map(lambda x: f'**{x[0]}**: {x[1]}', cursor.fetchall()))
 	return a
 

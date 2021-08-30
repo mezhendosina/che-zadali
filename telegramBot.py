@@ -10,24 +10,30 @@ markup = types.ReplyKeyboardMarkup()
 
 @bot.message_handler(commands=['che', 'Che'])
 def send_che(message):
-	bot.reply_to(message, selectHomework(), parse_mode="Markdown")
+    print(str(message.from_user) + '\n\n'+ str(message.chat) + str(message.text))
+    bot.reply_to(message, selectHomework(), parse_mode="Markdown")
 
 @bot.message_handler(commands=['yesterday'])
 def send_yesterday(message):
-	bot.reply_to(message, selectHomework(-1), parse_mode="Markdown")
+    print(str(message.from_user) + '\n\n'+ str(message.chat) + str(message.text))
+    bot.reply_to(message, selectHomework(-1), parse_mode="Markdown")
 
 @bot.message_handler(commands=['today'])
 def send_today(message):
-	bot.reply_to(message, selectHomework(0), parse_mode="Markdown")
+    print(str(message.from_user) + '\n\n'+ str(message.chat) + str(message.text))
+    bot.reply_to(message, selectHomework(0), parse_mode="Markdown")
 @bot.message_handler(commands=['lessons'])
 def sendListOfLessons(message):
-	bot.reply_to(message, listLesson)
+    print(str(message.from_user) + '\n\n'+ str(message.chat) + str(message.text))
+    bot.reply_to(message, listLesson)
 @bot.message_handler(commands=['help', 'start'])
 def send_help(message):
-	bot.reply_to(message, 'Даров :)\nТы попал к боту, который достанет тебе домашку из Сетевого Города и скинет тебе.\nчтобы воспользоваться моей основной функцией напиши/che')
+    print(str(message.from_user) + '\n\n'+ str(message.chat) + str(message.text))
+    bot.reply_to(message, 'Даров :)\nТы попал к боту, который достанет тебе домашку из Сетевого Города и скинет тебе.\nчтобы воспользоваться моей основной функцией напиши/che')
 
 @bot.message_handler(commands=['select'])
 def s(message):
+    print(str(message.from_user) + '\n\n'+ str(message.chat) + str(message.text))
     try:
 	    bot.reply_to(
 		message, 
@@ -37,11 +43,11 @@ def s(message):
     except IndexError:
         bot.reply_to(
             message,
-            'Чтобы воспользоваться этой командой, надо указать дату в формате ```день.месяц.год```',
+            'Чтобы воспользоваться этой командой, надо указать дату в формате ```день.месяц.год```\nP.S. Бот хранит домашку только за последние 7 дней',
             parse_mode="Markdown"
             )
-@bot.inline_handler(func=lambda query: len(query.query) >= 0)
-def query_text(query):
+@bot.inline_handler(func=lambda message: len(message.message) >= 0)
+def query_text(message):
     try:
         che = types.InlineQueryResultArticle(
             id='1', title="Че",
@@ -69,9 +75,11 @@ def query_text(query):
         	description='узнать расписание',
         	input_message_content=types.InputTextMessageContent(message_text=listLessons)
         	)
-        bot.answer_inline_query(query.id, [che, lessons, today, yesterday])
+        bot.answer_inline_query(message.id, [che, lessons, today, yesterday])
     except Exception as e:
-    	bot.send_message(401311369, query + '\n\n' + e)
-    	bot.reply_to(query, 'Упс, что то пошло не так :(')
+    	bot.send_message(401311369, message + '\n\n' + e)
+    	bot.reply_to(message, 'Упс, что то пошло не так :(')
     	print(e)
+    print(str(message.from_user) + '\n\n'+ str(message.chat) + str(message.text))
+
 bot.polling()

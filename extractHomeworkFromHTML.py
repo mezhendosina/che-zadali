@@ -58,7 +58,8 @@ def selectHomework(day=1):
 	connection = psycopg2.connect(os.getenv('DATABASE_URL'), sslmode='require')
 	cursor = connection.cursor()
 	if len(str(day)) > 2:
-		cursor.execute(
+		try: 
+			cursor.execute(
 			'SELECT lesson, homework FROM homeworktable WHERE daynum=%s and daymonth=%s and dayYear=%s;',
 			(
 				day.split('.')[0],
@@ -66,7 +67,9 @@ def selectHomework(day=1):
 				day.split('.')[2]
 			)
 		)
-		a = f'Домаха на {day}: \n'+'\n'.join(map(lambda x: f'{x[0]}: {x[1]}', cursor.fetchall()))
+		except IndexError:
+			return 'Неподдерживаемый формат даты. Пример даты:\n```/s день.месяц.год```'
+		a = f'Домаха на ```{day}```: \n'+'\n'.join(map(lambda x: f'**{x[0]}**: {x[1]}', cursor.fetchall()))
 		return a
 
 	date = datetime.now(pytz.timezone('Asia/Yekaterinburg')) + timedelta(days=int(day))

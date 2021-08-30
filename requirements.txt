@@ -5,3 +5,4 @@ selenium
 vkbottle
 pyTelegramBotAPI
 pytz
+vkwave

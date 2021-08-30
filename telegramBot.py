@@ -28,18 +28,18 @@ def send_help(message):
 
 @bot.message_handler(commands=['select'])
 def s(message):
-	bot.reply_to(
+    try:
+	    bot.reply_to(
 		message, 
 		selectHomework(message.text.split(' ')[1]),
 		parse_mode="Markdown"
-	)
-
-'''
-def send_new_homework():
-	@bot.message_handler(commcommand['selectHomework'])
-	def send_selectedHomework:
-		
-'''
+	    )
+    except IndexError:
+        bot.reply_to(
+            message,
+            'Чтобы воспользоваться этой командой, надо указать дату в формате ```день.месяц.год```',
+            parse_mode="Markdown"
+            )
 @bot.inline_handler(func=lambda query: len(query.query) >= 0)
 def query_text(query):
     try:

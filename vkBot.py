@@ -22,6 +22,7 @@ async def sendTodayHomework(message: Message):
     await message.answer(str(selectHomework(0)))
 
 async def sendTimeHomework():
+    if 
     await bot.api.messages.send(peer_id=2000000163, random_id=0, message='.')
 sendTimeHomework()
 bot.run_forever()

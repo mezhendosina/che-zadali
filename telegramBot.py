@@ -64,5 +64,5 @@ def query_text(query):
     except Exception as e:
     	bot.send_message(401311369, query + '\n\n' + e)
     	bot.reply_to(query, 'Упс, что то пошло не так :(')
-        print(e)
+    	print(e)
 bot.polling()

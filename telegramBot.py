@@ -26,7 +26,7 @@ def sendListOfLessons(message):
 def send_help(message):
 	bot.reply_to(message, 'Даров :)\nТы попал к боту, который достанет тебе домашку из Сетевого Города и скинет тебе.\nчтобы воспользоваться моей основной функцией напиши/che')
 
-@bot.message_handler(commands='select'])
+@bot.message_handler(commands=['select'])
 def s(message):
 	bot.reply_to(
 		message, 

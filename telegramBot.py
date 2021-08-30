@@ -10,15 +10,15 @@ markup = types.ReplyKeyboardMarkup()
 
 @bot.message_handler(commands=['che', 'Che'])
 def send_che(message):
-	bot.reply_to(message, selectHomework())
+	bot.reply_to(message, selectHomework(), parse_mode="Markdown")
 
 @bot.message_handler(commands=['yesterday'])
 def send_yesterday(message):
-	bot.reply_to(message, selectHomework(-1))
+	bot.reply_to(message, selectHomework(-1), parse_mode="Markdown")
 
 @bot.message_handler(commands=['today'])
 def send_today(message):
-	bot.reply_to(message, selectHomework(0))
+	bot.reply_to(message, selectHomework(0), parse_mode="Markdown")
 @bot.message_handler(commands=['help', 'start'])
 def send_help(message):
 	bot.reply_to(message, 'Даров :)\nТы попал к боту, который достанет тебе домашку из Сетевого Города и скинет тебе.\nчтобы воспользоваться моей основной функцией напиши/che')
@@ -27,7 +27,8 @@ def send_help(message):
 def s(message):
 	bot.reply_to(
 		message, 
-		selectHomework(message.text.split(' ')[1])
+		selectHomework(message.text.split(' ')[1]),
+		parse_mode="Markdown"
 	)
 
 '''

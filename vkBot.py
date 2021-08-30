@@ -15,5 +15,5 @@ async def sendTodayHomework(message: Message):
     await message.answer(str(selectHomework(0)))
 
 #async def sendTimeHomework():
-    await bot.api.messages.send(peer_id=2000000163, random_id=0, message='.')
+bot.api.messages.send(peer_id=2000000163, random_id=0, message='.')
 bot.run_forever()

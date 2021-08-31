@@ -26,7 +26,7 @@ def send_today(message):
 @bot.message_handler(commands=['lessons'])
 def sendListOfLessons(message):
     print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
-    with open('lessons.txt', 'r', encoding= 'utf-8' as f:
+    with open('lessons.txt', 'r', encoding= 'utf-8') as f:
     	bot.reply_to(message, f)
 
 @bot.message_handler(commands=['set'])

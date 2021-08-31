@@ -62,13 +62,14 @@ def selectHomework(day=1):
 	elif len(str(day)) > 2:
 		try: 
 			cursor.execute(
-			'SELECT lesson, homework FROM homeworktable WHERE daynum=%s and daymonth=%s and dayYear=%s;',
-			(
-				day.split('.')[0],
-				day.split('.')[1],
-				day.split('.')[2]
+				'SELECT lesson, homework FROM homeworktable WHERE daynum=%s and daymonth=%s and dayYear=%s;',
+				(
+					day.split('.')[0],
+					day.split('.')[1],
+					day.split('.')[2]
+				)
 			)
-		)
+			date = f"{day.split('.')[0]}.{day.split('.')[1]}.{day.split('.')[2]}"
 		except IndexError:
 			return 'Неподдерживаемый формат даты. Пример даты:\n```/s день.месяц.год```'
 		except psycopg2.Error as e:
@@ -93,6 +94,6 @@ def selectHomework(day=1):
 				'SELECT lesson, homework FROM homeworktable WHERE daynum=%s and daymonth=%s and dayYear=%s;',
 	            (date.strftime('%d'), date.strftime('%m'), date.strftime('%Y'))
 			)
-	a = f'Домаха на ```{day}```: \n'+'\n'.join(map(lambda x: f'**{x[0]}**: {x[1]}', cursor.fetchall()))
+	a = f'Домаха на ```{date}```: \n'+'\n'.join(map(lambda x: f'**{x[0]}**: {x[1]}', cursor.fetchall()))
 	return a
 

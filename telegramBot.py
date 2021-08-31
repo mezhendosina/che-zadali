@@ -32,7 +32,7 @@ def sendListOfLessons(message):
 @bot.message_handler(commands=['set'])
 def set_lessons(message):
 	print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text)
-	with open('lessons.txt', 'w', encoding='utf-8' as f:
+	with open('lessons.txt', 'w', encoding='utf-8') as f:
 		f.write(str(message.text.split(' ')[1]))
 	bot.send_message(message.id, ' Расписание добавлено')
 

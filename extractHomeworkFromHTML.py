@@ -94,6 +94,7 @@ def selectHomework(day=1):
 				'SELECT lesson, homework FROM homeworktable WHERE daynum=%s and daymonth=%s and dayYear=%s;',
 	            (date.strftime('%d'), date.strftime('%m'), date.strftime('%Y'))
 			)
-	a = f'Домаха на ```{date.strftime('%d.%m.%Y')}```: \n'+'\n'.join(map(lambda x: f'**{x[0]}**: {x[1]}', cursor.fetchall()))
+	d = f'Домаха на ```{date.strftime('%d.%m.%Y')}```: \n'
+	a = d + '\n'.join(map(lambda x: f'**{x[0]}**: {x[1]}', cursor.fetchall()))
 	return a
 

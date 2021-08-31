@@ -26,7 +26,7 @@ def send_today(message):
 @bot.message_handler(commands=['lessons'])
 def sendListOfLessons(message):
     print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text) + '\n\n'+ str(message.chat) + str(message.text))
-    bot.reply_to(message, listLesson)
+    bot.reply_to(message, listLessons)
 
 @bot.message_handler(commands=['help', 'start'])
 def send_help(message):

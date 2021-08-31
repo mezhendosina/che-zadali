@@ -1,16 +1,16 @@
 import telebot
 from telebot import types
-import os 
 from extractHomeworkFromHTML import extractHomework, selectHomework
+import os
 
 bot = telebot.TeleBot(os.getenv("TELEGRAM_API_TOKEN"), parse_mode='Markdown')
 
-listLessons = 'Расписание будет, когда его скажут'
+listLessons = '2 сентября будет: \nМатан\nОБЖ\nИстория\nРусский'
 markup = types.ReplyKeyboardMarkup()
 
 @bot.message_handler(commands=['che', 'Che'])
 def send_che(message):
-    print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text) + '\n\n'+ str(message.chat) + str(message.text))
+    print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
     bot.reply_to(message, selectHomework())
 
 @bot.message_handler(commands=['yesterday'])
@@ -26,11 +26,19 @@ def send_today(message):
 @bot.message_handler(commands=['lessons'])
 def sendListOfLessons(message):
     print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
-    bot.reply_to(message, listLessons)
+    bot.reply_to(
+    	message, 
+    	open('lessons.txt', 'r', encoding= 'utf-8'.read()
+    )
+
+@bot.message_handler(commands=['set'])
+def setLessons(message):
+	open('lessons.txt', 'w').write(message.text.split(' ')[1])
+	bot.send_message('Расписание сохранено')
 
 @bot.message_handler(commands=['help', 'start'])
 def send_help(message):
-    print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
+    print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text
     bot.reply_to(message, 'Даров :)\nТы попал к боту, который достанет тебе домашку из Сетевого Города и скинет тебе.\nчтобы воспользоваться моей основной функцией напиши/che')
 
 @bot.message_handler(commands=['select'])
@@ -84,8 +92,10 @@ def query_text(message):
     	bot.reply_to(message, 'Упс, что то пошло не так :(')
     	print(e)
     print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
+bot.send_message(401311369, 'все ок')
 bot.polling()
 
-def sendHomework():
+def sendHomework(message=selectHomework()):
     print('send homework at 14:30')
-    bot.send_message(401311369, '.')
+    a = bot.send_message('-1001561236768', message)
+    bot.pin_chat_message('-1001561236768', a.id, disable_notification=True)

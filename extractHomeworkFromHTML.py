@@ -83,12 +83,16 @@ def selectHomework(day=1):
 				return 'Какая домаха, каникулы жеж'
 		if date.strftime('%w') == 0:
 			date = datetime.now(pytz.timezone('Asia/Yekaterinburg')) + timedelta(days=2) 
-	
-		cursor.execute(
+		try:
+			cursor.execute(
 	            'SELECT lesson, homework FROM homeworktable WHERE daynum=%s and daymonth=%s and dayYear=%s;',
 	            (int(date.strftime(' %d').replace(' 0', '')), int(date.strftime(' %m').replace(' 0' '')), date.strftime('%Y'))
-		)
-		
+			)
+		except TypeError:
+			cursor.execute(
+				'SELECT lesson, homework FROM homeworktable WHERE daynum=%s and daymonth=%s and dayYear=%s;',
+	            (date.strftime('%d'), date.strftime('%m'), date.strftime('%Y'))
+			)
 	a = f'Домаха на ```{day}```: \n'+'\n'.join(map(lambda x: f'**{x[0]}**: {x[1]}', cursor.fetchall()))
 	return a
 

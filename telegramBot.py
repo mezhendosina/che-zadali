@@ -3,7 +3,7 @@ from telebot import types
 import os 
 from extractHomeworkFromHTML import extractHomework, selectHomework
 
-bot = telebot.TeleBot(os.getenv("TELEGRAM_API_TOKEN"), parse_mode=None)
+bot = telebot.TeleBot(os.getenv("TELEGRAM_API_TOKEN"), parse_mode='Markdown')
 
 listLessons = 'Расписание будет, когда его скажут'
 markup = types.ReplyKeyboardMarkup()
@@ -11,17 +11,17 @@ markup = types.ReplyKeyboardMarkup()
 @bot.message_handler(commands=['che', 'Che'])
 def send_che(message):
     print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text) + '\n\n'+ str(message.chat) + str(message.text))
-    bot.reply_to(message, selectHomework(), parse_mode="Markdown")
+    bot.reply_to(message, selectHomework())
 
 @bot.message_handler(commands=['yesterday'])
 def send_yesterday(message):
     print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text) + '\n\n'+ str(message.chat) + str(message.text))
-    bot.reply_to(message, selectHomework(-1), parse_mode="Markdown")
+    bot.reply_to(message, selectHomework(-1))
 
 @bot.message_handler(commands=['today'])
 def send_today(message):
     print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text) + '\n\n'+ str(message.chat) + str(message.text))
-    bot.reply_to(message, selectHomework(0), parse_mode="Markdown")
+    bot.reply_to(message, selectHomework(0))
 
 @bot.message_handler(commands=['lessons'])
 def sendListOfLessons(message):

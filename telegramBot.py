@@ -57,7 +57,7 @@ def s(message):
             parse_mode="Markdown"
             )
 
-@bot.inline_handler(func=lambda query: len(query.message) >= 0)
+@bot.inline_handler(func=lambda query: len(query.query) >= 0)
 def query_text(message):
     try:
         che = types.InlineQueryResultArticle(

@@ -6,10 +6,7 @@ from datetime import datetime
 import pytz
 import os 
 import time
-<<<<<<< HEAD
 
-=======
->>>>>>> branch 'master' of https://github.com/mezhendosina/che-zadali
 try:
 	chrome_options = webdriver.ChromeOptions()
 	chrome_options.add_argument("--headless")

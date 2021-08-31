@@ -5,7 +5,7 @@ import os
 
 bot = telebot.TeleBot(os.getenv("TELEGRAM_API_TOKEN"), parse_mode='Markdown')
 
-listLessons = 'Расписание будет, когда его скажут'
+listLessons = '2 сентября будет: \nМатан\nОБЖ\nИстория\nРусский'
 markup = types.ReplyKeyboardMarkup()
 
 @bot.message_handler(commands=['che', 'Che'])

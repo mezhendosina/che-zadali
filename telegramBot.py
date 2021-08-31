@@ -1,7 +1,7 @@
 import telebot
 from telebot import types
-import os 
 from extractHomeworkFromHTML import extractHomework, selectHomework
+import os
 
 bot = telebot.TeleBot(os.getenv("TELEGRAM_API_TOKEN"), parse_mode='Markdown')
 
@@ -86,6 +86,6 @@ def query_text(message):
     print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
 bot.polling()
 
-def sendHomework():
+def sendHomework(message=selectHomework()):
     print('send homework at 14:30')
-    bot.send_message(401311369, '.')
+    bot.send_message(401311369, message)

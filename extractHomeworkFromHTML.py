@@ -1,8 +1,8 @@
 from bs4 import BeautifulSoup
-import psycopg2
-import os 
 from datetime import datetime, timedelta
+import psycopg2
 import pytz
+import os 
 
 summerHolidays = ['06', '07', '08']
 holidays = [

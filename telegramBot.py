@@ -10,32 +10,32 @@ markup = types.ReplyKeyboardMarkup()
 
 @bot.message_handler(commands=['che', 'Che'])
 def send_che(message):
-    print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text)) + '\n\n'+ str(message.chat) + str(message.text))
+    print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text) + '\n\n'+ str(message.chat) + str(message.text))
     bot.reply_to(message, selectHomework(), parse_mode="Markdown")
 
 @bot.message_handler(commands=['yesterday'])
 def send_yesterday(message):
-    print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text)) + '\n\n'+ str(message.chat) + str(message.text))
+    print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text) + '\n\n'+ str(message.chat) + str(message.text))
     bot.reply_to(message, selectHomework(-1), parse_mode="Markdown")
 
 @bot.message_handler(commands=['today'])
 def send_today(message):
-    print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text)) + '\n\n'+ str(message.chat) + str(message.text))
+    print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text) + '\n\n'+ str(message.chat) + str(message.text))
     bot.reply_to(message, selectHomework(0), parse_mode="Markdown")
 
 @bot.message_handler(commands=['lessons'])
 def sendListOfLessons(message):
-    print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text)) + '\n\n'+ str(message.chat) + str(message.text))
+    print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text) + '\n\n'+ str(message.chat) + str(message.text))
     bot.reply_to(message, listLesson)
 
 @bot.message_handler(commands=['help', 'start'])
 def send_help(message):
-    print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text)) + '\n\n'+ str(message.chat) + str(message.text))
+    print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text) + '\n\n'+ str(message.chat) + str(message.text))
     bot.reply_to(message, 'Даров :)\nТы попал к боту, который достанет тебе домашку из Сетевого Города и скинет тебе.\nчтобы воспользоваться моей основной функцией напиши/che')
 
 @bot.message_handler(commands=['select'])
 def s(message):
-    print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text)) + '\n\n'+ str(message.chat) + str(message.text))
+    print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text) + '\n\n'+ str(message.chat) + str(message.text))
     try:
 	    bot.reply_to(
 		message, 

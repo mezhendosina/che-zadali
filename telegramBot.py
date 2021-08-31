@@ -98,4 +98,4 @@ bot.polling()
 def sendHomework(message=selectHomework()):
     print('send homework at 14:30')
     a = bot.send_message('-1001561236768', message)
-    bot.pinChatMessage('-1001561236768', a.id, disable_notification=True
+    bot.pinChatMessage('-1001561236768', a.id, disable_notification=True)

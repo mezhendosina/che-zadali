@@ -1,9 +1,11 @@
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select
 from extractHomeworkFromHTML import extractHomework
+from telegramBot import sendHomework, sendHomewrok
 import os 
 import time
-
+from datetime import datetime
+import pytz
 chrome_options = webdriver.ChromeOptions()
 chrome_options.add_argument("--headless")
 chrome_options.add_argument("--disable-dev-shm-usage")
@@ -29,7 +31,11 @@ a = driver.page_source
 driver.close()
 
 extractHomework(a)
-
+times = ['14:29', '14:30', '14:31', '14:32', '14:33', '14:34']
+date = datetime.now(pytz.timezone('Asia/Yekaterinburg'))
+for i in times:
+    if date.strftime('%H:%M') == i:
+        sendHomework()
 '''
 if c == 'New': 
 	

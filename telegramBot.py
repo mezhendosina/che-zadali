@@ -26,7 +26,15 @@ def send_today(message):
 @bot.message_handler(commands=['lessons'])
 def sendListOfLessons(message):
     print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
-    bot.reply_to(message, listLessons)
+    with open('lessons.txt', 'r', encoding= 'utf-8' as f:
+    	bot.reply_to(message, f)
+
+@bot.message_handler(commands=['set'])
+def set_lessons(message):
+	print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text)
+	with open('lessons.txt', 'w', encoding='utf-8' as f:
+		f.write(str(message.text.split(' ')[1]))
+	bot.send_message(message.id, ' Расписание добавлено')
 
 @bot.message_handler(commands=['help', 'start'])
 def send_help(message):
@@ -84,8 +92,10 @@ def query_text(message):
     	bot.reply_to(message, 'Упс, что то пошло не так :(')
     	print(e)
     print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
-bot.polling()
+bot.send_message(401311369, '.')
+bot.polling() 
 
 def sendHomework(message=selectHomework()):
     print('send homework at 14:30')
-    bot.send_message(401311369, message)
+    a = bot.send_message('-1001561236768', message)
+    bot.pinChatMessage('-1001561236768', a.id, disable_notification=True

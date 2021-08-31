@@ -6,7 +6,10 @@ from datetime import datetime
 import pytz
 import os 
 import time
+<<<<<<< HEAD
 
+=======
+>>>>>>> branch 'master' of https://github.com/mezhendosina/che-zadali
 try:
 	chrome_options = webdriver.ChromeOptions()
 	chrome_options.add_argument("--headless")
@@ -40,7 +43,7 @@ times = ['14:29', '14:30', '14:31', '14:32', '14:33', '14:34']
 date = datetime.now(pytz.timezone('Asia/Yekaterinburg'))
 for i in times:
     if date.strftime('%H:%M') == i:
-        sendHomework()
+        sendHomework('.')
 '''
 if c == 'New': 
 	

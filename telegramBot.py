@@ -47,16 +47,14 @@ def s(message):
 
 @bot.message_handler(commands=['add'])
 def setHomework(message):
-	global isRunning
-	if not isRunning:
-		print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
-		sent = bot.send_message(message.chat.id, 'Напиши домашку в формате \nУрок: домашка :дата сдачи(дд.мм.гггг)')
-		bot.register_next_step_handler(sent, add)
-		isRunning = True
+
+	print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
+	sent = bot.send_message(message.chat.id, 'Напиши домашку в формате \nУрок: домашка :дата сдачи(дд.мм.гггг)')
+	bot.register_next_step_handler(sent, add)
 def add(message):
 	addHomework(message.text.split(': ', maxsplit=1)[0], message.text.split(': ', maxsplit=1)[1], re.search(r'\d\d[.]\d\d[.]\d\d\d\d', message.text))
 	bot.reply_to(message, 'Домашка сохранена')
-	isRunning = False
+	
 @bot.message_handler(commands=['lessons'])
 def sendListOfLessons(message):
     print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
@@ -67,16 +65,13 @@ def sendListOfLessons(message):
 
 @bot.message_handler(commands=['set'])
 def setLessons(message):
-	global isRunning
-	if not isRunning:
-		print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
-		sent = bot.send_message(message.chat.id, 'Напиши расписание в формате\nДень недели\nВремя: урок')
-		bot.register_next_step_handler(sent, set)
-		isRunning=True
+	print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
+	sent = bot.send_message(message.chat.id, 'Напиши расписание в формате\nДень недели\nВремя: урок')
+	bot.register_next_step_handler(sent, set)
 def set(message):
 	open('lessons.txt', 'w').write(message.text.split(' ', maxsplit=1)[1])
 	bot.reply_to(message, 'Расписание сохранено')
-	isRunning = False
+
 @bot.inline_handler(func=lambda query: len(query.query) >= 0)
 def query_text(message):
     try:

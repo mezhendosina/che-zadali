@@ -35,12 +35,13 @@ a = driver.page_source
 driver.close()
 
 extractHomework(a)
+'''
 times = ['14:29', '14:30', '14:31', '14:32', '14:33', '14:34']
 date = datetime.now(pytz.timezone('Asia/Yekaterinburg'))
 for i in times:
     if date.strftime('%H:%M') == i:
         sendHomework('.')
-'''
+
 if c == 'New': 
 	
 '''

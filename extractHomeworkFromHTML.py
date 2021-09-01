@@ -98,4 +98,10 @@ def selectHomework(day=1):
 	d = date.strftime('%d.%m.%Y')
 	a = f'Домаха на ```{d}```: \n' + '\n'.join(map(lambda x: f'**{x[0]}**: {x[1]}', cursor.fetchall()))
 	return a
-
+	'''
+def addHomework(day=1, lesson, homework,):
+	if day == 1:
+		date = datetime.now(pytz.timezone('Asia/Yekaterinburg')) + timedelta(days=int(day))
+	else:
+		
+'''

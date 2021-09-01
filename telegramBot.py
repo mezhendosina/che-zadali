@@ -28,14 +28,18 @@ def sendListOfLessons(message):
     print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
     bot.reply_to(
     	message,
-    	open('lessons.txt', 'r', encoding= 'utf-8'.read())
+    	open('lessons.txt', 'r', encoding= 'utf-8').read()
     )
 
 @bot.message_handler(commands=['set'])
 def setLessons(message):
 	open('lessons.txt', 'w').write(message.text.split(' ')[1])
 	bot.reply_to(message, 'Расписание сохранено')
+@bot.message_handler(commands=['add'])
+def setHomework(message):
 	
+	bot.reply_to(message, 'Расписание сохранено')
+
 @bot.message_handler(commands=['help', 'start'])
 def send_help(message):
     print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))

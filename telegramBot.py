@@ -56,7 +56,7 @@ def setHomework(message):
 			addHomework(message.text.split(': ', maxsplit=1)[0], message.text.split(': ', maxsplit=1)[1], re.search(r'\d\d[.]\d\d[.]\d\d\d\d', message.text))
 
 		sent = bot.send_message(message.chat.id, 'Напиши домашку в формате \nУрок: домашка :дата сдачи(дд.мм.гггг)')
-		bot.register_next_step_handler(sent, hello)
+		bot.register_next_step_handler(sent, add)
 
 		bot.reply_to(message, 'Домашка сохранена')
 
@@ -78,7 +78,7 @@ def setLessons(message):
 			open('lessons.txt', 'w').write(message.text.split(' ', maxsplit=1)[1])
 
 		sent = bot.send_message(message.chat.id, 'Напиши расписание в формате\nДень недели\nВремя: урок')
-		bot.register_next_step_handler(sent, hello)
+		bot.register_next_step_handler(sent, set)
 
 	bot.reply_to(message, 'Расписание сохранено')
 

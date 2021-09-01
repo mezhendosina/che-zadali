@@ -53,7 +53,10 @@ def setHomework(message):
 	bot.register_next_step_handler(sent, add)
 def add(message):
 	try:
-		addHomework(message.text.split(': ', maxsplit=1)[0], message.text.split(': ', maxsplit=1)[1], re.search(r'\d\d[.]\d\d[.]\d\d\d\d', message.text))
+		lesson = message.text.split(': ', maxsplit=1)[0]
+		homework = message.text.split(': ', maxsplit=1)[1]
+		date = re.search(r'\d\d[.]\d\d[.]\d\d\d\d', message.text)
+		addHomework(lesson, homework, date)
 		bot.reply_to(message, 'Домашка сохранена')
 	except:
 		print('canceled')
@@ -72,7 +75,9 @@ def setLessons(message):
 	bot.register_next_step_handler(sent, set)
 def set(message):
 	try:
-		open('lessons.txt', 'w').write(message.text.split(' ', maxsplit=1)[1])
+	
+		lessons = message.text.split(' ', maxsplit=1)[1]
+		open('lessons.txt', 'w').write(lessons)
 		bot.reply_to(message, 'Расписание сохранено')
 	except:
 		print('canceled')

@@ -1,12 +1,18 @@
 import telebot
 from telebot import types
-from extractHomeworkFromHTML import extractHomework, selectHomework
+from datetime import datetime
+from extractHomeworkFromHTML import addHomework, extractHomework, selectHomework
 import os
-
+import re
 bot = telebot.TeleBot(os.getenv("TELEGRAM_API_TOKEN"), parse_mode='Markdown')
 
 listLessons = '2 сентября будет: \n8:00-8:40 -  Матан\n8:45-9:25 - ОБЖ\n9:35-10:15 - История\n10:25-11:05 - Русский\n'
 markup = types.ReplyKeyboardMarkup()
+
+@bot.message_handler(commands=['help', 'start'])
+def send_help(message):
+    print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
+    bot.reply_to(message, 'Даров :)\nТы попал к боту, который достанет тебе домашку из Сетевого Города и скинет тебе.\nчтобы воспользоваться моей основной функцией напиши/che')
 
 @bot.message_handler(commands=['che', 'Che'])
 def send_che(message):
@@ -23,28 +29,6 @@ def send_today(message):
     print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
     bot.reply_to(message, selectHomework(0))
 
-@bot.message_handler(commands=['lessons'])
-def sendListOfLessons(message):
-    print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
-    bot.reply_to(
-    	message,
-    	open('lessons.txt', 'r', encoding= 'utf-8').read()
-    )
-
-@bot.message_handler(commands=['set'])
-def setLessons(message):
-	open('lessons.txt', 'w').write(message.text.split(' ', maxsplit=1)[1])
-	bot.reply_to(message, 'Расписание сохранено')
-@bot.message_handler(commands=['add'])
-def setHomework(message):
-	
-	bot.reply_to(message, 'Расписание сохранено')
-
-@bot.message_handler(commands=['help', 'start'])
-def send_help(message):
-    print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
-    bot.reply_to(message, 'Даров :)\nТы попал к боту, который достанет тебе домашку из Сетевого Города и скинет тебе.\nчтобы воспользоваться моей основной функцией напиши/che')
-
 @bot.message_handler(commands=['select'])
 def s(message):
     print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
@@ -60,6 +44,24 @@ def s(message):
             'Чтобы воспользоваться этой командой, надо указать дату в формате ```день.месяц.год```\nP.S. Бот хранит домашку только за последние 7 дней',
             parse_mode="Markdown"
             )
+
+@bot.message_handler(commands=['add'])
+def setHomework(message):
+	addHomework(message.text.split(': ', maxsplit=1)[0], message.text.split(': ', maxsplit=1)[1], re.search(r'\d\d[.]\d\d[.]\d\d\d\d', message.text))
+	bot.reply_to(message, 'Домашка сохранена')
+
+@bot.message_handler(commands=['lessons'])
+def sendListOfLessons(message):
+    print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
+    bot.reply_to(
+    	message,
+    	open('lessons.txt', 'r', encoding= 'utf-8').read()
+    )
+
+@bot.message_handler(commands=['set'])
+def setLessons(message):
+	open('lessons.txt', 'w').write(message.text.split(' ', maxsplit=1)[1])
+	bot.reply_to(message, 'Расписание сохранено')
 
 @bot.inline_handler(func=lambda query: len(query.query) >= 0)
 def query_text(message):
@@ -88,7 +90,7 @@ def query_text(message):
         lessons = types.InlineQueryResultArticle(
         	id='2', title='расписание',
         	description='узнать расписание',
-        	input_message_content=types.InputTextMessageContent(message_text=listLessons)
+        	input_message_content=types.InputTextMessageContent(message_text=open('lessons.txt', 'r', encoding= 'utf-8').read())
         	)
         bot.answer_inline_query(message.id, [che, lessons, today, yesterday])
     except Exception as e:
@@ -98,7 +100,7 @@ def query_text(message):
     print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
     
 bot.send_message(401311369, 'все ок')
-bot.polling()
+bot.polling(non_stop=True)
 
 def sendHomework(message=selectHomework()):
     print('send homework at 14:30')

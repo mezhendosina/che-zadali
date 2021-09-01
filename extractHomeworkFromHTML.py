@@ -29,7 +29,6 @@ def extractHomework(code):
 	dayTable = schoolJournal.find_all('div', class_ = 'day_table')
 	for i in dayTable:
 		day= i.find('span', 'ng-binding').get_text()
-		dayName = None
 		dayNum = int(day.split(' ')[1])
 		dayMonth = months(day.split(' ')[2])
 		dayYear = int(day.split(' ')[3])
@@ -40,13 +39,15 @@ def extractHomework(code):
 					homework = a.find('a', 'ng-binding ng-scope').get_text()
 				except AttributeError:
 					homework = None
-				cursor.execute(f"INSERT INTO homeworktable VALUES('{day}', '{lesson}', '{homework}', '{dayName}', {dayNum}, {dayMonth}, {dayYear})  ON CONFLICT DO NOTHING"
+				cursor.execute(f"INSERT INTO homeworktable VALUES('{day}', '{lesson}', '{homework}', {dayNum}, {dayMonth}, {dayYear})  ON CONFLICT DO NOTHING"
 				)
 			except AttributeError as e:
 				print('AttributeError:', e)
 	date = datetime.now(pytz.timezone('Asia/Yekaterinburg')) + timedelta(days=-7)
 	#countLinesAfter = cursor.execute('SELECT count(*) FROM homeworktable;')
-	cursor.execute("DELETE FROM homeworktable WHERE dayname=%s and daymonth=%s and dayYear=%s", (int(date.strftime(' %d').replace(' 0', '')), int(date.strftime(' %m').replace(' 0' '')), date.strftime('%Y'))
+	cursor.execute(
+		"DELETE FROM homeworktable WHERE dayname=%s and daymonth=%s and dayYear=%s", 
+		(int(date.strftime(' %d').replace(' 0', '')), int(date.strftime(' %m').replace(' 0' '')), date.strftime('%Y'))
 	)
 	connection.commit()
 '''
@@ -98,10 +99,15 @@ def selectHomework(day=1):
 	d = date.strftime('%d.%m.%Y')
 	a = f'Домаха на ```{d}```: \n' + '\n'.join(map(lambda x: f'**{x[0]}**: {x[1]}', cursor.fetchall()))
 	return a
-	'''
-def addHomework(day=1, lesson, homework,):
-	if day == 1:
+
+def addHomework(lesson, homework, day=1):
+	connection = psycopg2.connect(os.getenv('DATABASE_URL'), sslmode='require')
+	cursor = connection.cursor()
+	if day == None:
 		date = datetime.now(pytz.timezone('Asia/Yekaterinburg')) + timedelta(days=int(day))
 	else:
-		
-'''
+		date = datetime(day.split('.')[2], day.split('.')[1], day.split('.')[0])
+	cursor.execute(
+		f"INSERT INTO homeworktable VALUES('{date}', '{lesson}', '{homework}', %s, %s, %s)  ON CONFLICT DO NOTHING",
+		(date.strftime('%d'), date.strftime('%m'), date.strftime('%Y'))
+	)

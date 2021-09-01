@@ -50,9 +50,8 @@ def setHomework(message):
 	try:
 		addHomework(message.text.split(': ', maxsplit=1)[0], message.text.split(': ')[1], re.search(r'\d\d[.]\d\d[.]\d\d\d\d', message.text))
 	except IndexError:
-		def start(message):
-			sent = bot.send_message(message.chat.id, 'Напиши домашку в формате - Урок: домашка :дата сдачи(дд.мм.гггг)')
-			bot.register_next_step_handler(sent, hello)
+		sent = bot.send_message(message.chat.id, 'Напиши домашку в формате - Урок: домашка :дата сдачи(дд.мм.гггг)')
+		bot.register_next_step_handler(sent, hello)
 
 		def hello(message):
 			addHomework(message.text.split(': ', maxsplit=1)[0], message.text.split(': ', maxsplit=1)[1], re.search(r'\d\d[.]\d\d[.]\d\d\d\d', message.text))

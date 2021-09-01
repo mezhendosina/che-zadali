@@ -52,9 +52,11 @@ def setHomework(message):
 	sent = bot.send_message(message.chat.id, 'Напиши домашку в формате \nУрок: домашка :дата сдачи(дд.мм.гггг)')
 	bot.register_next_step_handler(sent, add)
 def add(message):
-	addHomework(message.text.split(': ', maxsplit=1)[0], message.text.split(': ', maxsplit=1)[1], re.search(r'\d\d[.]\d\d[.]\d\d\d\d', message.text))
-	bot.reply_to(message, 'Домашка сохранена')
-	
+	try:
+		addHomework(message.text.split(': ', maxsplit=1)[0], message.text.split(': ', maxsplit=1)[1], re.search(r'\d\d[.]\d\d[.]\d\d\d\d', message.text))
+		bot.reply_to(message, 'Домашка сохранена')
+	except:
+		print('canceled')
 @bot.message_handler(commands=['lessons'])
 def sendListOfLessons(message):
     print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
@@ -69,9 +71,11 @@ def setLessons(message):
 	sent = bot.send_message(message.chat.id, 'Напиши расписание в формате\nДень недели\nВремя: урок')
 	bot.register_next_step_handler(sent, set)
 def set(message):
-	open('lessons.txt', 'w').write(message.text.split(' ', maxsplit=1)[1])
-	bot.reply_to(message, 'Расписание сохранено')
-
+	try:
+		open('lessons.txt', 'w').write(message.text.split(' ', maxsplit=1)[1])
+		bot.reply_to(message, 'Расписание сохранено')
+	except:
+		print('canceled')
 @bot.inline_handler(func=lambda query: len(query.query) >= 0)
 def query_text(message):
     try:

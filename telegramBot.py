@@ -33,7 +33,7 @@ def sendListOfLessons(message):
 
 @bot.message_handler(commands=['set'])
 def setLessons(message):
-	open('lessons.txt', 'w').write(message.text.split(' ')[1])
+	open('lessons.txt', 'w').write(message.text.split(' ', maxsplit=1)[1])
 	bot.reply_to(message, 'Расписание сохранено')
 @bot.message_handler(commands=['add'])
 def setHomework(message):
@@ -51,7 +51,7 @@ def s(message):
     try:
 	    bot.reply_to(
 		message, 
-		selectHomework(message.text.split(' ')[1]),
+		selectHomework(message.text.split(' ', maxsplit=1)[1]),
 		parse_mode="Markdown"
 	    )
     except IndexError:

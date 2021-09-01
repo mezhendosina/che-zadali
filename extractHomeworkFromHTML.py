@@ -49,11 +49,12 @@ def extractHomework(code):
 	cursor.execute("DELETE FROM homeworktable WHERE dayname=%s and daymonth=%s and dayYear=%s", (int(date.strftime(' %d').replace(' 0', '')), int(date.strftime(' %m').replace(' 0' '')), date.strftime('%Y'))
 	)
 	connection.commit()
+'''
 	if countLines != countLinesAfter:
 		return "New"
 	else:
 		return "Old"
-
+'''
 def selectHomework(day=1):
 	connection = psycopg2.connect(os.getenv('DATABASE_URL'), sslmode='require')
 	cursor = connection.cursor()

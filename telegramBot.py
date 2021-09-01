@@ -50,7 +50,7 @@ def setHomework(message):
 	try:
 		addHomework(message.text.split(': ', maxsplit=1)[0], message.text.split(': ')[1], re.search(r'\d\d[.]\d\d[.]\d\d\d\d', message.text))
 	except IndexError:
-		sent = bot.send_message(message.chat.id, 'Напиши домашку в формате - Урок: домашка :дата сдачи(дд.мм.гггг)')
+		sent = bot.send_message(message.chat.id, 'Напиши домашку в формате \nУрок: домашка :дата сдачи(дд.мм.гггг)')
 		bot.register_next_step_handler(sent, hello)
 
 		def hello(message):
@@ -70,9 +70,8 @@ def setLessons(message):
 	try:
 		open('lessons.txt', 'w').write(message.text.split(' ', maxsplit=1)[1])
 	except IndexError:
-		def start(message):
-			sent = bot.send_message(message.chat.id, 'Напиши расписание в формате\nДень недели\nВремя: урок')
-			bot.register_next_step_handler(sent, hello)
+		sent = bot.send_message(message.chat.id, 'Напиши расписание в формате\nДень недели\nВремя: урок')
+		bot.register_next_step_handler(sent, hello)
 
 		def hello(message):
 			open('lessons.txt', 'w').write(message.text.split(' ', maxsplit=1)[1])

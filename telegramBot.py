@@ -47,7 +47,15 @@ def s(message):
 
 @bot.message_handler(commands=['add'])
 def setHomework(message):
-	addHomework(message.text.split(': ', maxsplit=1)[0], message.text.split(': ', maxsplit=1)[1], re.search(r'\d\d[.]\d\d[.]\d\d\d\d', message.text))
+	try:
+		addHomework(message.text.split(': ', maxsplit=1)[0], message.text.split(': ')[1], re.search(r'\d\d[.]\d\d[.]\d\d\d\d', message.text))
+	except IndexError:
+		def start(message):
+			sent = bot.send_message(message.chat.id, 'Напиши домашку в формате - Урок: домашка :дата сдачи(дд.мм.гггг)')
+			bot.register_next_step_handler(sent, hello)
+
+		def hello(message):
+			addHomework(message.text.split(': ', maxsplit=1)[0], message.text.split(': ', maxsplit=1)[1], re.search(r'\d\d[.]\d\d[.]\d\d\d\d', message.text))
 	bot.reply_to(message, 'Домашка сохранена')
 
 @bot.message_handler(commands=['lessons'])
@@ -60,7 +68,15 @@ def sendListOfLessons(message):
 
 @bot.message_handler(commands=['set'])
 def setLessons(message):
-	open('lessons.txt', 'w').write(message.text.split(' ', maxsplit=1)[1])
+	try:
+		open('lessons.txt', 'w').write(message.text.split(' ', maxsplit=1)[1])
+	except IndexError:
+		def start(message):
+			sent = bot.send_message(message.chat.id, 'Напиши расписание в формате\nДень недели\nВремя: урок')
+			bot.register_next_step_handler(sent, hello)
+
+		def hello(message):
+			open('lessons.txt', 'w').write(message.text.split(' ', maxsplit=1)[1])
 	bot.reply_to(message, 'Расписание сохранено')
 
 @bot.inline_handler(func=lambda query: len(query.query) >= 0)

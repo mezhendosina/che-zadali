@@ -5,7 +5,7 @@ import os
 
 bot = telebot.TeleBot(os.getenv("TELEGRAM_API_TOKEN"), parse_mode='Markdown')
 
-listLessons = '2 сентября будет: \n8:00-8:40 -  Матан\n8:45-9:25 - ОБЖ\n9:35-10:15 - История\n10:25-11:05 - Русский'
+listLessons = '2 сентября будет: \n8:00-8:40 -  Матан\n8:45-9:25 - ОБЖ\n9:35-10:15 - История\n10:25-11:05 - Русский\n'
 markup = types.ReplyKeyboardMarkup()
 
 @bot.message_handler(commands=['che', 'Che'])
@@ -40,7 +40,7 @@ def setLessons(message):
 @bot.message_handler(commands=['help', 'start'])
 def send_help(message):
     print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text
-    bot.reply_to(message, 'Даров :)\nТы попал к боту, который достанет тебе домашку из Сетевого Города и скинет тебе.\nчтобы воспользоваться моей основной функцией напиши/che')
+    #bot.reply_to(message, 'Даров :)\nТы попал к боту, который достанет тебе домашку из Сетевого Города и скинет тебе.\nчтобы воспользоваться моей основной функцией напиши/che')
 
 @bot.message_handler(commands=['select'])
 def s(message):

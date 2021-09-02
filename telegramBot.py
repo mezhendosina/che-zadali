@@ -48,7 +48,7 @@ def s(message):
 @bot.message_handler(commands=['add'])
 def setHomework(message):
 	try:
-		lesson, homework, date = message.text.split(': ', maxsplit=1)[0], message.text.split(': ', maxsplit=1)[1], re.search(r'\d\d[.]\d\d[.]\d\d\d\d', message.text)
+		lesson, homework, date = message.text.split(': ', maxsplit=1)[0], message.text.split(': ', maxsplit=1)[1], re.search(r'\d\d[.]\d\d[.]\d\d\d\d', message.text).group(0)
 		addHomework(lesson, homework, date)
 		bot.reply_to(message, 'Домашка сохранена')
 		print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))

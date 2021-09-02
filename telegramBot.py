@@ -76,7 +76,7 @@ def setLessons(message):
 def set(message):
 	try:
 	
-		lessons = message.text.split(' ', maxsplit=1)[1]
+		lessons = message.text.split(' ')[0]
 		open('lessons.txt', 'w').write(lessons).close()
 		bot.reply_to(message, 'Расписание сохранено')
 	except:

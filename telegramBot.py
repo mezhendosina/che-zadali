@@ -53,7 +53,7 @@ def setHomework(message):
 	lesson = message.text.split(': ', maxsplit=1)[0]
 	homework = message.text.split(': ', maxsplit=1)[1]
 	date = re.search(r'\d\d[.]\d\d[.]\d\d\d\d', message.text)
-	if lesson = None or homework == None:
+	if lesson == None or homework == None:
 		bot.send_message(message.chat.id, 'Возможно ты не правильно заполнил домашку.\nПример заполнения домашки: \n```/add Урок: домашка :дата сдачи(дд.мм.гггг)```\n P.s. если домашка на завтра, можешь не писать дату')
 	else:
 		addHomework(lesson, homework, date)

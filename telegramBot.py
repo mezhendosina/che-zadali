@@ -1,4 +1,4 @@
- from telebot import types
+from telebot import types
 from extractHomeworkFromHTML import addHomework, selectHomework
 import os, re, telebot
 

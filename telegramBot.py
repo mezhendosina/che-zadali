@@ -74,7 +74,8 @@ def setLessons(message):
 		bot.reply_to(message, 'Расписание сохранено')
 		print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
 	except:
-		bot.send_message(message.from_user.id, 'Возможно ты не правильно заполнил расписание.\n Пример сохранения расписания:\n```/set День недели\nвремя:урок\nвремя:урок```')
+		a = '/'
+		bot.send_message(message.from_user.id, f'Возможно ты не правильно заполнил расписание.\n Пример сохранения расписания:\n```{a}set День недели\nвремя:урок\nвремя:урок```')
 		print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text) + 'Stupid human')
 
 

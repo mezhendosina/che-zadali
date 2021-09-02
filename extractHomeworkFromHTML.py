@@ -1,8 +1,6 @@
 from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
-import psycopg2
-import pytz
-import os 
+import psycopg2, pytz, os
 
 summerHolidays = ['06', '07', '08']
 holidays = [
@@ -11,7 +9,7 @@ holidays = [
 	'22.03.2022', '23.03.2022', '24.03.2022', '25.03.2022', '26.03.2022', '27.03.2022', '28.03.2022', '29.03.2022'
 	]
 
-def extractHomework(code):
+def extractHomework(code) -> None:
 	def months(month):
 		return {
 			'дек.': 12,'янв.': 1, 'февр.': 2,
@@ -50,13 +48,8 @@ def extractHomework(code):
 		(int(date.strftime(' %d').replace(' 0', '')), int(date.strftime(' %m').replace(' 0' '')), date.strftime('%Y'))
 	)
 	connection.commit()
-'''
-	if countLines != countLinesAfter:
-		return "New"
-	else:
-		return "Old"
-'''
-def selectHomework(day=1):
+
+def selectHomework(day=1) -> str:
 	connection = psycopg2.connect(os.getenv('DATABASE_URL'), sslmode='require')
 	cursor = connection.cursor()
 	if len(str(day)) == 0:
@@ -100,11 +93,11 @@ def selectHomework(day=1):
 	a = f'Домаха на ```{d}```: \n' + '\n'.join(map(lambda x: f'**{x[0]}**: {x[1]}', cursor.fetchall()))
 	return a
 
-def addHomework(lesson, homework, day=1):
+def addHomework(lesson, homework, day=False) -> None:
 	connection = psycopg2.connect(os.getenv('DATABASE_URL'), sslmode='require')
 	cursor = connection.cursor()
-	if day == None:
-		date = datetime.now(pytz.timezone('Asia/Yekaterinburg')) + timedelta(days=int(day))
+	if day == False:
+		date = datetime.now(pytz.timezone('Asia/Yekaterinburg')) + timedelta(days=1)
 	else:
 		date = datetime(day.split('.')[2], day.split('.')[1], day.split('.')[0])
 	cursor.execute(

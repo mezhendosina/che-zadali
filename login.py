@@ -1,12 +1,8 @@
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select
-from extractHomeworkFromHTML import extractHomework
-from telegramBot import sendHomework
+from extractHomeworkFromHTML import extractHomework, selectHomework
 from datetime import datetime
-import pytz
-import os 
-import time
-
+import requests, time, os, pytz
 
 chrome_options = webdriver.ChromeOptions()
 chrome_options.add_argument("--headless")
@@ -14,8 +10,8 @@ chrome_options.add_argument('--disable-gpu')
 chrome_options.add_argument("--remote-debugging-port=9222")
 chrome_options.add_argument("google-chrome")
 chrome_options.add_argument("--no-sandbox")
-chrome_options.binary_location = os.environ.get('GOOGLE_CHROME_SHIM', None)
-driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chrome_options)
+chrome_options.binary_location = os.getenv('GOOGLE_CHROME_SHIM')
+driver = webdriver.Chrome(executable_path=os.getenv("CHROMEDRIVER_PATH"), chrome_options=chrome_options)
 
 driver.get("https://sgo.edu-74.ru")
 time.sleep(5)
@@ -35,13 +31,19 @@ a = driver.page_source
 driver.close()
 
 extractHomework(a)
-'''
+
 times = ['14:29', '14:30', '14:31', '14:32', '14:33', '14:34']
 date = datetime.now(pytz.timezone('Asia/Yekaterinburg'))
+token = os.getenv('TELEGRAM_API_KEY')
 for i in times:
-    if date.strftime('%H:%M') == i:
-        sendHomework('.')
+	if times == date.strftime('%H:%M'):
+		r = requests.post(
+			f'https://api.telegram.org/bot{token}/sendMessage',
+			data={'chat_id': '-1001561236768', 'text': selectHomework()}
+		).json()
+		
+		r1 = requests.post(
+			f'https://api.telegram.org/bot{token}/pinChatMessage',
+			data={'chat_id': '-1001561236768', 'message_id': r['result']['message_id']}
+		).json()
 
-if c == 'New': 
-	
-'''

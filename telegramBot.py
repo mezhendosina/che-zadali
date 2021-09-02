@@ -2,7 +2,7 @@ from telebot import types
 from extractHomeworkFromHTML import addHomework, selectHomework
 import os, re, telebot
 
-bot, markup= telebot.TeleBot(os.getenv("TELEGRAM_API_TOKEN"), parse_mode='MarkdownV2'), types.ReplyKeyboardMarkup()
+bot, markup= telebot.TeleBot(os.getenv("TELEGRAM_API_TOKEN"), parse_mode='Markdown'), types.ReplyKeyboardMarkup()
 
 @bot.message_handler(commands=['help', 'start'])
 def send_help(message):
@@ -34,14 +34,13 @@ def s(message):
     try:
 	    bot.reply_to(
 			message, 
-			selectHomework(message.text.split(' ', maxsplit=1)[1]),
-			parse_mode="MarkdownV2"
+			selectHomework(message.text.split(' ', maxsplit=1)[1])
+
 	    )
     except IndexError:
         bot.reply_to(
             message,
-            'Чтобы воспользоваться этой командой, надо указать дату в формате ```день.месяц.год```\nP.S. Бот хранит домашку только за последние 7 дней',
-            parse_mode="MarkdownV2"
+            'Чтобы воспользоваться этой командой, надо указать дату в формате ```день.месяц.год```\nP.S. Бот хранит домашку только за последние 7 дней'
         )
 
 @bot.message_handler(commands=['add'])
@@ -62,7 +61,7 @@ def sendListOfLessons(message):
 	text = open('lessons.txt', 'r', encoding= 'utf-8').read()
 	bot.reply_to(
     	message,
-    	f'{text}'
+    	text
     )
 
 @bot.message_handler(commands=['set'])
@@ -88,7 +87,7 @@ def query_text(message):
             description='узнать домаху на завтра',
             input_message_content=types.InputTextMessageContent(
                 message_text=selectHomework(),
-				parse_mode='MarkdownV2'
+				parse_mode='Markdown'
             )
         )
         today = types.InlineQueryResultArticle(
@@ -96,7 +95,7 @@ def query_text(message):
             description='узнать домаху на сегодня',
             input_message_content=types.InputTextMessageContent(
                 message_text=selectHomework(0),
-				parse_mode='MarkdownV2'
+				parse_mode='Markdown'
             )
         )
         yesterday = types.InlineQueryResultArticle(
@@ -104,7 +103,7 @@ def query_text(message):
             description='узнать вчерашнюю домаху',
             input_message_content=types.InputTextMessageContent(
                 message_text=selectHomework(-1),
-				parse_mode='MarkdownV2'
+				parse_mode='Markdown'
             )
         )
         lessons = types.InlineQueryResultArticle(
@@ -112,7 +111,7 @@ def query_text(message):
         	description='узнать расписание',
         	input_message_content=types.InputTextMessageContent(
 				message_text=open('lessons.txt', 'r', encoding= 'utf-8').read(),
-				parse_mode='MarkdownV2'
+				parse_mode='Markdown'
 			)
         )
         bot.answer_inline_query(message.id, [che, lessons, today, yesterday])

@@ -68,9 +68,8 @@ def sendListOfLessons(message):
 
 @bot.message_handler(commands=['set'])
 def setLessons(message):
-	
-		print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
-		lessons = message.text.split(' ', maxsplit=1)[0]
+	print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
+	lessons = message.text.split(' ', maxsplit=1)[0]
 	if lessons == None:
 		bot.send_message(message, 'Возможно ты не правильно заполнил расписание.\n Пример сохранения расписания:\n```/set День недели\nвремя:урок\nвремя:урок```')
 	else:

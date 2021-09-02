@@ -49,17 +49,15 @@ def s(message):
 def setHomework(message):
 
 	print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
-	sent = bot.send_message(message.chat.id, 'Напиши домашку в формате \nУрок: домашка :дата сдачи(дд.мм.гггг)')
-	bot.register_next_step_handler(sent, add)
-def add(message):
-	try:
-		lesson = message.text.split(': ', maxsplit=1)[0]
-		homework = message.text.split(': ', maxsplit=1)[1]
-		date = re.search(r'\d\d[.]\d\d[.]\d\d\d\d', message.text)
+	
+	lesson = message.text.split(': ', maxsplit=1)[0]
+	homework = message.text.split(': ', maxsplit=1)[1]
+	date = re.search(r'\d\d[.]\d\d[.]\d\d\d\d', message.text)
+	if lesson = None or homework == None:
+		bot.send_message(message.chat.id, 'Возможно ты не правильно заполнил домашку.\nПример заполнения домашки: \n```/add Урок: домашка :дата сдачи(дд.мм.гггг)```\n P.s. если домашка на завтра, можешь не писать дату')
+	else:
 		addHomework(lesson, homework, date)
 		bot.reply_to(message, 'Домашка сохранена')
-	except:
-		print('canceled')
 @bot.message_handler(commands=['lessons'])
 def sendListOfLessons(message):
     print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
@@ -70,17 +68,16 @@ def sendListOfLessons(message):
 
 @bot.message_handler(commands=['set'])
 def setLessons(message):
-	print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
-	sent = bot.send_message(message.chat.id, 'Напиши расписание в формате\nДень недели\nВремя: урок\n\n Для отмены напиши ```cancel```')
-	bot.register_next_step_handler(sent, set)
-def set(message):
-	if message.text == 'cancel':
-		print('canceled')
-		bot.send_message(message, 'Ок')
-	else:
+	
+		print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
 		lessons = message.text.split(' ', maxsplit=1)[0]
+	if lessons == None:
+		bot.send_message(message, 'Возможно ты не правильно заполнил расписание.\n Пример сохранения расписания:\n```/set День недели\nвремя:урок\nвремя:урок```')
+	else:
 		open('lessons.txt', 'w').write(lessons).close()
 		bot.reply_to(message, 'Расписание сохранено')
+
+
 @bot.inline_handler(func=lambda query: len(query.query) >= 0)
 def query_text(message):
     try:

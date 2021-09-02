@@ -1,3 +1,4 @@
+from logging import exception
 from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
 import psycopg2, pytz, os
@@ -37,16 +38,23 @@ def extractHomework(code) -> None:
 					homework = a.find('a', 'ng-binding ng-scope').get_text()
 				except AttributeError:
 					homework = None
-				cursor.execute(f"INSERT INTO homeworktable VALUES('{day}', '{lesson}', '{homework}', {dayNum}, {dayMonth}, {dayYear})  ON CONFLICT DO NOTHING"
-				)
 			except AttributeError as e:
-				print('AttributeError:', e)
+				print('Lesson not found')
+			cursor.execute(
+				f"INSERT INTO homeworktable VALUES('{day}', '{lesson}', '{homework}', {dayNum}, {dayMonth}, {dayYear})  ON CONFLICT DO NOTHING"
+			)
 	date = datetime.now(pytz.timezone('Asia/Yekaterinburg')) + timedelta(days=-7)
 	#countLinesAfter = cursor.execute('SELECT count(*) FROM homeworktable;')
-	cursor.execute(
-		"DELETE FROM homeworktable WHERE dayname=%s and daymonth=%s and dayYear=%s", 
-		(int(date.strftime(' %d').replace(' 0', '')), int(date.strftime(' %m').replace(' 0' '')), date.strftime('%Y'))
-	)
+	try:
+		cursor.execute(
+			"DELETE FROM homeworktable WHERE dayname=%s and daymonth=%s and dayYear=%s", 
+			(int(date.strftime(' %d').replace(' 0', '')), int(date.strftime(' %m').replace(' 0' '')), date.strftime('%Y'))
+		)
+	except TypeError:
+		cursor.execute(
+			"DELETE FROM homeworktable WHERE dayname=%s and daymonth=%s and dayYear=%s", 
+			(int(date.strftime('%d')), int(date.strftime('%m')), date.strftime('%Y'))
+		)
 	connection.commit()
 
 def selectHomework(day=1) -> str:

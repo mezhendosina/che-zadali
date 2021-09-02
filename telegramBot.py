@@ -73,7 +73,9 @@ def setLessons(message):
 	if lessons == None:
 		bot.send_message(message, 'Возможно ты не правильно заполнил расписание.\n Пример сохранения расписания:\n```/set День недели\nвремя:урок\nвремя:урок```')
 	else:
-		open('lessons.txt', 'w').write(lessons).close()
+		a = open('lessons.txt', 'w')
+		a.write(lessons)
+		a.close()
 		bot.reply_to(message, 'Расписание сохранено')
 
 

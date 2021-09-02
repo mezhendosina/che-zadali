@@ -38,11 +38,11 @@ def extractHomework(code) -> None:
 					homework = a.find('a', 'ng-binding ng-scope').get_text()
 				except AttributeError:
 					homework = None
+				cursor.execute(
+					f"INSERT INTO homeworktable VALUES('{day}', '{lesson}', '{homework}', {dayNum}, {dayMonth}, {dayYear})  ON CONFLICT DO NOTHING"
+				)
 			except AttributeError as e:
 				print('Lesson not found')
-			cursor.execute(
-				f"INSERT INTO homeworktable VALUES('{day}', '{lesson}', '{homework}', {dayNum}, {dayMonth}, {dayYear})  ON CONFLICT DO NOTHING"
-			)
 	date = datetime.now(pytz.timezone('Asia/Yekaterinburg')) + timedelta(days=-7)
 	#countLinesAfter = cursor.execute('SELECT count(*) FROM homeworktable;')
 	try:

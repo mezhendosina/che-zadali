@@ -67,7 +67,7 @@ def sendListOfLessons(message):
 @bot.message_handler(commands=['set'])
 def setLessons(message):
 	try:
-		lessons = message.text.split(' ', maxsplit=1)[0]
+		lessons = message.text.split(' ', maxsplit=1)[1]
 		a = open('lessons.txt', 'w')
 		a.write(lessons)
 		a.close()

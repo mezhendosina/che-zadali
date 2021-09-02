@@ -1,8 +1,10 @@
+import requests
 from telebot import types
 from extractHomeworkFromHTML import addHomework, selectHomework
 import os, re, telebot
-
-bot, markup= telebot.TeleBot(os.getenv("TELEGRAM_API_TOKEN"), parse_mode='Markdown'), types.ReplyKeyboardMarkup()
+#token = os.getenv("TELEGRAM_API_TOKEN")
+token = '1950280557:AAEGpmKCGIHZsoxzH5ndIJDTB5rMdGPoLN8'
+bot, markup= telebot.TeleBot(token, parse_mode='Markdown'), types.ReplyKeyboardMarkup()
 
 @bot.message_handler(commands=['help', 'start'])
 def send_help(message):
@@ -52,7 +54,7 @@ def setHomework(message):
 		print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
 	except IndexError:
 		print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text) + 'Stupid human')
-		bot.send_message(message.chat.id, 'Возможно ты не правильно заполнил домашку.\nПример заполнения домашки: \n```/add Урок: домашка :дата сдачи(дд.мм.гггг)```\n P.s. если домашка на завтра, можешь не писать дату')
+		bot.send_message(message.chat.id, 'Возможно ты не правильно заполнил домашку.\nПример заполнения домашки:```\n/add Урок: домашка :дата сдачи(дд.мм.гггг)```\nP.s. если домашка на завтра, можешь не писать дату')
 
 
 @bot.message_handler(commands=['lessons'])
@@ -75,7 +77,7 @@ def setLessons(message):
 		print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
 	except:
 		a = '/'
-		bot.send_message(message.from_user.id, f'Возможно ты не правильно заполнил расписание.\n Пример сохранения расписания:\n```{a}set День недели\nвремя:урок\nвремя:урок```')
+		bot.send_message(message.from_user.id, f'Возможно ты не правильно заполнил расписание.\nПример сохранения расписания:```\n/set День недели\nвремя начала-время окончания - урок\nвремя - урок```')
 		print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text) + 'Stupid human')
 
 

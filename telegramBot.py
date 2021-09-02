@@ -71,16 +71,16 @@ def sendListOfLessons(message):
 @bot.message_handler(commands=['set'])
 def setLessons(message):
 	print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
-	sent = bot.send_message(message.chat.id, 'Напиши расписание в формате\nДень недели\nВремя: урок')
+	sent = bot.send_message(message.chat.id, 'Напиши расписание в формате\nДень недели\nВремя: урок\n\n Для отмены напиши ```cancel```')
 	bot.register_next_step_handler(sent, set)
 def set(message):
-	try:
-	
+	if message.text == 'cancel':
+		print('canceled')
+		bot.send_message(message, 'Ок')
+	else:
 		lessons = message.text.split(' ', maxsplit=1)[0]
 		open('lessons.txt', 'w').write(lessons).close()
 		bot.reply_to(message, 'Расписание сохранено')
-	except:
-		print('canceled')
 @bot.inline_handler(func=lambda query: len(query.query) >= 0)
 def query_text(message):
     try:

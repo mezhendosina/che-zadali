@@ -2,8 +2,7 @@ import requests
 from telebot import types
 from extractHomeworkFromHTML import addHomework, selectHomework
 import os, re, telebot
-#token = os.getenv("TELEGRAM_API_TOKEN")
-token = '1950280557:AAEGpmKCGIHZsoxzH5ndIJDTB5rMdGPoLN8'
+token = os.getenv("TELEGRAM_API_TOKEN")
 bot, markup= telebot.TeleBot(token, parse_mode='Markdown'), types.ReplyKeyboardMarkup()
 
 @bot.message_handler(commands=['help', 'start'])

@@ -58,10 +58,11 @@ def setHomework(message):
 
 @bot.message_handler(commands=['lessons'])
 def sendListOfLessons(message):
-    print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
-    bot.reply_to(
+	print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
+	text = open('lessons.txt', 'r', encoding= 'utf-8').read()
+	bot.reply_to(
     	message,
-    	open('lessons.txt', 'r', encoding= 'utf-8').read()
+    	f'{text}'
     )
 
 @bot.message_handler(commands=['set'])

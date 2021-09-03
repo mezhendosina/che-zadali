@@ -2,27 +2,58 @@ from logging import exception
 from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
 import psycopg2, pytz, os
-
-summerHolidays = ['06', '07', '08']
+#global variables
+connection = psycopg2.connect(os.getenv('DATABASE_URL'), sslmode='require')
+cursor = connection.cursor()#connect to database
+summerHolidays = ['06', '07', '08'] #summer holidays month number  
 holidays = [
 	'27.10.2021', '28.10.2021', '29.03.2021,', '30.10.2021', '31.10.2021', 
 	'01.11.2021', '02.11.2021', '03.11.2021', '29.12.2021', '30.12.2021', '31.12.2021', '01.01.2022', '02.01.2022', '03.01.2022', '04.01.2022', '05.01.2022', '06.01.2022', '07.01.2022', '08.01.2022', '09.01.2022', '10.01.2022', '11.01.2022', '12.01.2022', 
 	'22.03.2022', '23.03.2022', '24.03.2022', '25.03.2022', '26.03.2022', '27.03.2022', '28.03.2022', '29.03.2022'
-	]
+	] #holidays days
+
+def deleteHomework(day=False) -> None:
+	"""This function delete homework by date(dd.mm.yyyy). If variable day is not filled - deletes homework that was asked 7 days ago"""
+	if day == False:
+		date = datetime.now(pytz.timezone('Asia/Yekaterinburg')) + timedelta(days=-7)
+	else:
+		date = datetime(int(day.split('.')[2]), int(day.split('.')[1]), int(day.split('.')[0]))
+	try:
+		cursor.execute(
+			"DELETE FROM homeworktable WHERE daynum=%s and daymonth=%s and dayYear=%s", 
+			(int(date.strftime(' %d').replace(' 0', '')), int(date.strftime(' %m').replace(' 0' '')), date.strftime('%Y'))
+		)
+	except TypeError:
+		cursor.execute(
+			"DELETE FROM homeworktable WHERE daynum=%s and daymonth=%s and dayYear=%s", 
+			(int(date.strftime('%d')), int(date.strftime('%m')), date.strftime('%Y'))
+		)
+
+def addHomework(lesson, homework, day=False) -> None:
+	"""This function add homework to database. If day = False add homework to next day"""
+	if day == False:
+		date = datetime.now(pytz.timezone('Asia/Yekaterinburg')) + timedelta(days=1)
+	else:
+		date = datetime(int(day.split('.')[2]), int(day.split('.')[1]), int(day.split('.')[0]))
+	cursor.execute(
+		f"INSERT INTO homeworktable VALUES('{date}', '{lesson}', '{homework}', %s, %s, %s)  ON CONFLICT DO NOTHING",
+		(date.strftime('%d'), date.strftime('%m'), date.strftime('%Y'))
+	)
+	connection.commit()
+
+def months(month):
+	"""This function compare month name with his number"""
+	return {
+		'дек.': 12,'янв.': 1, 'февр.': 2,
+		'мар.': 3,'апр.': 4,'мая': 5,
+		'июн.': 6, 'июл.': 7, 'авг.': 8,
+		'сент.': 9, 'окт.': 10, 'нояб.': 11
+	}[month]
 
 def extractHomework(code) -> None:
-	def months(month):
-		return {
-			'дек.': 12,'янв.': 1, 'февр.': 2,
-			'мар.': 3,'апр.': 4,'мая': 5,
-			'июн.': 6, 'июл.': 7, 'авг.': 8,
-			'сент.': 9, 'окт.': 10, 'нояб.': 11
-		}[month]
-	connection = psycopg2.connect(os.getenv('DATABASE_URL'), sslmode='require')
-	cursor = connection.cursor()
-	'''
-	cursor.execute('SELECT count(*) FROM homeworktable;'))
-	'''
+	"""This function parses code in search homework and delete old homework"""
+	#cursor.execute('SELECT count(*) FROM homeworktable;')) 
+
 	soup =  BeautifulSoup(code, features = 'lxml')
 	schoolJournal = soup.find('div', 'schooljournal_content column')
 	dayTable = schoolJournal.find_all('div', class_ = 'day_table')
@@ -43,23 +74,14 @@ def extractHomework(code) -> None:
 				)
 			except AttributeError as e:
 				print('Lesson not found')
-	date = datetime.now(pytz.timezone('Asia/Yekaterinburg')) + timedelta(days=-7)
+
 	#countLinesAfter = cursor.execute('SELECT count(*) FROM homeworktable;')
-	try:
-		cursor.execute(
-			"DELETE FROM homeworktable WHERE dayname=%s and daymonth=%s and dayYear=%s", 
-			(int(date.strftime(' %d').replace(' 0', '')), int(date.strftime(' %m').replace(' 0' '')), date.strftime('%Y'))
-		)
-	except TypeError:
-		cursor.execute(
-			"DELETE FROM homeworktable WHERE dayname=%s and daymonth=%s and dayYear=%s", 
-			(int(date.strftime('%d')), int(date.strftime('%m')), date.strftime('%Y'))
-		)
+	deleteHomework()
 	connection.commit()
 
 def selectHomework(day=1) -> str:
-	connection = psycopg2.connect(os.getenv('DATABASE_URL'), sslmode='require')
-	cursor = connection.cursor()
+	"""This function collect day(1 - tommorow, 0 - today, -1 - yesterday) or user selected day and return homework for this day"""
+
 	if len(str(day)) == 0:
 		return 'Чтобы выбрать день нужно после команды указать дату в формате ```день.месяц.год```'
 	elif len(str(day)) > 2:
@@ -101,15 +123,4 @@ def selectHomework(day=1) -> str:
 	a = f'Домаха на {d}:\n' + '\n'.join(map(lambda x: f'**{x[0]}**: {x[1]}', cursor.fetchall()))
 	return a
 
-def addHomework(lesson, homework, day=False) -> None:
-	connection = psycopg2.connect(os.getenv('DATABASE_URL'), sslmode='require')
-	cursor = connection.cursor()
-	if day == False:
-		date = datetime.now(pytz.timezone('Asia/Yekaterinburg')) + timedelta(days=1)
-	else:
-		date = datetime(int(day.split('.')[2]), int(day.split('.')[1]), int(day.split('.')[0]))
-	cursor.execute(
-		f"INSERT INTO homeworktable VALUES('{date}', '{lesson}', '{homework}', %s, %s, %s)  ON CONFLICT DO NOTHING",
-		(date.strftime('%d'), date.strftime('%m'), date.strftime('%Y'))
-	)
-	connection.commit()
+

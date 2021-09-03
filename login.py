@@ -39,7 +39,7 @@ for i in times:
 	if times == date.strftime('%H:%M'):
 		r = requests.post(
 			f'https://api.telegram.org/bot{token}/sendMessage',
-			data={'chat_id': '-1001561236768', 'text': selectHomework()}
+			data={'chat_id': '-1001561236768', 'text': selectHomework(), 'disable_notification': True}
 		).json()
 		
 		r1 = requests.post(

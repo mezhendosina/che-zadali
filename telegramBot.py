@@ -1,6 +1,7 @@
 from telebot import types
 from extractHomeworkFromHTML import addHomework, selectHomework
 import os, re, telebot
+
 token = os.getenv("TELEGRAM_API_TOKEN")
 bot, markup= telebot.TeleBot(token, parse_mode='Markdown'), types.ReplyKeyboardMarkup()
 
@@ -9,7 +10,7 @@ def send_help(message):
     print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
     bot.reply_to(
 		message, 
-		'Даров :)\nТы попал к боту, который достанет тебе домашку из Сетевого Города и скинет тебе.\nчтобы воспользоваться моей основной функцией напиши/che'
+		'Даров :)\nТы попал к боту, который достанет тебе домашку из Сетевого Города и скинет тебе.\nчтобы воспользоваться моей основной функцией напиши /che'
 	)
 
 

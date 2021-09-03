@@ -98,7 +98,7 @@ def selectHomework(day=1) -> str:
 	            (date.strftime('%d'), date.strftime('%m'), date.strftime('%Y'))
 			)
 	d = date.strftime('%d.%m.%Y')
-	a = f'Домаха на ```{d}```: \n' + '\n'.join(map(lambda x: f'**{x[0]}**: {x[1]}', cursor.fetchall()))
+	a = f'Домаха на {d}:\n' + '\n'.join(map(lambda x: f'**{x[0]}**: {x[1]}', cursor.fetchall()))
 	return a
 
 def addHomework(lesson, homework, day=False) -> None:
@@ -107,8 +107,9 @@ def addHomework(lesson, homework, day=False) -> None:
 	if day == False:
 		date = datetime.now(pytz.timezone('Asia/Yekaterinburg')) + timedelta(days=1)
 	else:
-		date = datetime(day.split('.')[2], day.split('.')[1], day.split('.')[0])
+		date = datetime(int(day.split('.')[2]), int(day.split('.')[1]), int(day.split('.')[0]))
 	cursor.execute(
 		f"INSERT INTO homeworktable VALUES('{date}', '{lesson}', '{homework}', %s, %s, %s)  ON CONFLICT DO NOTHING",
 		(date.strftime('%d'), date.strftime('%m'), date.strftime('%Y'))
 	)
+	connection.commit()

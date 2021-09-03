@@ -1,4 +1,3 @@
-import requests
 from telebot import types
 from extractHomeworkFromHTML import addHomework, selectHomework
 import os, re, telebot
@@ -48,7 +47,7 @@ def s(message):
 @bot.message_handler(commands=['add'])
 def setHomework(message):
 	try:
-		lesson, homework, date = message.text.split(': ', maxsplit=1)[0], message.text.split(': ', maxsplit=1)[1], re.search(r'\d\d[.]\d\d[.]\d\d\d\d', message.text).group(0)
+		lesson, homework, date = message.text.split(' ')[1].split(':')[0], message.text.split(': ')[1].split(' :')[0], re.search(r'\d\d[.]\d\d[.]\d\d\d\d', message.text).group(0)
 		addHomework(lesson, homework, date)
 		bot.reply_to(message, 'Домашка сохранена')
 		print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
@@ -120,7 +119,7 @@ def query_text(message):
         bot.answer_inline_query(message.id, [che, lessons, today, yesterday])
     except Exception as e:
     	print(e)
-    print(str(message.from_user.id) + ' ' + str(message.from_user.username)+ ' ' + str(message.chat.id) + ' ' + str(message.text))
+    print(str(message.from_user.id) + ' ' + str(message.from_user.username) + ' ' + str(message.text))
     
 bot.send_message(401311369, 'все ок')
 bot.polling(non_stop=True)

@@ -111,7 +111,7 @@ def query_text(message):
         	id='2', title='расписание',
         	description='узнать расписание',
         	input_message_content=types.InputTextMessageContent(
-				message_text=open('lessons.txt', 'r', encoding= 'utf-8').read(),
+				message_text='Расписание\n' + open('lessons.txt', 'r', encoding= 'utf-8').read(),
 				parse_mode='Markdown'
 			)
         )

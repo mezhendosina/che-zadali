@@ -4,6 +4,9 @@ from selenium.webdriver.support.ui import Select
 from Homework import extract_homework, select_homework
 from datetime import datetime
 import requests, time, os, pytz
+
+token = os.getenv('TELEGRAM_API_KEY') #Telegram api token
+
 #add chrome options
 chrome_options = webdriver.ChromeOptions()
 chrome_options.add_argument("--headless")
@@ -40,20 +43,27 @@ extract_homework(a)
 
 times = ['14:29', '14:30', '14:31', '14:32', '14:33', '14:34'] #variable of times
 date = datetime.now(pytz.timezone('Asia/Yekaterinburg')) #now time
-token = os.getenv('TELEGRAM_API_KEY') #Telegram api token
 for i in times:
 	if i == date.strftime('%H:%M'):
 		r = requests.post(
 			f'https://api.telegram.org/bot{token}/sendMessage', #send message 
 			data={
-				'chat_id': 
-				'-1001561236768', 
+				'chat_id': '-1001561236768', 
 				'text': select_homework(), 
 				'disable_notification': True
 				} #data for request
-		).json() #send request to telegram api 
+		).json()  #send request to telegram api 
 		
 		r1 = requests.post(
 			f'https://api.telegram.org/bot{token}/pinChatMessage',#pin message 
-			data={'chat_id': '-1001561236768', 'message_id': r['result']['message_id']} #data for request
+			data={
+				'chat_id': '-1001561236768', 
+				'message_id': r['result']['message_id']} #data for request
 		).json()#send request to telegram api 
+		r3 = requests.post(
+			f'https://api.telegram.org/bot{token}/sendMessage', #send message 
+			data={
+				'chat_id': '401311369', 
+				'text': 'домашка отправлена', 
+				} #data for request
+		)

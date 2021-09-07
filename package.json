@@ -1,7 +1,7 @@
 {
   "name": "che-zadali",
   "version": "1.0",
-  "description": "Достает домашнее задание из Сетевого Города и отпарвляет в бота во ВКонтакте",
+  "description": "Это Telegram бот для получения домашнего задани из Сетевого города, а так же расписания ",
   "main": "telegramBot.py",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

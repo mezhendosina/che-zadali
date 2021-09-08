@@ -49,7 +49,7 @@ def new_sgo(weekstart, weekend):
 		'Accept': 'application/json, text/plain, */*',
 		'Accept-Encoding': 'gzip, deflate, br',
 		'Accept-Language': 'en-RU,en;q=0.9,ru-RU;q=0.8,ru;q=0.7,en-GB;q=0.6,en-US;q=0.5',
-		'at': '20441637667224255969265203',
+		'at': os.getenv('at'),
 		'Connection': 'keep-alive',
 		'Cookie': 'NSSESSIONID=c3e8906c3e374881a21f704f46ec3846; ESRNSec=ESRNSECR9544=fa7fcd929f07eeef70c3e0641efc37b1-116345453t; TTSLogin=SCID=89&PID=-1&CID=2&SID=1&SFT=2&CN=1&BSP=0; UserLanguage=ru; FUNCTIONALITYTYPE=2; securekey=ODUzMDYyNzU5; ASPSESSIONIDACRSRRSC=LJMDKKCAIKAHGJFBBKKAGCJN',
 		'Host': 'sgo.edu-74.ru',

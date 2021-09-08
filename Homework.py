@@ -84,7 +84,23 @@ def extract_homework(code) -> None:
 
 	#countLinesAfter = cursor.execute('SELECT count(*) FROM homeworktable;')
 	connection.commit()
-
+def new_extract_homework(json):
+	try:
+		for i in json:
+			for a in i['lessons']:
+				for b in a['assignments']:
+					if b['typeId'] == 3:
+						homework = b['assignmentName']
+						break
+				day, month, year, lesson = a['day'].split('-')[2].split('T')[0], a['day'].split('-')[1], a['day'].split('-')[0], a['subjectName']
+				cursor.execute(
+					f"INSERT INTO homeworktable VALUES('{a['day'].split('T')[0]}', '{lesson}', '{homework}', {day}, {month}, {year})  ON CONFLICT DO NOTHING"
+				)
+		connection.commit()
+	except KeyError as e:
+		return e
+	except:
+		return 'Error' 
 def select_homework(day=1) -> str:
 	"""
 	This function collect day(1 - tommorow, 0 - today, -1 - yesterday) or user selected day and return homework for this day

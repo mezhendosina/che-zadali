@@ -84,7 +84,6 @@ def extract_homework(code) -> None:
 
 	#countLinesAfter = cursor.execute('SELECT count(*) FROM homeworktable;')
 	connection.commit()
-
 def select_homework(day=1) -> str:
 	"""
 	This function collect day(1 - tommorow, 0 - today, -1 - yesterday) or user selected day and return homework for this day

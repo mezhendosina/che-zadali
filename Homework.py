@@ -141,3 +141,31 @@ def select_homework(day=1) -> str:
 	d = date.strftime('%d.%m.%Y')
 	a = f'Домаха на {d}:\n' + '\n'.join(map(lambda x: f'**{x[0]}**: {x[1]}', homework))
 	return a
+
+def find_lessons(code)-> str: 
+	'''
+	This function find list of lessons from sgo.edu-74.ru/angular/school/studentdiary/ code
+	'''
+	soup =  BeautifulSoup(code, features = 'lxml')
+	schoolJournal = soup.find('div', 'schooljournal_content column')
+	dayTable = schoolJournal.find_all('div', class_ = 'day_table')
+	l = False
+	for i in dayTable:
+		b = 0
+		lessons = {}
+		for a in i.find_all('tr', class_ = 'ng-scope'):
+			try:
+				lessons.update({
+					a.find('a', 'subject ng-binding ng-scope').get_text(): a.find('div', 'time ng-binding ng-scope').get_text().split('\n')[0]
+					})
+				b+=1        
+			except AttributeError:        
+				continue
+		if b >= 1:
+			day = i.find('span', 'ng-binding').get_text().split(',')[0]
+			file = open('lessons.txt', 'w', encoding='utf-8')
+			file.write(f'{day}\n')
+			for s in lessons.items():
+				file.write(f'{s[1]}: {s[0]}\n')
+			l = True
+	return l

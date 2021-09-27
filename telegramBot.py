@@ -3,8 +3,8 @@ from Homework import select_homework, add_homework
 import os, re, telebot, hashlib, psycopg2
 token = os.getenv("TELEGRAM_API_TOKEN")
 bot, markup, salt= telebot.TeleBot(token, parse_mode='Markdown'), types.ReplyKeyboardMarkup(), os.urandom(32)
-connection = psycopg2.connect(os.getenv('DATABASE_URL'), sslmode='require')
-cursor = connection.cursor()#connect to database
+#connection = psycopg2.connect(os.getenv('DATABASE_URL'), sslmode='require')
+#cursor = connection.cursor()#connect to database
 
 
 @bot.message_handler(commands=['help', 'start'])
@@ -43,10 +43,10 @@ def s(message):
             message,
             'Чтобы воспользоваться этой командой, надо указать дату в формате ```день.месяц.год```\nP.S. Бот хранит домашку только за последние 7 дней'
         )
+voice = open('voice.ogg', 'rb')
 @bot.message_handler(commands=['некит'])
-def nekit(message):
-   voice = open('voice.ogg', 'rb')
-   bot.send_voice(message.chat_id, voice)
+def n(message):
+    bot.send_voice(message.chat.id, voice)
 
 @bot.message_handler(commands=['lessons'])
 def sendListOfLessons(message):

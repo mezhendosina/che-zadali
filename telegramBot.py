@@ -96,7 +96,7 @@ def query_text(message):
         nekit = types.InlineQueryResultArticle(
         	id='5', title='Некит',
         	description='Никита Лапшин попросил добавить',
-        	input_message_content=bot.send_voice(message, voice)
+        	input_message_content=voice
         )
         bot.answer_inline_query(message.id, [che, lessons, today, yesterday, nekit])
     except Exception as e:

@@ -43,9 +43,9 @@ def s(message):
             message,
             'Чтобы воспользоваться этой командой, надо указать дату в формате ```день.месяц.год```\nP.S. Бот хранит домашку только за последние 7 дней'
         )
-voice = open('voice.ogg', 'rb')
 @bot.message_handler(commands=['некит'])
 def n(message):
+    voice = open('voice.ogg', 'rb')
     bot.send_voice(message.chat.id, voice)
 
 @bot.message_handler(commands=['lessons'])

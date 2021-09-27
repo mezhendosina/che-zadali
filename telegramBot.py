@@ -1,12 +1,11 @@
 from telebot import types
 from Homework import select_homework, add_homework
 import os, re, telebot, hashlib, psycopg2
-
 token = os.getenv("TELEGRAM_API_TOKEN")
 bot, markup, salt= telebot.TeleBot(token, parse_mode='Markdown'), types.ReplyKeyboardMarkup(), os.urandom(32)
 connection = psycopg2.connect(os.getenv('DATABASE_URL'), sslmode='require')
 cursor = connection.cursor()#connect to database
-voice = open('voice.ogg', 'rb')
+
 
 @bot.message_handler(commands=['help', 'start'])
 def send_help(message):
@@ -46,7 +45,7 @@ def s(message):
         )
 @bot.message_handler(commands=['некит'])
 def nekit(message):
-   voice = open('voice.ogg', 'rb')
+   voice = open('/tmp/voice.ogg', 'rb')
    bot.send_voice(message, voice)
 
 @bot.message_handler(commands=['lessons'])
@@ -93,21 +92,15 @@ def query_text(message):
 				parse_mode='Markdown'
 			)
         )
-        nekit = types.InlineQueryResultArticle(
-        	id='5', title='Некит',
-        	description='Никита Лапшин попросил добавить',
-        	input_message_content=voice
-        )
-        bot.answer_inline_query(message.id, [che, lessons, today, yesterday, nekit])
+        bot.answer_inline_query(message.id, [che, lessons, today, yesterday])
     except Exception as e:
     	print(e)
     #print(str(message.from_user.id) + ' ' + str(message.from_user.username) + ' ' + str(message.text))
-'''
+
 @bot.message_handler(commands=['login'], chat_types=['private'])
 def login(message):
     bot.send_message(message, 'Выберите школу')
     
     bot.send_message(message, 'Введите логин от Сетевого города')   
-'''
 bot.send_message(401311369, 'все ок')
 bot.polling(non_stop=True)

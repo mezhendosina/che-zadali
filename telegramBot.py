@@ -46,7 +46,7 @@ def s(message):
 @bot.message_handler(commands=['некит'])
 def nekit(message):
    voice = open('voice.ogg', 'rb')
-   bot.send_voice(message, voice)
+   bot.send_voice(message.chat_id, voice)
 
 @bot.message_handler(commands=['lessons'])
 def sendListOfLessons(message):

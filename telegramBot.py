@@ -1,9 +1,12 @@
 from telebot import types
 from Homework import select_homework, add_homework
-import os, re, telebot
+import os, re, telebot, hashlib, psycopg2
 
 token = os.getenv("TELEGRAM_API_TOKEN")
-bot, markup= telebot.TeleBot(token, parse_mode='Markdown'), types.ReplyKeyboardMarkup()
+bot, markup, salt= telebot.TeleBot(token, parse_mode='Markdown'), types.ReplyKeyboardMarkup(), os.urandom(32)
+connection = psycopg2.connect(os.getenv('DATABASE_URL'), sslmode='require')
+cursor = connection.cursor()#connect to database
+voice = open('voice.ogg', 'rb')
 
 @bot.message_handler(commands=['help', 'start'])
 def send_help(message):
@@ -35,28 +38,16 @@ def s(message):
 	    bot.reply_to(
 			message, 
 			select_homework(message.text.split(' ', maxsplit=1)[1])
-
 	    )
     except IndexError:
         bot.reply_to(
             message,
             'Чтобы воспользоваться этой командой, надо указать дату в формате ```день.месяц.год```\nP.S. Бот хранит домашку только за последние 7 дней'
         )
-
-@bot.message_handler(commands=['add'])
-def setHomework(message):
-	try:
-		lesson, homework, date = message.text.split(' ')[1].split(':')[0], message.text.split(': ')[1].split(' :')[0], re.search(r'\d\d[.]\d\d[.]\d\d\d\d', message.text).group(0)
-		add_homework(lesson, homework, date)
-		bot.reply_to(message, 'Домашка сохранена')
-		print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
-	except IndexError:
-		print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text) + 'Stupid human')
-		bot.send_message(
-                message.chat.id, 
-                'Возможно ты не правильно заполнил домашку.\nПример заполнения домашки:```\n/add Урок: домашка :дата сдачи(дд.мм.гггг)```\nP.s. если домашка на завтра, можешь не писать дату'
-            )
-
+@bot.message_handler(commands=['некит'])
+def nekit(message):
+   voice = open('voice.ogg', 'rb')
+   bot.send_voice(message, voice)
 
 @bot.message_handler(commands=['lessons'])
 def sendListOfLessons(message):
@@ -66,25 +57,6 @@ def sendListOfLessons(message):
     	message,
     	text
     )
-'''
-@bot.message_handler(commands=['set'])
-def setLessons(message):
-	try:
-		lessons = message.text.split(' ', maxsplit=1)[1]
-		a = open('lessons.txt', 'w')
-		a.write(lessons)
-		a.close()
-		bot.reply_to(message, 'Расписание сохранено')
-		print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
-	except:
-		a = '/'
-		bot.send_message(
-            message.from_user.id, 
-            f'Возможно ты не правильно заполнил расписание.\nПример сохранения расписания:```\n/set День недели\nвремя начала-время окончания - урок\nвремя - урок```'
-        )
-		print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text) + 'Stupid human')
-'''
-
 
 @bot.inline_handler(func=lambda query: len(query.query) >= 0)
 def query_text(message):
@@ -121,10 +93,21 @@ def query_text(message):
 				parse_mode='Markdown'
 			)
         )
-        bot.answer_inline_query(message.id, [che, lessons, today, yesterday])
+        nekit = types.InlineQueryResultArticle(
+        	id='5', title='Некит',
+        	description='Никита Лапшин попросил добавить',
+        	input_message_content=bot.send_voice(message, voice)
+        )
+        bot.answer_inline_query(message.id, [che, lessons, today, yesterday, nekit])
     except Exception as e:
     	print(e)
     #print(str(message.from_user.id) + ' ' + str(message.from_user.username) + ' ' + str(message.text))
+'''
+@bot.message_handler(commands=['login'], chat_types=['private'])
+def login(message):
+    bot.send_message(message, 'Выберите школу')
     
+    bot.send_message(message, 'Введите логин от Сетевого города')   
+'''
 bot.send_message(401311369, 'все ок')
 bot.polling(non_stop=True)

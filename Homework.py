@@ -80,7 +80,7 @@ def extract_homework(code) -> None:
 					f"INSERT INTO homeworktable VALUES('{day}', '{lesson}', '{homework}', {dayNum}, {dayMonth}, {dayYear})  ON CONFLICT DO NOTHING"
 				)
 			except AttributeError as e:
-				print('Lesson not found')
+				continue
 
 	#countLinesAfter = cursor.execute('SELECT count(*) FROM homeworktable;')
 	connection.commit()

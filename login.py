@@ -5,8 +5,9 @@ from Homework import extract_homework, find_lessons, select_homework
 from datetime import datetime, timedelta
 import requests, time, os, pytz
 
+
 token = os.getenv('TELEGRAM_API_KEY') #Telegram api token
-def send_message(message):
+def send_message(message) -> dict:
 	r = requests.post(
 		f'https://api.telegram.org/bot{token}/sendMessage', #send message 
 		data={
@@ -17,7 +18,7 @@ def send_message(message):
 	).json()  #send request to telegram api 
 	print(r)
 	return r
-def old_sgo():
+def sgo() -> None:
 	start_time = time.time()
 	#add chrome options
 	chrome_options = webdriver.ChromeOptions()
@@ -53,16 +54,11 @@ def old_sgo():
 
 	print(time.time() - start_time)
 	extract_homework(a)
-	l = find_lessons(a)
-	if l == True:
-			send_message(
-				'Похоже появилось расписание\n'+ open('lessons.txt', 'r', encoding='utf-8').read()
-			)
 
 if __name__ == '__main__':
 	date = datetime.now(pytz.timezone('Asia/Yekaterinburg')) #now time
 
-	old_sgo()	
+	sgo()	
 	times = ['14:29', '14:30', '14:31', '14:32', '14:33', '14:34'] #variable of times
 	for i in times:
 		if i == date.strftime('%H:%M'):
@@ -80,4 +76,5 @@ if __name__ == '__main__':
 					'text': 'домашка отправлена', 
 					} #data for request
 			)
+			print(r, r1, r3)
 			break 

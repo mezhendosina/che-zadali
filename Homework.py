@@ -139,7 +139,7 @@ def select_homework(day=1) -> str:
 			homework = select(date.strftime('%d'), date.strftime('%m'), date.strftime('%Y'))
 			
 	d = date.strftime('%d.%m.%Y')
-	a = f'Домаха на {d}:\n' + '\n'.join(map(lambda x: f'**{x[0]}**: {x[1]}', homework))
+	a = f'Домаха на _{d}_:\n' + '\n'.join(map(lambda x: f'***{x[0]}***:  {x[1]}', homework))
 	return a
 
 def find_lessons(code)-> str: 

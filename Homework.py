@@ -163,7 +163,7 @@ def find_lessons(code)-> str:
 				continue
 		if b >= 1:
 			day = i.find('span', 'ng-binding').get_text().split(',')[0]
-			file = open('lessons.txt', 'w', encoding='utf-8')
+			file = open('files/lessons.txt', 'w', encoding='utf-8')
 			file.write(f'{day}\n')
 			for s in lessons.items():
 				file.write(f'{s[1]}: {s[0]}\n')

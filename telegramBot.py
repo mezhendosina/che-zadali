@@ -45,13 +45,13 @@ def s(message):
         )
 @bot.message_handler(commands=['некит'])
 def n(message):
-    voice = open('voice.ogg', 'rb')
+    voice = open('files/voice.ogg', 'rb')
     bot.send_voice(message.chat.id, voice)
 
 @bot.message_handler(commands=['lessons'])
 def sendListOfLessons(message):
 	print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
-	text = open('lessons.txt', 'r', encoding= 'utf-8').read()
+	text = open('files/lessons.txt', 'r', encoding= 'utf-8').read()
 	bot.reply_to(
     	message,
     	text
@@ -88,7 +88,7 @@ def query_text(message):
         	id='2', title='расписание',
         	description='узнать расписание',
         	input_message_content=types.InputTextMessageContent(
-				message_text='Расписание\n' + open('lessons.txt', 'r', encoding= 'utf-8').read(),
+				message_text='Расписание\n' + open('files/lessons.txt', 'r', encoding= 'utf-8').read(),
 				parse_mode='Markdown'
 			)
         )

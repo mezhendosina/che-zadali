@@ -43,7 +43,7 @@ def sgo() -> None:
 	homework = extract_homework(a)
 	print(homework)
 	if homework == True:
-		send_message(f'Похоже появилась новая домаха \n{select_homework()}', '-1001503742992', True)
+		send_message(f'Похоже появилась новая домаха \n{select_homework()}', '-1001503742992', False)
 
 if __name__ == '__main__':
 	sgo()

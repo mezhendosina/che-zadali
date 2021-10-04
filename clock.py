@@ -8,7 +8,7 @@ sched = BlockingScheduler()
 @sched.scheduled_job('interval', minutes=30)
 def timed_job():
     sgo()
-@sched.scheduled_job('cron', day_of_week='mon-sat', hour=14)
+@sched.scheduled_job('cron', day_of_week='mon-sat', hour=9)
 def sheduled_job():
-    send_message(select_homework(), '-1001503742992', True)
+    send_message(select_homework(), '-1001503742992', False)
 sched.start()

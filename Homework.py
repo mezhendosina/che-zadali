@@ -57,23 +57,27 @@ def months(month):
 			'июн.': 6, 'июл.': 7, 'авг.': 8,
 			'сент.': 9, 'окт.': 10, 'нояб.': 11
 		}[month]
-def extract_homework(code) -> None:
+def extract_homework(code) -> bool:
 	"""This function parses code in search homework and delete old homework"""
 	
-	#cursor.execute('SELECT count(*) FROM homeworktable;')) 
+	cursor.execute('SELECT * FROM homeworktable;') 
+	old = cursor.fetchall()
+
 	soup =  BeautifulSoup(code, features = 'lxml')
 	schoolJournal = soup.find('div', 'schooljournal_content column')
 	dayTable = schoolJournal.find_all('div', class_ = 'day_table')
+	
 	for i in dayTable:
 		day= i.find('span', 'ng-binding').get_text()
 		dayNum = int(day.split(' ')[1])
 		dayMonth = months(day.split(' ')[2])
 		dayYear = int(day.split(' ')[3])
+
 		for a in i.find_all('tr', class_ = 'ng-scope'):
 			try:
-				lesson = a.find('a', 'subject ng-binding ng-scope').get_text()
+				lesson = a.find('a', class_='subject ng-binding ng-scope').get_text()
 				try:
-					homework = a.find('a', 'ng-binding ng-scope').get_text()
+					homework = a.find('a', class_='ng-binding ng-scope').get_text()
 				except AttributeError:
 					homework = None
 				cursor.execute(
@@ -81,9 +85,14 @@ def extract_homework(code) -> None:
 				)
 			except AttributeError as e:
 				continue
-
-	#countLinesAfter = cursor.execute('SELECT count(*) FROM homeworktable;')
 	connection.commit()
+	cursor.execute('SELECT * FROM homeworktable;') 
+	new = cursor.fetchall()
+	if new > old:
+		return True
+	else:
+		return False
+
 def select_homework(day=1) -> str:
 	"""
 	This function collect day(1 - tommorow, 0 - today, -1 - yesterday) or user selected day and return homework for this day
@@ -110,7 +119,7 @@ def select_homework(day=1) -> str:
 		except IndexError:
 			return 'Неподдерживаемый формат даты. Пример даты:```\n/set день.месяц.год```'
 		except psycopg2.Error as e:
-			return 'Возможно вы пытаетесь получить слишком раннюю домаху, т.к. бот хранит только последние 7 дней домашки '
+			return 'Возможно вы пытаетесь получить слишком раннюю домаху. Бот хранит только последние 7 дней домашки '
 	else:
 		date = datetime.now(pytz.timezone('Asia/Yekaterinburg')) + timedelta(days=int(day))
 		for i in summerHolidays:
@@ -141,31 +150,3 @@ def select_homework(day=1) -> str:
 	d = date.strftime('%d.%m.%Y')
 	a = f'Домаха на _{d}_:\n' + '\n'.join(map(lambda x: f'***{x[0]}***:  {x[1]}', homework))
 	return a
-
-def find_lessons(code)-> str: 
-	'''
-	This function find list of lessons from sgo.edu-74.ru/angular/school/studentdiary/ code
-	'''
-	soup =  BeautifulSoup(code, features = 'lxml')
-	schoolJournal = soup.find('div', 'schooljournal_content column')
-	dayTable = schoolJournal.find_all('div', class_ = 'day_table')
-	l = False
-	for i in dayTable:
-		b = 0
-		lessons = {}
-		for a in i.find_all('tr', class_ = 'ng-scope'):
-			try:
-				lessons.update({
-					a.find('a', 'subject ng-binding ng-scope').get_text(): a.find('div', 'time ng-binding ng-scope').get_text().split('\n')[0]
-					})
-				b+=1        
-			except AttributeError:        
-				continue
-		if b >= 1:
-			day = i.find('span', 'ng-binding').get_text().split(',')[0]
-			file = open('files/lessons.txt', 'w', encoding='utf-8')
-			file.write(f'{day}\n')
-			for s in lessons.items():
-				file.write(f'{s[1]}: {s[0]}\n')
-			l = True
-	return l

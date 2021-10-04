@@ -1,23 +1,10 @@
 #imports 
-from selenium import webdriver
+from Homework import extract_homework, select_homework
+from telegramBot import send_message
 from selenium.webdriver.support.ui import Select
-from Homework import extract_homework, find_lessons, select_homework
-from datetime import datetime, timedelta
-import requests, time, os, pytz
+from selenium import webdriver
+import time, os
 
-
-token = os.getenv('TELEGRAM_API_KEY') #Telegram api token
-def send_message(message) -> dict:
-	r = requests.post(
-		f'https://api.telegram.org/bot{token}/sendMessage', #send message 
-		data={
-			'chat_id': '-1001561236768', 
-			'text': message, 
-			'disable_notification': True
-			} #data for request
-	).json()  #send request to telegram api 
-	print(r)
-	return r
 def sgo() -> None:
 	start_time = time.time()
 	#add chrome options
@@ -53,28 +40,10 @@ def sgo() -> None:
 	driver.close() #close driver
 
 	print(time.time() - start_time)
-	extract_homework(a)
+	homework = extract_homework(a)
+	print(homework)
+	if homework == True:
+		send_message(f'Похоже появилась новая домаха \n{select_homework()}', '-1001503742992', True)
 
 if __name__ == '__main__':
-	date = datetime.now(pytz.timezone('Asia/Yekaterinburg')) #now time
-
-	sgo()	
-	times = ['14:29', '14:30', '14:31', '14:32', '14:33', '14:34'] #variable of times
-	for i in times:
-		if i == date.strftime('%H:%M'):
-			r = send_message(select_homework())
-			r1 = requests.post(
-				f'https://api.telegram.org/bot{token}/pinChatMessage',#pin message 
-				data={
-					'chat_id': '-1001561236768', 
-					'message_id': r['result']['message_id']} #data for request
-			).json()#send request to telegram api 
-			r3 = requests.post(
-				f'https://api.telegram.org/bot{token}/sendMessage', #send message 
-				data={
-					'chat_id': '401311369', 
-					'text': 'домашка отправлена', 
-					} #data for request
-			)
-			print(r, r1, r3)
-			break 
+	sgo()

@@ -117,8 +117,6 @@ def telegramBot():
         
         bot.send_message(message, 'Введите логин от Сетевого города')   
     '''
-
-    bot.send_message(401311369, 'все ок')
     bot.polling(non_stop=True)
 if __name__ == '__main__':
     telegramBot() 

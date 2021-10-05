@@ -39,9 +39,8 @@ def sgo() -> None:
 	a = driver.page_source #save page source
 	driver.close() #close driver
 
-	print(time.time() - start_time)
 	homework = extract_homework(a)
-	print(homework)
+	print(time.time() - start_time, homework)
 	if homework == True:
 		send_message(f'Похоже появилась новая домаха \n{select_homework()}', '-1001503742992', False)
 

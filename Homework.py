@@ -80,9 +80,12 @@ def extract_homework(code) -> bool:
 					homework = a.find('a', class_='ng-binding ng-scope').get_text()
 				except AttributeError:
 					homework = None
-				cursor.execute(
-					f"INSERT INTO homeworktable VALUES('{day}', '{lesson}', '{homework}', {dayNum}, {dayMonth}, {dayYear})  ON CONFLICT DO NOTHING"
-				)
+				cursor.execute('SELECT * FROM homeworktable')
+				table = cursor.fetchall()
+				if (f'{day}', f'{lesson}', f'{homework}', f'{dayNum}', f'{dayMonth}', f'{dayYear}') in table == False:
+					cursor.execute(
+							f"INSERT INTO homeworktable VALUES('{day}', '{lesson}', '{homework}', {dayNum}, {dayMonth}, {dayYear})"
+					)
 			except AttributeError as e:
 				continue
 	connection.commit()

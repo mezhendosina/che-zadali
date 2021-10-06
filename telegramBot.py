@@ -3,7 +3,8 @@ from telebot import types
 from Homework import select_homework, add_homework
 import os, re, telebot, hashlib, psycopg2
 token = os.getenv("TELEGRAM_API_TOKEN")
-bot, markup, salt= telebot.TeleBot(token, parse_mode='Markdown'), types.ReplyKeyboardMarkup(), os.urandom(32)
+bot, salt= telebot.TeleBot(token, parse_mode='Markdown'), os.urandom(32)
+keyboard, inline_keyboard = types.ReplyKeyboardMarkup(), types.InlineKeyboardMarkup()
 #connection = psycopg2.connect(os.getenv('DATABASE_URL'), sslmode='require')
 #cursor = connection.cursor()#connect to database
 
@@ -41,22 +42,28 @@ def telegramBot():
     def send_today(message):
         print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
         bot.reply_to(message, select_homework(0))
-    #TO_DO: retype select command 
     '''
     @bot.message_handler(commands=['select'])
-    def s(message):
-        print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
-        try:
-            bot.reply_to(
-                message, 
-                select_homework(message.text.split(' ', maxsplit=1)[1])
-            )
-        except IndexError:
-            bot.reply_to(
-                message,
-                'Чтобы воспользоваться этой командой, надо указать дату в формате ```день.месяц.год```\nP.S. Бот хранит домашку только за последние 7 дней'
-            )
+    def select(message):
+        chat_id = message.chat.id
+        cursor.execute('SELECT DISTINCT day, daynum, daymonth, dayyear FROM homeworktable ORDER BY daynum, daymonth, dayyear')
+        
+        a = 0
+        list_of_days = cursor.fetchall()
+        print(list_of_days)
+        for i in list_of_days:
+            if a >= 6:
+                inline_keyboard.row(
+                    types.KeyboardButton('Вперед')
+                )
+                break
+            else:
+                a = a + 1
+                inline_keyboard.row(i[0])
+                list_of_days.pop(0)
+        bot.send_message(chat_id, 'Выберите день:', reply_markup=inline_keyboard)
     '''
+
     @bot.message_handler(commands=['некит'])
     def n(message):
         voice = open('files/voice.ogg', 'rb')

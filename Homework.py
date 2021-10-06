@@ -1,3 +1,8 @@
+"""
+This file works with homework recived from https://sgo.edu-74.ru/
+
+"""
+
 from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
 import psycopg2, pytz, os
@@ -60,7 +65,8 @@ def months(month):
 def extract_homework(code) -> bool:
 	"""This function parses code in search homework and delete old homework"""
 	
-	cursor.execute('SELECT * FROM homeworktable;') 
+	date = datetime.now(pytz.timezone('Asia/Yekaterinburg'))
+	cursor.execute(f"SELECT * FROM homeworktable WHERE daynum={date.strftime('%d')} AND daymonth={date.strftime('%m')} AND dayyear={date.strftime('%Y')};") 
 	old = cursor.fetchall()
 
 	soup =  BeautifulSoup(code, features = 'lxml')
@@ -79,17 +85,21 @@ def extract_homework(code) -> bool:
 				try:
 					homework = a.find('a', class_='ng-binding ng-scope').get_text()
 				except AttributeError:
-					homework = None
+					continue
 				cursor.execute('SELECT * FROM homeworktable')
 				table = cursor.fetchall()
-				if (f'{day}', f'{lesson}', f'{homework}', f'{dayNum}', f'{dayMonth}', f'{dayYear}') in table == False:
+				try:
+					assert (day, lesson, homework, dayNum, dayMonth, dayYear) in table
+				except AssertionError:
 					cursor.execute(
 							f"INSERT INTO homeworktable VALUES('{day}', '{lesson}', '{homework}', {dayNum}, {dayMonth}, {dayYear})"
 					)
+					print(day, lesson, homework, dayNum, dayMonth, dayYear)
+					continue
 			except AttributeError as e:
 				continue
 	connection.commit()
-	cursor.execute('SELECT * FROM homeworktable;') 
+	cursor.execute(f"SELECT * FROM homeworktable WHERE daynum={date.strftime('%d')} AND daymonth={date.strftime('%m')} AND dayyear={date.strftime('%Y')};") 
 	new = cursor.fetchall()
 	if new > old:
 		return True

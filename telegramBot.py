@@ -8,8 +8,15 @@ keyboard, inline_keyboard = types.ReplyKeyboardMarkup(), types.InlineKeyboardMar
 #connection = psycopg2.connect(os.getenv('DATABASE_URL'), sslmode='require')
 #cursor = connection.cursor()#connect to database
 
-def send_message(message, chat_id, notification) -> dict:
+
+def send_homework(message, chat_id, notification) -> dict:
 	r = requests.post(
+		f'https://api.telegram.org/bot{token}/unpinAllChatMessages',
+		data={
+			'chat_id': chat_id
+		}
+	)
+	r1 = requests.post(
 		f'https://api.telegram.org/bot{token}/sendMessage', #send message 
 		data={
 			'chat_id': chat_id, 
@@ -18,7 +25,14 @@ def send_message(message, chat_id, notification) -> dict:
 			'disable_notification': notification
 			} #data for request
 	).json()  #send request to telegram api 
-	return r
+	r2 = requests.post(
+		f'https://api.telegram.org/bot{token}/pinChatMessage',
+		data={
+			'chat_id': chat_id, 
+			'message_id': r['result']['message_id']
+		}
+	)
+	return r2
 def telegramBot():
     @bot.message_handler(commands=['help', 'start'])
     def send_help(message):

@@ -65,7 +65,7 @@ def months(month):
 def extract_homework(code) -> bool:
 	"""This function parses code in search homework and delete old homework"""
 	
-	date = datetime.now(pytz.timezone('Asia/Yekaterinburg'))
+	date = datetime.now(pytz.timezone('Asia/Yekaterinburg')) + timedelta(days=1)
 	cursor.execute(f"SELECT * FROM homeworktable WHERE daynum={date.strftime('%d')} AND daymonth={date.strftime('%m')} AND dayyear={date.strftime('%Y')};") 
 	old = cursor.fetchall()
 

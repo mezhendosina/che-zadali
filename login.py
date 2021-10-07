@@ -2,7 +2,6 @@
 from bs4 import BeautifulSoup
 from Homework import extract_homework, select_homework
 from telegramBot import send_homework
-from telegramBot import send_message
 from selenium.webdriver.support.ui import Select
 from selenium import webdriver
 import time, os

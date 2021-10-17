@@ -142,7 +142,7 @@ def select_homework(day=1, new=False) -> str:
 					h.update({a[1]: a[2]})	
 			homework.update({i[0]: h})
 		for i in homework.keys():
-			r = str(r)+f'\n\n_{i}_\n' + str('\n'.join(map(lambda x: f'***{x[0]}***:  {x[1]}', list(homework.get(i).items()))))
+			r = str(r)+f'\n\n_{i}_я\n' + str('\n'.join(map(lambda x: f'***{x[0]}***:  {x[1]}', list(homework.get(i).items()))))
 		return r 
 	elif len(str(day)) == 0:
 		return 'Чтобы выбрать день, нужно после команды указать дату в формате ```день.месяц.год```'
@@ -184,13 +184,7 @@ def select_homework(day=1, new=False) -> str:
 			)
 		except TypeError:
 			homework = select(date.strftime('%d'), date.strftime('%m'), date.strftime('%Y'))
-	if open(
-		os.path.join(
-			os.path.dirname(os.path.realpath(__file__)),
-			'files/truefalse.txt'
-			), 
-		'r'
-		).read() == 'True':
+	if open('files/trueFalse.txt', 'r', encoding='utf-8') == 'True':
 		tf = '\nP.s. в одном из домашних заданий есть вложенные(-ый) файл(-ы)'
 	else:
 		tf = '\n'

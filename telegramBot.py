@@ -131,7 +131,15 @@ def telegramBot():
                     parse_mode='Markdown'
                 )
             )
-            bot.answer_inline_query(message.id, [che, lessons, today, yesterday])
+            all_week = types.InlineQueryResultArticle(
+                id='5', title='вся неделя',
+                description='узнать д/з на всю неделю',
+                input_message_content=types.InputTextMessageContent(
+                    message_text=select_homework(day='all_week'),
+                    parse_mode='Markdown'
+                )
+            )
+            bot.answer_inline_query(message.id, [che, lessons, today, yesterday, all_week])
         except Exception as e:
             print(e)
         #print(str(message.from_user.id) + ' ' + str(message.from_user.username) + ' ' + str(message.text))

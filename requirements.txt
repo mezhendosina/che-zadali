@@ -6,3 +6,4 @@ pyTelegramBotAPI
 pytz
 requests
 apscheduler
+isoweek

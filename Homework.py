@@ -5,7 +5,9 @@ This file works with homework recived from https://sgo.edu-74.ru/
 
 from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
+from isoweek import Week
 import psycopg2, pytz, os
+
 #global variables
 connection = psycopg2.connect(os.getenv('DATABASE_URL'), sslmode='require')
 cursor = connection.cursor()#connect to database
@@ -55,13 +57,13 @@ def add_homework(lesson, homework, day=False) -> None:
 	)
 	connection.commit()
 def months(month):
-		"""This function compare month name with his number"""
-		return {
-			'дек.': 12,'янв.': 1, 'февр.': 2,
-			'мар.': 3,'апр.': 4,'мая': 5,
-			'июн.': 6, 'июл.': 7, 'авг.': 8,
-			'сент.': 9, 'окт.': 10, 'нояб.': 11
-		}[month]
+	"""This function compare month name with his number"""
+	return {
+		'дек.': 12,'янв.': 1, 'февр.': 2,
+		'мар.': 3,'апр.': 4,'мая': 5,
+		'июн.': 6, 'июл.': 7, 'авг.': 8,
+		'сент.': 9, 'окт.': 10, 'нояб.': 11
+	}[month]
 def extract_homework(code) -> bool:
 	"""This function parses code in search homework and delete old homework"""
 	
@@ -106,9 +108,9 @@ def extract_homework(code) -> bool:
 	else:
 		return False
 
-def select_homework(day=1) -> str:
+def select_homework(day=1, new=False) -> str:
 	"""
-	This function collect day(1 - tommorow, 0 - today, -1 - yesterday) or user selected day and return homework for this day
+	This function collect day(1 - tommorow, 0 - today, -1 - yesterday, 'all_week' - homework on week) or user selected day and return homework for this day
 	"""
 	
 	def select(day, month, year) -> list:
@@ -117,8 +119,32 @@ def select_homework(day=1) -> str:
 				(day, month, year)
 			)
 		return cursor.fetchall()
-
-	if len(str(day)) == 0:
+	if day == 'all_week':
+		homework = {}
+		r = ''
+		date = datetime.now(pytz.timezone('Asia/Yekaterinburg'))
+		if date.strftime('%w') == '0':
+			date = datetime.now(pytz.timezone('Asia/Yekaterinburg')) + timedelta(days=1)	
+		week = date.isocalendar()[1]
+		mon, sun = Week(date.year, week).monday(), Week(date.year, week).sunday()
+		cursor.execute(
+			f'SELECT dayNum, lesson, homework FROM homeworktable WHERE dayNum >={mon.strftime("%d")} AND dayNum <={sun.strftime("%d")} AND dayMonth >= {mon.strftime("%m")} AND dayMonth <= {sun.strftime("%m")} AND dayyear BETWEEN {mon.strftime("%Y")} AND {sun.strftime("%Y")};'
+			)
+		result = cursor.fetchall()
+		cursor.execute(
+			f'SELECT day, dayNum FROM homeworktable WHERE dayNum >={mon.strftime("%d")} AND dayNum <={sun.strftime("%d")} AND dayMonth >= {mon.strftime("%m")} AND dayMonth <= {sun.strftime("%m")} AND dayyear BETWEEN {mon.strftime("%Y")} AND {sun.strftime("%Y")};'
+			)
+		day = cursor.fetchall()
+		for i in day:
+			h = {}
+			for a in result:
+				if a[0] == i[1]:
+					h.update({a[1]: a[2]})	
+			homework.update({i[0]: h})
+		for i in homework.keys():
+			r = str(r)+f'\n\n_{i}_\n' + str('\n'.join(map(lambda x: f'***{x[0]}***:  {x[1]}', list(homework.get(i).items()))))
+		return r 
+	elif len(str(day)) == 0:
 		return 'Чтобы выбрать день, нужно после команды указать дату в формате ```день.месяц.год```'
 	elif len(str(day)) > 2:
 		try: 
@@ -148,7 +174,6 @@ def select_homework(day=1) -> str:
 				date.strftime('%m'),
 				date.strftime('%Y')
 			)
-			homework = select()
 		if date.strftime('%w') == 0:
 			date = datetime.now(pytz.timezone('Asia/Yekaterinburg')) + timedelta(days=1) 
 		try:
@@ -159,7 +184,20 @@ def select_homework(day=1) -> str:
 			)
 		except TypeError:
 			homework = select(date.strftime('%d'), date.strftime('%m'), date.strftime('%Y'))
-			
+	if open(
+		os.path.join(
+			os.path.dirname(os.path.realpath(__file__)),
+			'files/truefalse.txt'
+			), 
+		'r'
+		).read() == 'True':
+		tf = '\nP.s. в одном из домашних заданий есть вложенные(-ый) файл(-ы)'
+	else:
+		tf = '\n'
+
 	d = date.strftime('%d.%m.%Y')
-	a = f'Домаха на _{d}_:\n' + '\n'.join(map(lambda x: f'***{x[0]}***:  {x[1]}', homework))
+	if new == False:
+		a = f'Домашнее задание на _{d}_:\n' + '\n'.join(map(lambda x: f'***{x[0]}***:  {x[1]}', homework)) + tf
+	else:
+		a = a = f'Похоже появилась новое д\з на _{d}_:\n' + '\n'.join(map(lambda x: f'***{x[0]}***:  {x[1]}', homework)) + tf
 	return a

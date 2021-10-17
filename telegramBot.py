@@ -56,6 +56,10 @@ def telegramBot():
     def send_today(message):
         print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
         bot.reply_to(message, select_homework(0))
+    @bot.message_handler(commands=['all_week'])
+    def send_all_week(message):
+        print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
+        bot.reply_to(message, select_homework('all_week'))
     '''
     @bot.message_handler(commands=['select'])
     def select(message):

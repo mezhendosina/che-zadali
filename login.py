@@ -49,7 +49,7 @@ def sgo() -> None:
 
 	print(time.time() - start_time, homework)
 	if homework == True:
-		send_homework(f'Похоже появилась новая домаха \n{select_homework()}', '-1001503742992', False)
+		send_homework(f'Похоже появилась новая домаха \n{select_homework(new=True)}', '-1001503742992', False)
 
 if __name__ == '__main__':
 	sgo()

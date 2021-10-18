@@ -9,7 +9,7 @@ keyboard, inline_keyboard = types.ReplyKeyboardMarkup(), types.InlineKeyboardMar
 #cursor = connection.cursor()#connect to database
 
 
-def send_homework(message, chat_id, notification) -> dict:
+def send_homework(message: str, chat_id: str, notification: bool) -> dict:
 	r = requests.post(
 		f'https://api.telegram.org/bot{token}/unpinAllChatMessages',
 		data={

@@ -23,7 +23,7 @@ holidays = [
 	] #holidays days
 
 
-def delete_homework(day=False) -> None:
+def delete_homework(day : bool=False) -> None:
 	"""
 	This function delete homework by date(dd.mm.yyyy). 
 	If variable day is not filled - deletes homework that was asked 7 days ago
@@ -44,7 +44,7 @@ def delete_homework(day=False) -> None:
 			(int(date.strftime('%d')), int(date.strftime('%m')), date.strftime('%Y'))
 		)
 
-def add_homework(lesson, homework, day=False) -> None:
+def add_homework(lesson : str, homework : str, day=False) -> None:
 	"""This function add homework to database. If day = False add homework to next day"""
 	
 	if day == False:
@@ -56,7 +56,7 @@ def add_homework(lesson, homework, day=False) -> None:
 		(date.strftime('%d'), date.strftime('%m'), date.strftime('%Y'))
 	)
 	connection.commit()
-def months(month):
+def months(month : int):
 	"""This function compare month name with his number"""
 	return {
 		'дек.': 12,'янв.': 1, 'февр.': 2,
@@ -64,7 +64,7 @@ def months(month):
 		'июн.': 6, 'июл.': 7, 'авг.': 8,
 		'сент.': 9, 'окт.': 10, 'нояб.': 11
 	}[month]
-def extract_homework(code) -> bool:
+def extract_homework(code : str) -> bool:
 	"""This function parses code in search homework and delete old homework"""
 	
 	date = datetime.now(pytz.timezone('Asia/Yekaterinburg')) + timedelta(days=1)
@@ -108,7 +108,7 @@ def extract_homework(code) -> bool:
 	else:
 		return False
 
-def select_homework(day=1, new=False) -> str:
+def select_homework(day=1, new : bool =False) -> str:
 	"""
 	This function collect day(1 - tommorow, 0 - today, -1 - yesterday, 'all_week' - homework on week) or user selected day and return homework for this day
 	"""

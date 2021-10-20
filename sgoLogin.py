@@ -1,11 +1,35 @@
 #imports 
 from bs4 import BeautifulSoup
+import requests
 from Homework import extract_homework, select_homework
-from telegramBot import send_homework
 from selenium.webdriver.support.ui import Select
 from selenium import webdriver
 import time, os
-
+def send_homework(message: str, chat_id: str, notification: bool) -> dict:
+	token = os.getenv('TELEGRAM_API_TOKEN')
+	r = requests.post(
+		f'https://api.telegram.org/bot{token}/unpinAllChatMessages',
+		data={
+			'chat_id': chat_id
+		}
+	)
+	r1 = requests.post(
+		f'https://api.telegram.org/bot{token}/sendMessage', #send message 
+		data={
+			'chat_id': chat_id, 
+			'text': message,
+			'parse_mode': 'Markdown',
+			'disable_notification': notification
+			} #data for request
+	).json()  #send request to telegram api 
+	r2 = requests.post(
+		f'https://api.telegram.org/bot{token}/pinChatMessage',
+		data={
+			'chat_id': chat_id, 
+			'message_id': r['result']['message_id']
+		}
+	)
+	return r2
 def sgo() -> None:
 	start_time = time.time()
 	#add chrome options

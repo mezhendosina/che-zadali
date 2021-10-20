@@ -1,38 +1,18 @@
+from apscheduler.schedulers.blocking import BlockingScheduler
 import requests
 from telebot import types
 from Homework import select_homework, add_homework
+from sgoLogin import send_homework
 import os, re, telebot, hashlib, psycopg2
+
+
 token = os.getenv("TELEGRAM_API_TOKEN")
-bot, salt= telebot.TeleBot(token, parse_mode='Markdown'), os.urandom(32)
+bot, salt= telebot.AsyncTeleBot(token, parse_mode='Markdown'), os.urandom(32)
 keyboard, inline_keyboard = types.ReplyKeyboardMarkup(), types.InlineKeyboardMarkup()
 #connection = psycopg2.connect(os.getenv('DATABASE_URL'), sslmode='require')
 #cursor = connection.cursor()#connect to database
 
 
-def send_homework(message: str, chat_id: str, notification: bool) -> dict:
-	r = requests.post(
-		f'https://api.telegram.org/bot{token}/unpinAllChatMessages',
-		data={
-			'chat_id': chat_id
-		}
-	)
-	r1 = requests.post(
-		f'https://api.telegram.org/bot{token}/sendMessage', #send message 
-		data={
-			'chat_id': chat_id, 
-			'text': message,
-			'parse_mode': 'Markdown',
-			'disable_notification': notification
-			} #data for request
-	).json()  #send request to telegram api 
-	r2 = requests.post(
-		f'https://api.telegram.org/bot{token}/pinChatMessage',
-		data={
-			'chat_id': chat_id, 
-			'message_id': r['result']['message_id']
-		}
-	)
-	return r2
 def telegramBot():
     @bot.message_handler(commands=['help', 'start'])
     def send_help(message):
@@ -41,7 +21,6 @@ def telegramBot():
             message, 
             'Даров :)\nТы попал к боту, который достанет тебе домашку из Сетевого Города и скинет тебе.\nчтобы воспользоваться моей основной функцией напиши /che'
         )
-
     @bot.message_handler(commands=['che', 'Che'])
     def send_che(message):
         print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
@@ -150,6 +129,8 @@ def telegramBot():
         
         bot.send_message(message, 'Введите логин от Сетевого города')   
     '''
+    
     bot.polling(non_stop=True)
 if __name__ == '__main__':
     telegramBot() 
+   

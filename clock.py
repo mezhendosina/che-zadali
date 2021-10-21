@@ -8,7 +8,7 @@ def a():
     @sched.scheduled_job('cron',  hour='4-18')
     def sheduled_job():
         telegramBot()
-    @sched.scheduled_job('interval', minutes=1)
+    @sched.scheduled_job('interval', minutes=30)
     def timed_job():
         sgo()
     @sched.scheduled_job('cron', day_of_week='mon-sat', hour=9)

@@ -1,6 +1,5 @@
 from telebot import types
-from Homework import select_homework, add_homework
-from sgoLogin import send_homework
+from Homework import select_homework
 import os, re, telebot, hashlib, psycopg2
 
 

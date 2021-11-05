@@ -3,7 +3,6 @@ This file works with homework recived from https://sgo.edu-74.ru/
 
 """
 
-import json
 from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
 from isoweek import Week
@@ -14,13 +13,49 @@ connection = psycopg2.connect(os.getenv('DATABASE_URL'), sslmode='require')
 cursor = connection.cursor()#connect to database
 summerHolidays = ['06', '07', '08'] #summer holidays month number  
 holidays = [
-	'27.10.2021', '28.10.2021', '29.10.2021', '30.10.2021', '31.10.2021',
-	'01.11.2021', '02.11.2021', '03.11.2021', 
-	'29.12.2021', '30.12.2021', '31.12.2021', '01.01.2022', '02.01.2022', '03.01.2022', '04.01.2022', 
-	'05.01.2022', '06.01.2022', '07.01.2022', '08.01.2022', '09.01.2022', '10.01.2022', '11.01.2022', '12.01.2022',
-	'22.03.2022', '23.03.2022', '24.03.2022', '25.03.2022', '26.03.2022', '27.03.2022', '28.03.2022', '29.03.2022'
+	'27.10.2021', '28.10.2021', '29.03.2021,', '30.10.2021', '31.10.2021', 
+	'01.11.2021', '02.11.2021', '03.11.2021', '29.12.2021', '30.12.2021', 
+	'31.12.2021', '01.01.2022', '02.01.2022', '03.01.2022', '04.01.2022', 
+	'05.01.2022', '06.01.2022', '07.01.2022', '08.01.2022', '09.01.2022', 
+	'10.01.2022', '11.01.2022', '12.01.2022', '22.03.2022', '23.03.2022', 
+	'24.03.2022', '25.03.2022', '26.03.2022', '27.03.2022', '28.03.2022', 
+	'29.03.2022'
 	] #holidays days
 
+
+def delete_homework(day : bool=False) -> None:
+	"""
+	This function delete homework by date(dd.mm.yyyy). 
+	If variable day is not filled - deletes homework that was asked 7 days ago
+	"""
+	
+	if day == False:
+		date = datetime.now(pytz.timezone('Asia/Yekaterinburg')) + timedelta(days=-7)
+	else:
+		date = datetime(int(day.split('.')[2]), int(day.split('.')[1]), int(day.split('.')[0]))
+	try:
+		cursor.execute(
+			"DELETE FROM homeworktable WHERE daynum=%s and daymonth=%s and dayYear=%s", 
+			(int(date.strftime(' %d').replace(' 0', '')), int(date.strftime(' %m').replace(' 0' '')), date.strftime('%Y'))
+		)
+	except TypeError:
+		cursor.execute(
+			"DELETE FROM homeworktable WHERE daynum=%s and daymonth=%s and dayYear=%s", 
+			(int(date.strftime('%d')), int(date.strftime('%m')), date.strftime('%Y'))
+		)
+
+def add_homework(lesson : str, homework : str, day=False) -> None:
+	"""This function add homework to database. If day = False add homework to next day"""
+	
+	if day == False:
+		date = datetime.now(pytz.timezone('Asia/Yekaterinburg')) + timedelta(days=1)
+	else:
+		date = datetime(int(day.split('.')[2]), int(day.split('.')[1]), int(day.split('.')[0]))
+	cursor.execute(
+		f"INSERT INTO homeworktable VALUES('{date}', '{lesson}', '{homework}', %s, %s, %s)  ON CONFLICT DO NOTHING",
+		(date.strftime('%d'), date.strftime('%m'), date.strftime('%Y'))
+	)
+	connection.commit()
 def months(month : int):
 	"""This function compare month name with his number"""
 	return {
@@ -73,9 +108,9 @@ def extract_homework(code : str) -> bool:
 	else:
 		return False
 
-def select_homework(day=1, new : bool =False) -> list:
+def select_homework(day=1, new : bool =False) -> str:
 	"""
-	This function collect homework day(1 - tommorow, 0 - today, -1 - yesterday, 'all_week' - homework on week) 
+	This function collect day(1 - tommorow, 0 - today, -1 - yesterday, 'all_week' - homework on week) or user selected day and return homework for this day
 	"""
 	
 	def select(day, month, year) -> list:
@@ -84,10 +119,10 @@ def select_homework(day=1, new : bool =False) -> list:
 				(day, month, year)
 			)
 		return cursor.fetchall()
-	
 	if day == 'all_week':
-		homework, r, date = {}, '', datetime.now(pytz.timezone('Asia/Yekaterinburg'))
-
+		homework = {}
+		r = ''
+		date = datetime.now(pytz.timezone('Asia/Yekaterinburg'))
 		if date.strftime('%w') == '0':
 			date = datetime.now(pytz.timezone('Asia/Yekaterinburg')) + timedelta(days=1)	
 		week = date.isocalendar()[1]
@@ -108,40 +143,55 @@ def select_homework(day=1, new : bool =False) -> list:
 			homework.update({i[0]: h})
 		for i in homework.keys():
 			r = str(r)+f'\n\n_{i}_я\n' + str('\n'.join(map(lambda x: f'***{x[0]}***:  {x[1]}', list(homework.get(i).items()))))
-		
-		return list(r) 
-	
-	if datetime.now(pytz.timezone('Asia/Yekaterinburg')).strftime('%w') == '6':
-		date = datetime.now(pytz.timezone('Asia/Yekaterinburg')) + timedelta(days=2)
+		return r 
+	elif len(str(day)) == 0:
+		return 'Чтобы выбрать день, нужно после команды указать дату в формате ```день.месяц.год```'
+	elif len(str(day)) > 2:
+		try: 
+			homework = select(
+				day.split('.')[0],
+				day.split('.')[1],
+				day.split('.')[2]
+			)
+
+			date = f"{day.split('.')[0]}.{day.split('.')[1]}.{day.split('.')[2]}"
+		except IndexError:
+			return 'Неподдерживаемый формат даты. Пример даты:```\n/set день.месяц.год```'
+		except psycopg2.Error as e:
+			return 'Возможно вы пытаетесь получить слишком раннюю домаху. Бот хранит только последние 7 дней домашки '
 	else:
 		date = datetime.now(pytz.timezone('Asia/Yekaterinburg')) + timedelta(days=int(day))
-	
-	with open(f'{os.getcwd()}\\files\\list_of_files.json', 'r') as f:
+		for i in summerHolidays:
+			if date.strftime('%m') == i:
+				return 'Какая домаха, лето жеж'
+		for i in holidays:
+			if date.strftime('%d.%m.%Y') == i:
+				return 'Какая домаха, каникулы жеж'
+		if date.strftime('%w') == 5:
+			date1 = datetime.now(pytz.timezone('Asia/Yekaterinburg')) + timedelta(days=2)
+			homework = select(
+				date.strftime('%d'),
+				date.strftime('%m'),
+				date.strftime('%Y')
+			)
+		if date.strftime('%w') == 0:
+			date = datetime.now(pytz.timezone('Asia/Yekaterinburg')) + timedelta(days=1) 
 		try:
-			attachments = json.loads(f.read())['attachments_path'].get(int(date.strftime(' %d').replace(' 0', '')), int(date.strftime(' %m').replace(' 0' '')), date.strftime('%Y'))
+			homework = select(
+				int(date.strftime(' %d').replace(' 0', '')), 
+				int(date.strftime(' %m').replace(' 0' '')), 
+				date.strftime('%Y')
+			)
 		except TypeError:
-			attachments = json.loads(f.read())['attachments_path'].get(int(date.strftime(' %d').replace(' 0', '')), int(date.strftime('%m')), date.strftime('%Y'))
-
-	for i in summerHolidays:
-		if date.strftime('%m') == i:
-			return 'Какая домаха, лето жеж'
-	for i in holidays:
-		if date.strftime('%d.%m.%Y') == i:
-			return 'Какая домаха, каникулы жеж'
-	
-	try:
-		homework = select(
-			int(date.strftime(' %d').replace(' 0', '')), 
-			int(date.strftime(' %m').replace(' 0' '')), 
-			date.strftime('%Y')
-		)
-	except TypeError:
-		homework = select(date.strftime('%d'), date.strftime('%m'), date.strftime('%Y'))
+			homework = select(date.strftime('%d'), date.strftime('%m'), date.strftime('%Y'))
+	if open('files/trueFalse.txt', 'r', encoding='utf-8') == 'True':
+		tf = '\nP.s. в одном из домашних заданий есть вложенные(-ый) файл(-ы)'
+	else:
+		tf = '\n'
 
 	d = date.strftime('%d.%m.%Y')
 	if new == False:
-		a = f'Домашнее задание на _{d}_:\n' + '\n'.join(map(lambda x: f'***{x[0]}***:  {x[1]}', homework))
+		a = f'Домашнее задание на _{d}_:\n' + '\n'.join(map(lambda x: f'***{x[0]}***:  {x[1]}', homework)) + tf
 	else:
-		a = f'Похоже появилась новое д\з на _{d}_:\n' + '\n'.join(map(lambda x: f'***{x[0]}***:  {x[1]}', homework))
-	result = [a, attachments]
-	return result
+		a = a = f'Похоже появилась новое д\з на _{d}_:\n' + '\n'.join(map(lambda x: f'***{x[0]}***:  {x[1]}', homework)) + tf
+	return a

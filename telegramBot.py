@@ -1,5 +1,3 @@
-from apscheduler.schedulers.blocking import BlockingScheduler
-import requests
 from telebot import types
 from Homework import select_homework, add_homework
 from sgoLogin import send_homework
@@ -24,8 +22,16 @@ def telegramBot():
     @bot.message_handler(commands=['che', 'Che'])
     def send_che(message):
         print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
-        bot.reply_to(message, select_homework())
-
+        homework = select_homework()
+        bot.reply_to(message, homework[0])
+        attachments = [types.InputMediaDocument(open(folder, 'rb')) for folder in homework[1]]
+        if len(attachments) == 1:
+            bot.send_document(message.chat.id, attachments[0])
+        else:
+            bot.send_media_group(
+                message.chat.id, 
+                attachments
+            )
     @bot.message_handler(commands=['yesterday'])
     def send_yesterday(message):
         print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))

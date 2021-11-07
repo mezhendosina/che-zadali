@@ -46,7 +46,7 @@ def sgo() -> None:
 		"safebrowsing_for_trusted_sources_enabled": False,
 		"safebrowsing.enabled": False
 	})
-	#chrome_options.binary_location = os.getenv('GOOGLE_CHROME_SHIM')
+	chrome_options.binary_location = os.getenv('GOOGLE_CHROME_SHIM')
 	
 	driver = webdriver.Chrome(
 		executable_path=os.getenv("CHROMEDRIVER_PATH"), 

@@ -43,10 +43,10 @@ def sgo() -> None:
 	attachments_path = f'{os.getcwd()}/files/homework_attachment'
 	#add chrome options
 	chrome_options = webdriver.ChromeOptions()
-	#chrome_options.add_argument("--headless")
-	#chrome_options.add_argument('--disable-gpu')
-	#chrome_options.add_argument("--remote-debugging-port=9222")
-	#chrome_options.add_argument("google-chrome")
+	chrome_options.add_argument("--headless")
+	chrome_options.add_argument('--disable-gpu')
+	chrome_options.add_argument("--remote-debugging-port=9222")
+	chrome_options.add_argument("google-chrome")
 	chrome_options.add_argument("--no-sandbox")	
 	chrome_options.add_experimental_option("prefs", {
 		"download.default_directory": attachments_path,
@@ -55,11 +55,10 @@ def sgo() -> None:
 		"safebrowsing_for_trusted_sources_enabled": False,
 		"safebrowsing.enabled": False
 	})
-	#chrome_options.binary_location = os.getenv('GOOGLE_CHROME_SHIM')
+	chrome_options.binary_location = os.getenv('GOOGLE_CHROME_SHIM')
 	
 	driver = webdriver.Chrome(
-		#executable_path=os.getenv("CHROMEDRIVER_PATH"), 
-		executable_path='chromedriver.exe',
+		executable_path=os.getenv("CHROMEDRIVER_PATH"), 
 		chrome_options=chrome_options
 		) #configurate webdriver
 	#login

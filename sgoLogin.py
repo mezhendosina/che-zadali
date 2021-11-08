@@ -154,7 +154,7 @@ def sgo() -> None:
 	soup, i = BeautifulSoup(driver.page_source, "html.parser"), 0
 	driver.find_element(By.ID, soup.find('button', class_='btn btn-primary')['id']).click()
 	driver.close() #close driver
-	for i in os.listdir(attachments_path):
-		os.remove(f'{os.getcwd()}/files/homework_attachment/{i}')
+	#for i in os.listdir(attachments_path):
+		#os.remove(f'{os.getcwd()}/files/homework_attachment/{i}')
 if __name__ == '__main__':
 	sgo()

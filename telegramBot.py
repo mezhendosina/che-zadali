@@ -1,13 +1,12 @@
-from apscheduler.schedulers.blocking import BlockingScheduler
-import requests
 from telebot import types
-from Homework import select_homework
-import os, re, telebot, hashlib, psycopg2
+from Homework import donwload_attachment, select_homework
+import os, telebot, yadisk, re, hashlib, psycopg2
 
 
 token = os.getenv("TELEGRAM_API_TOKEN")
 bot, salt= telebot.AsyncTeleBot(token, parse_mode='Markdown'), os.urandom(32)
 keyboard, inline_keyboard = types.ReplyKeyboardMarkup(), types.InlineKeyboardMarkup()
+y = yadisk.YaDisk("866043d9835b4c7cb58c5ee656e7e8bd", "4566d2a405a04be89a4003d9e7b78014", os.getenv("YDISK_TOKEN"))
 #connection = psycopg2.connect(os.getenv('DATABASE_URL'), sslmode='require')
 #cursor = connection.cursor()#connect to database
 
@@ -20,11 +19,15 @@ def telegramBot():
             message, 
             'Даров :)\nТы попал к боту, который достанет тебе домашку из Сетевого Города и скинет тебе.\nчтобы воспользоваться моей основной функцией напиши /che'
         )
+   
     @bot.message_handler(commands=['che', 'Che'])
     def send_che(message):
         print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
         bot.reply_to(message, select_homework())
 
+        #donwload_attachment(y, bot, message)
+        #for i in os.listdir(f'{os.getcwd()}/files/homework_attachment'):
+         #   os.remove(f'{os.getcwd()}\\files\\homework_attachment\\{i}')
     @bot.message_handler(commands=['yesterday'])
     def send_yesterday(message):
         print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
@@ -38,28 +41,7 @@ def telegramBot():
     def send_all_week(message):
         print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
         bot.reply_to(message, select_homework('all_week'))
-    '''
-    @bot.message_handler(commands=['select'])
-    def select(message):
-        chat_id = message.chat.id
-        cursor.execute('SELECT DISTINCT day, daynum, daymonth, dayyear FROM homeworktable ORDER BY daynum, daymonth, dayyear')
-        
-        a = 0
-        list_of_days = cursor.fetchall()
-        print(list_of_days)
-        for i in list_of_days:
-            if a >= 6:
-                inline_keyboard.row(
-                    types.KeyboardButton('Вперед')
-                )
-                break
-            else:
-                a = a + 1
-                inline_keyboard.row(i[0])
-                list_of_days.pop(0)
-        bot.send_message(chat_id, 'Выберите день:', reply_markup=inline_keyboard)
-    '''
-
+        bot.send
     @bot.message_handler(commands=['некит'])
     def n(message):
         voice = open('files/voice.ogg', 'rb')

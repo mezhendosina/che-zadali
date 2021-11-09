@@ -1,5 +1,5 @@
 from telebot import types
-from Homework import donwload_attachment, select_homework
+from Homework import select_homework # donwload_attachment, 
 import os, telebot, yadisk, re, hashlib, psycopg2
 
 

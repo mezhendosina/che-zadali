@@ -2,14 +2,12 @@ from telebot import types
 from Homework import donwload_attachment, select_homework
 import os, telebot, yadisk, re, hashlib, psycopg2
 
-
 token = os.getenv("TELEGRAM_API_TOKEN")
 bot, salt= telebot.AsyncTeleBot(token, parse_mode='Markdown'), os.urandom(32)
 keyboard, inline_keyboard = types.ReplyKeyboardMarkup(), types.InlineKeyboardMarkup()
 y = yadisk.YaDisk("866043d9835b4c7cb58c5ee656e7e8bd", "4566d2a405a04be89a4003d9e7b78014", os.getenv("YDISK_TOKEN"))
 #connection = psycopg2.connect(os.getenv('DATABASE_URL'), sslmode='require')
 #cursor = connection.cursor()#connect to database
-
 
 def telegramBot():
     @bot.message_handler(commands=['help', 'start'])

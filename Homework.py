@@ -1,6 +1,5 @@
 """
 This file works with homework recived from https://sgo.edu-74.ru/
-
 """
 
 import psycopg2, pytz, os, requests#, magic
@@ -8,7 +7,6 @@ from datetime import datetime, timedelta
 from bs4 import BeautifulSoup
 from isoweek import Week
 from telebot import types
-
 #global variables
 connection = psycopg2.connect(os.getenv('DATABASE_URL'), sslmode='require')
 cursor = connection.cursor()#connect to database

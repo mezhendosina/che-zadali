@@ -151,7 +151,7 @@ def sgo() -> None:
 	#exit from sgo.edu-74.ru
 	driver.find_element(By.XPATH, '/html/body/div[1]/div[1]/ul/li[3]/a').click()
 	time.sleep(1)
-	soup, i = BeautifulSoup(driver.page_source, "html.parser"), 0
+	soup = BeautifulSoup(driver.page_source, "html.parser")
 	driver.find_element(By.ID, soup.find('button', class_='btn btn-primary')['id']).click()
 	driver.close() #close driver
 	#for i in os.listdir(attachments_path):

@@ -142,7 +142,7 @@ def select_homework(day=1, new : bool =False) -> list:
 	else:
 		a = f'Похоже появилась новое д\з на _{d}_:\n' + '\n'.join(map(lambda x: f'***{x[0]}***:  {x[1]}', homework))
 	return a
-
+'''
 def donwload_attachment(y, bot, message):
 	attachment = []
 	headers = {'Accept': 'application/json', 'Authorization': f'OAuth {os.getenv("YDISK_TOKEN")}'}
@@ -168,3 +168,4 @@ def donwload_attachment(y, bot, message):
 		f.close()
 	else:
 		bot.send_media_group(message.chat.id, [types.InputMediaDocument(open(i, 'rb')) for i in attachment])
+'''

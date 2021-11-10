@@ -1,11 +1,11 @@
 from telebot import types
-from Homework import select_homework # donwload_attachment, 
+from Homework import select_homework, donwload_attachment 
 import os, telebot, yadisk, re, hashlib, psycopg2
 
 token = os.getenv("TELEGRAM_API_TOKEN")
 bot, salt= telebot.AsyncTeleBot(token, parse_mode='Markdown'), os.urandom(32)
 keyboard, inline_keyboard = types.ReplyKeyboardMarkup(), types.InlineKeyboardMarkup()
-y = yadisk.YaDisk("866043d9835b4c7cb58c5ee656e7e8bd", "4566d2a405a04be89a4003d9e7b78014", os.getenv("YDISK_TOKEN"))
+y =
 #connection = psycopg2.connect(os.getenv('DATABASE_URL'), sslmode='require')
 #cursor = connection.cursor()#connect to database
 
@@ -15,17 +15,17 @@ def telegramBot():
         print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
         bot.reply_to(
             message, 
-            'Даров :)\nТы попал к боту, который достанет тебе домашку из Сетевого Города и скинет тебе.\nчтобы воспользоваться моей основной функцией напиши /che'
+            'Даров :)\nТы попал к боту, который достанет тебе домашку из Сетевого Города и скинет тебе.\n***Список команд*** \n /che - домашнее задание на завтра \n/today - домашнее задание на сегодня\n/yesterday - домашнее задание на вчерашний день\n/lessons - узнать расписание'
         )
    
     @bot.message_handler(commands=['che', 'Che'])
     def send_che(message):
-        print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
-        bot.reply_to(message, select_homework())
+        print(str(message.from_user.id) + ' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
+        
 
-        #donwload_attachment(y, bot, message)
-        #for i in os.listdir(f'{os.getcwd()}/files/homework_attachment'):
-         #   os.remove(f'{os.getcwd()}\\files\\homework_attachment\\{i}')
+        select_homework(y, bot, message)
+        for i in os.listdir(f'{os.getcwd()}/files/homework_attachment'):
+            os.remove(f'{os.getcwd()}\\files\\homework_attachment\\{i}')
     @bot.message_handler(commands=['yesterday'])
     def send_yesterday(message):
         print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
@@ -39,14 +39,13 @@ def telegramBot():
     def send_all_week(message):
         print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
         bot.reply_to(message, select_homework('all_week'))
-        bot.send
     @bot.message_handler(commands=['некит'])
     def n(message):
         voice = open('files/voice.ogg', 'rb')
         bot.send_voice(message.chat.id, voice)
-
+        voice.close()
     @bot.message_handler(commands=['lessons'])
-    def sendListOfLessons(message):
+    def send_list_of_Lessons(message):
         print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
         text = open('files/lessons.txt', 'r', encoding= 'utf-8').read()
         bot.reply_to(

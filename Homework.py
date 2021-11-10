@@ -7,6 +7,7 @@ from datetime import datetime, timedelta
 from bs4 import BeautifulSoup
 from isoweek import Week
 from telebot import types
+from yadisk.yadisk import YaDisk
 #global variables
 connection = psycopg2.connect(os.getenv('DATABASE_URL'), sslmode='require')
 cursor = connection.cursor()#connect to database
@@ -70,11 +71,11 @@ def extract_homework(code : str) -> bool:
 	else:
 		return False
 
-def select_homework(day=1, new : bool =False) -> list:
+def select_homework(bot, message, day=1, new : bool =False) -> list:
 	"""
 	This function collect homework day(1 - tommorow, 0 - today, -1 - yesterday, 'all_week' - homework on week) 
 	"""
-	
+	y = YaDisk("866043d9835b4c7cb58c5ee656e7e8bd", "4566d2a405a04be89a4003d9e7b78014", os.getenv("YDISK_TOKEN"))
 	def select(day, month, year) -> list:
 		cursor.execute(
 				'SELECT lesson, homework FROM homeworktable WHERE daynum=%s and daymonth=%s and dayYear=%s;',
@@ -112,13 +113,6 @@ def select_homework(day=1, new : bool =False) -> list:
 		date = datetime.now(pytz.timezone('Asia/Yekaterinburg')) + timedelta(days=2)
 	else:
 		date = datetime.now(pytz.timezone('Asia/Yekaterinburg')) + timedelta(days=int(day))
-	'''
-	with open(f'{os.getcwd()}\\files\\list_of_files.json', 'r') as f:
-		try:
-			attachments = json.loads(f.read())['attachments_path'].get(int(date.strftime(' %d').replace(' 0', '')), int(date.strftime(' %m').replace(' 0' '')), date.strftime('%Y'))
-		except TypeError:
-			attachments = json.loads(f.read())['attachments_path'].get(int(date.strftime(' %d').replace(' 0', '')), int(date.strftime('%m')), date.strftime('%Y'))
-	'''
 
 	for i in summerHolidays:
 		if date.strftime('%m') == i:
@@ -141,9 +135,7 @@ def select_homework(day=1, new : bool =False) -> list:
 		a = f'Домашнее задание на _{d}_:\n' + '\n'.join(map(lambda x: f'***{x[0]}***:  {x[1]}', homework))
 	else:
 		a = f'Похоже появилась новое д\з на _{d}_:\n' + '\n'.join(map(lambda x: f'***{x[0]}***:  {x[1]}', homework))
-	return a
-'''
-def donwload_attachment(y, bot, message):
+	
 	attachment = []
 	headers = {'Accept': 'application/json', 'Authorization': f'OAuth {os.getenv("YDISK_TOKEN")}'}
 	r = requests.get('https://cloud-api.yandex.net/v1/disk/resources?path=%2Fche-zadali_files', headers=headers).json()
@@ -152,20 +144,11 @@ def donwload_attachment(y, bot, message):
 			for a in requests.get(f'https://cloud-api.yandex.net/v1/disk/resources?path=%2Fche-zadali_files%2F{i["name"]}', headers=headers).json()['_embedded']['items']:
 				y.download(f'/che-zadali_files/{i["name"]}/{a["name"]}', f'{os.getcwd()}\\files\\homework_attachment\\{a["name"]}')
 				attachment.append(f'{os.getcwd()}\\files\\homework_attachment\\{a["name"]}')
+		
 	if len(attachment) == 1:
-		print(attachment)
-		if magic.Magic.from_file(attachment[0], mime=True).split('/')[0] == 'text':
-			bot.send_document(message.chat.id, attachment[0])
-		elif magic.Magic.from_file(attachment[0], mime=True).split('/')[0] == 'audio':
-			bot.send_audio(message.chat.id, attachment[0])
-		elif magic.Magic.from_file(attachment[0], mime=True) == 'image/gif':
-			bot.send_animation(message.chat.id, attachment[0])
-		elif magic.Magic.from_file(attachment[0], mime=True).split('/')[0] == 'image':
-			bot.send_photo(message.chat.id, attachment[0])
-		elif magic.Magic.from_file(attachment[0], mime=True).split('/')[0] == 'video':
-			bot.send_video(message.chat.id, attachment[0])
-		f= open(attachment[0], 'rb')
-		f.close()
+		bot.send_document(message.chat.id, attachment[0])
 	else:
 		bot.send_media_group(message.chat.id, [types.InputMediaDocument(open(i, 'rb')) for i in attachment])
-'''
+	return a
+
+

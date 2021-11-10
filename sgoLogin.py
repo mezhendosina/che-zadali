@@ -86,9 +86,7 @@ def sgo() -> None:
 		driver.find_element(By.CLASS_NAME, 'mdi mdi-arrow-right-bold').click()
 		time.sleep(2)
 		extract_homework(driver.page_source)
-	
-	'''
-	
+
 	#download attachments
 	soup = BeautifulSoup(a, features='lxml')
 	schoolJournal = soup.find('div', 'schooljournal_content column')
@@ -147,14 +145,14 @@ def sgo() -> None:
 					By.XPATH,
 					f'//*[@id="view"]/div[2]/div/div/div[2]/div[{col[0]}]/div[{col[1]}]/diary-day/div/div/table[2]/tbody/tr[{num}]/td[3]/div[2]/assign-attachments/div/i'
 				).click()
-	'''
+	
 	#exit from sgo.edu-74.ru
 	driver.find_element(By.XPATH, '/html/body/div[1]/div[1]/ul/li[3]/a').click()
 	time.sleep(1)
 	soup = BeautifulSoup(driver.page_source, "html.parser")
 	driver.find_element(By.ID, soup.find('button', class_='btn btn-primary')['id']).click()
 	driver.close() #close driver
-	#for i in os.listdir(attachments_path):
-		#os.remove(f'{os.getcwd()}/files/homework_attachment/{i}')
+	for i in os.listdir(attachments_path):
+		os.remove(f'{os.getcwd()}/files/homework_attachment/{i}')
 if __name__ == '__main__':
 	sgo()

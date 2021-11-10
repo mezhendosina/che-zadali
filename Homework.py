@@ -71,7 +71,7 @@ def extract_homework(code : str) -> bool:
 	else:
 		return False
 
-def select_homework(bot, message, day=1, new : bool =False) -> list:
+def select_homework(bot=None, message=None, day=1, new : bool =False) -> list:
 	"""
 	This function collect homework day(1 - tommorow, 0 - today, -1 - yesterday, 'all_week' - homework on week) 
 	"""
@@ -105,7 +105,7 @@ def select_homework(bot, message, day=1, new : bool =False) -> list:
 					h.update({a[1]: a[2]})	
 			homework.update({i[0]: h})
 		for i in homework.keys():
-			r = str(r)+f'\n\n_{i}_я\n' + str('\n'.join(map(lambda x: f'***{x[0]}***:  {x[1]}', list(homework.get(i).items()))))
+			r = str(r)+f'\n\n<i>{i}</i>я\n' + str('\n'.join(map(lambda x: f'<b>{x[0]}</b>:  {x[1]}', list(homework.get(i).items()))))
 		
 		return r
 	
@@ -132,23 +132,26 @@ def select_homework(bot, message, day=1, new : bool =False) -> list:
 
 	d = date.strftime('%d.%m.%Y')
 	if new == False:
-		a = f'Домашнее задание на _{d}_:\n' + '\n'.join(map(lambda x: f'***{x[0]}***:  {x[1]}', homework))
+		a = f'Домашнее задание на <i>{d}</i>:\n' + '\n'.join(map(lambda x: f'<b>{x[0]}</b>:  {x[1]}', homework))
 	else:
-		a = f'Похоже появилась новое д\з на _{d}_:\n' + '\n'.join(map(lambda x: f'***{x[0]}***:  {x[1]}', homework))
-	
+		a = f'Похоже появилась новое д\з на <i>{d}</i>:\n' + '\n'.join(map(lambda x: f'<b>{x[0]}</b>:  {x[1]}', homework))
+	if bot == None or message == None:
+		return a
+	bot.send_message(message.chat.id, a, disable_web_page_preview=True)
 	attachment = []
 	headers = {'Accept': 'application/json', 'Authorization': f'OAuth {os.getenv("YDISK_TOKEN")}'}
 	r = requests.get('https://cloud-api.yandex.net/v1/disk/resources?path=%2Fche-zadali_files', headers=headers).json()
 	for i in r['_embedded']['items']:
-		if i['name'] == datetime.now().strftime('%d.%m.%Y'):
+		if i['name'] == d:
 			for a in requests.get(f'https://cloud-api.yandex.net/v1/disk/resources?path=%2Fche-zadali_files%2F{i["name"]}', headers=headers).json()['_embedded']['items']:
 				y.download(f'/che-zadali_files/{i["name"]}/{a["name"]}', f'{os.getcwd()}\\files\\homework_attachment\\{a["name"]}')
 				attachment.append(f'{os.getcwd()}\\files\\homework_attachment\\{a["name"]}')
-		
+	if len(attachment) == 0:
+		return a
 	if len(attachment) == 1:
-		bot.send_document(message.chat.id, attachment[0])
+		bot.send_document(message.chat.id, open(attachment[0], 'rb'))
 	else:
 		bot.send_media_group(message.chat.id, [types.InputMediaDocument(open(i, 'rb')) for i in attachment])
-	return a
 
-
+	for i in os.listdir(f'{os.getcwd()}/files/homework_attachment'):
+		os.remove(f'{os.getcwd()}\\files\\homework_attachment\\{i}')

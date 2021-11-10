@@ -5,7 +5,7 @@ import os, telebot, yadisk, re, hashlib, psycopg2
 token = os.getenv("TELEGRAM_API_TOKEN")
 bot, salt= telebot.AsyncTeleBot(token, parse_mode='Markdown'), os.urandom(32)
 keyboard, inline_keyboard = types.ReplyKeyboardMarkup(), types.InlineKeyboardMarkup()
-y =
+
 #connection = psycopg2.connect(os.getenv('DATABASE_URL'), sslmode='require')
 #cursor = connection.cursor()#connect to database
 
@@ -15,17 +15,13 @@ def telegramBot():
         print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
         bot.reply_to(
             message, 
-            'Даров :)\nТы попал к боту, который достанет тебе домашку из Сетевого Города и скинет тебе.\n***Список команд*** \n /che - домашнее задание на завтра \n/today - домашнее задание на сегодня\n/yesterday - домашнее задание на вчерашний день\n/lessons - узнать расписание'
+            'Даров :)\nТы попал к боту, который достанет тебе домашку из Сетевого Города и скинет тебе.\n<b>Список команд</b> \n /che - домашнее задание на завтра \n/today - домашнее задание на сегодня\n/yesterday - домашнее задание на вчерашний день\n/lessons - узнать расписание'
         )
    
     @bot.message_handler(commands=['che', 'Che'])
     def send_che(message):
         print(str(message.from_user.id) + ' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
-        
-
-        select_homework(y, bot, message)
-        for i in os.listdir(f'{os.getcwd()}/files/homework_attachment'):
-            os.remove(f'{os.getcwd()}\\files\\homework_attachment\\{i}')
+        select_homework(bot, message)
     @bot.message_handler(commands=['yesterday'])
     def send_yesterday(message):
         print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
@@ -34,11 +30,11 @@ def telegramBot():
     @bot.message_handler(commands=['today'])
     def send_today(message):
         print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
-        bot.reply_to(message, select_homework(0))
+        select_homework(bot, message, 0)
     @bot.message_handler(commands=['all_week'])
     def send_all_week(message):
         print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
-        bot.reply_to(message, select_homework('all_week'))
+        select_homework(bot, message, 'all_week')
     @bot.message_handler(commands=['некит'])
     def n(message):
         voice = open('files/voice.ogg', 'rb')
@@ -52,7 +48,7 @@ def telegramBot():
             message,
             text
         )
-
+        text.close()
     @bot.inline_handler(func=lambda query: len(query.query) >= 0)
     def query_text(message):
         try:

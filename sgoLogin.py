@@ -15,15 +15,16 @@ def send_homework(message: str, chat_id: str, notification: bool) -> dict:
 		data={
 			'chat_id': chat_id, 
 			'text': message,
-			'parse_mode': 'Markdown',
+			'parse_mode': 'html',
 			'disable_notification': notification
 			} #data for request
 	).json()  #send request to telegram api 
 	return r1
+
 def wait(driver: str, elem: str, find_by: str, click:bool = True, select:bool = False, select_id=False):
 	i = 0
 	while True:
-		if i > 404:
+		if i > 1404:
 			raise TimeoutError('Error when wait element')
 		try:
 			if click == True:
@@ -36,7 +37,8 @@ def wait(driver: str, elem: str, find_by: str, click:bool = True, select:bool = 
 			break
 		except NoSuchElementException:
 			i = i+1
-			continue			
+			continue		
+	
 def sgo() -> None:
 	#gloval var
 	y = YaDisk(os.getenv("YDISK_LOGIN"), os.getenv("YDISK_PASSWORD"), os.getenv('YDISK_TOKEN'))
@@ -152,6 +154,7 @@ def sgo() -> None:
 	soup = BeautifulSoup(driver.page_source, "html.parser")
 	driver.find_element(By.ID, soup.find('button', class_='btn btn-primary')['id']).click()
 	driver.close() #close driver
+	
 	for i in os.listdir(attachments_path):
 		os.remove(f'{os.getcwd()}/files/homework_attachment/{i}')
 if __name__ == '__main__':

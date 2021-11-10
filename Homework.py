@@ -2,7 +2,7 @@
 This file works with homework recived from https://sgo.edu-74.ru/
 """
 
-import psycopg2, pytz, os, requests#, magic
+import psycopg2, pytz, os, requests
 from datetime import datetime, timedelta
 from bs4 import BeautifulSoup
 from isoweek import Week
@@ -144,8 +144,8 @@ def select_homework(bot=None, message=None, day=1, new : bool =False) -> list:
 	for i in r['_embedded']['items']:
 		if i['name'] == d:
 			for a in requests.get(f'https://cloud-api.yandex.net/v1/disk/resources?path=%2Fche-zadali_files%2F{i["name"]}', headers=headers).json()['_embedded']['items']:
-				y.download(f'/che-zadali_files/{i["name"]}/{a["name"]}', f'{os.getcwd()}\\files\\homework_attachment\\{a["name"]}')
-				attachment.append(f'{os.getcwd()}\\files\\homework_attachment\\{a["name"]}')
+				y.download(f'/che-zadali_files/{i["name"]}/{a["name"]}', f'{os.getcwd()}/files/homework_attachment/{a["name"]}')
+				attachment.append(f'{os.getcwd()}/files/homework_attachment/{a["name"]}')
 	if len(attachment) == 0:
 		return a
 	if len(attachment) == 1:
@@ -154,4 +154,4 @@ def select_homework(bot=None, message=None, day=1, new : bool =False) -> list:
 		bot.send_media_group(message.chat.id, [types.InputMediaDocument(open(i, 'rb')) for i in attachment])
 
 	for i in os.listdir(f'{os.getcwd()}/files/homework_attachment'):
-		os.remove(f'{os.getcwd()}\\files\\homework_attachment\\{i}')
+		os.remove(f'{os.getcwd()}/files/homework_attachment/{i}')

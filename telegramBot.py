@@ -1,9 +1,9 @@
 from telebot import types
 from Homework import select_homework 
-import os, telebot, yadisk, re, hashlib, psycopg2
+import os, telebot, re, hashlib, psycopg2
 
 token = os.getenv("TELEGRAM_API_TOKEN")
-bot, salt= telebot.AsyncTeleBot(token, parse_mode='Markdown'), os.urandom(32)
+bot, salt= telebot.AsyncTeleBot(token, parse_mode='html'), os.urandom(32)
 keyboard, inline_keyboard = types.ReplyKeyboardMarkup(), types.InlineKeyboardMarkup()
 #connection = psycopg2.connect(os.getenv('DATABASE_URL'), sslmode='require')
 #cursor = connection.cursor()#connect to database
@@ -24,7 +24,7 @@ def telegramBot():
     @bot.message_handler(commands=['yesterday'])
     def send_yesterday(message):
         print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
-        bot.reply_to(message, select_homework(-1))
+        select_homework(bot, message, -1)
 
     @bot.message_handler(commands=['today'])
     def send_today(message):

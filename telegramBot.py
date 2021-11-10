@@ -1,11 +1,10 @@
 from telebot import types
-from Homework import select_homework, donwload_attachment 
+from Homework import select_homework 
 import os, telebot, yadisk, re, hashlib, psycopg2
 
 token = os.getenv("TELEGRAM_API_TOKEN")
 bot, salt= telebot.AsyncTeleBot(token, parse_mode='Markdown'), os.urandom(32)
 keyboard, inline_keyboard = types.ReplyKeyboardMarkup(), types.InlineKeyboardMarkup()
-
 #connection = psycopg2.connect(os.getenv('DATABASE_URL'), sslmode='require')
 #cursor = connection.cursor()#connect to database
 

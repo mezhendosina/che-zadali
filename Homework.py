@@ -73,7 +73,7 @@ def extract_homework(code : str) -> list:
 				continue
 	connection.commit()
 
-	a, true_false = new_old(cursor), []
+	a, true_false = new_old(), []
 	for i in a:
 		if i > old_list.pop(0):
 			true_false.append(True)

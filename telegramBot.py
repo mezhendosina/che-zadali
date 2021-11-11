@@ -20,20 +20,20 @@ def telegramBot():
     @bot.message_handler(commands=['che', 'Che'])
     def send_che(message):
         print(str(message.from_user.id) + ' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
-        bot.send_message(message, select_homework()[0], disable_web_page_preview=True)
+        bot.send_message(message.chat.id, select_homework())
     @bot.message_handler(commands=['yesterday'])
     def send_yesterday(message):
         print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
-        select_homework(-1)
+        bot.send_message(message.chat.id, select_homework(-1))
 
     @bot.message_handler(commands=['today'])
     def send_today(message):
         print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
-        select_homework(bot, message, 0)
+        bot.send_message(message.chat.id, select_homework(0))
     @bot.message_handler(commands=['all_week'])
     def send_all_week(message):
         print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
-        select_homework('all_week')
+        bot.send_message(message.chat.id, select_homework('all_week'))
     @bot.message_handler(commands=['некит'])
     def n(message):
         voice = open('files/voice.ogg', 'rb')

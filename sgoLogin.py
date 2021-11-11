@@ -1,5 +1,7 @@
 #imports 
-import time, os, datetime, requests
+import time, os, datetime
+from telebot import TeleBot
+from telebot.types import InputMediaDocument
 from yadisk import YaDisk, exceptions
 from bs4 import BeautifulSoup
 from selenium import webdriver
@@ -8,27 +10,10 @@ from selenium.webdriver.support.ui import Select
 from selenium.common.exceptions import NoSuchElementException
 from Homework import extract_homework, months, select_homework
 
-def send_homework(message: list, chat_id: str, notification: bool) -> dict:
-	token = os.getenv('TELEGRAM_API_TOKEN')
-	r1 = requests.post(
-		f'https://api.telegram.org/bot{token}/sendMessage', #send message 
-		data={
-			'chat_id': chat_id, 
-			'text': message[0],
-			'parse_mode': 'html',
-			'disable_notification': notification
-			} #data for request
-	).json()  #send request to telegram api 
-	if message[1] == None:
-		return r1
-	r2 = requests.post(
-		f'https://api.telegram.org/bot{token}/sendMediaGroup', #send message 
-		data={
-			'chat_id': chat_id, 
-			'media': [{'type': 'document', 'media': a} for a in message[1]]
-			} #data for request
-	).json()  #send request to telegram api
-	return r1, r2
+def send_homework(message: list, chat_id: str) -> dict:
+	bot = TeleBot(os.getenv('TELEGRAM_API_TOKEN'), parse_mode='html')
+	bot.send_message(chat_id, message[0])
+	bot.send_media_group(chat_id, [InputMediaDocument(i) for i in message[1]])
 
 def wait(driver: str, elem: str, find_by: str, click:bool = True, select:bool = False, select_id=False) -> None:
 	i = 0

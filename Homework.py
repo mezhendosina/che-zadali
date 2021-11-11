@@ -144,10 +144,9 @@ def select_homework(day=1, new : bool =False) -> list:
 	d = date.strftime('%d.%m.%Y')
 	if new == False:
 		#a = f'Домашнее задание на <i>{d}</i>:\n' + '\n'.join(map(lambda x: f'<b>{x[0]}</b>:  {x[1]}', homework))
-		a = 'Домашнее задание теперь здесь: https://t.me/joinchat/nDOBdB92pq1jOGFi'
-		return a
+		homework = 'Домашнее задание теперь здесь: https://t.me/joinchat/nDOBdB92pq1jOGFi'
 	else:
-		a = f'Похоже появилась новое д\з на <i>{d}</i>:\n' + '\n'.join(map(lambda x: f'<b>{x[0]}</b>:  {x[1]}', homework))
+		homework = f'Похоже появилась новое д\з на <i>{d}</i>:\n' + '\n'.join(map(lambda x: f'<b>{x[0]}</b>:  {x[1]}', homework))
 
 	
 	
@@ -158,7 +157,9 @@ def select_homework(day=1, new : bool =False) -> list:
 	for i in r['_embedded']['items']:
 		if i['name'] == d:
 			for a in requests.get(f'https://cloud-api.yandex.net/v1/disk/resources?path=%2Fche-zadali_files%2F{i["name"]}', headers=headers).json()['_embedded']['items']:
-				attachment.append(y.get_download_link(f'/che-zadali_files/{i["name"]}/{a["name"]}'))
+				l = y.get_download_link(f'/che-zadali_files/{i["name"]}/{a["name"]}')
+				attachment.append(l)
 		elif int(i['name'].split('.')[0]) < int(date.strftime('%d')) and int(i['name'].split('.')[1]) < int(date.strftime('%m')):
 			y.remove(f'/che-zadali_files/{i["name"]}')
-	return [a, attachment]
+	res = [homework, attachment]
+	return res

@@ -8,18 +8,27 @@ from selenium.webdriver.support.ui import Select
 from selenium.common.exceptions import NoSuchElementException
 from Homework import extract_homework, months, select_homework
 
-def send_homework(message: str, chat_id: str, notification: bool) -> dict:
+def send_homework(message: list, chat_id: str, notification: bool) -> dict:
 	token = os.getenv('TELEGRAM_API_TOKEN')
 	r1 = requests.post(
 		f'https://api.telegram.org/bot{token}/sendMessage', #send message 
 		data={
 			'chat_id': chat_id, 
-			'text': message,
+			'text': message[0],
 			'parse_mode': 'html',
 			'disable_notification': notification
 			} #data for request
 	).json()  #send request to telegram api 
-	return r1
+	if message[1] == None:
+		return r1
+	r2 = requests.post(
+		f'https://api.telegram.org/bot{token}/sendMediaGroup', #send message 
+		data={
+			'chat_id': chat_id, 
+			'media': [{'type': 'document', 'media': a} for a in message[1]]
+			} #data for request
+	).json()  #send request to telegram api
+	return r1, r2
 
 def wait(driver: str, elem: str, find_by: str, click:bool = True, select:bool = False, select_id=False) -> None:
 	i = 0
@@ -79,16 +88,12 @@ def sgo() -> None:
 	a = driver.page_source #save page source
 	
 	#get homework
-	homework = extract_homework(a)
-	
+	homework, i = extract_homework(a), 0
+	for i in homework:
+		if i == True:
+			send_homework(select_homework(0, new=True), '-1001503742992', False)
+		i+1
 	#send homework
-	if homework[0] == True:
-		send_homework(select_homework(0, new=True), '-1001503742992', False)
-	elif homework[1] == True:
-		send_homework(select_homework(new = True), '-1001503742992', False)
-	elif homework[2] == True:
-		send_homework(select_homework(2, new=True), '-1001503742992', False)
-	
 	if datetime.datetime.now().strftime('%w') == '6':
 		driver.find_element(By.CLASS_NAME, 'mdi mdi-arrow-right-bold').click()
 		time.sleep(2)
@@ -159,8 +164,5 @@ def sgo() -> None:
 	soup = BeautifulSoup(driver.page_source, "html.parser")
 	driver.find_element(By.ID, soup.find('button', class_='btn btn-primary')['id']).click()
 	driver.close() #close driver
-	
-	for i in os.listdir(attachments_path):
-		os.remove(f'{os.getcwd()}/files/homework_attachment/{i}')
 if __name__ == '__main__':
 	sgo()

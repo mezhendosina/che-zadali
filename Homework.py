@@ -77,18 +77,16 @@ def extract_homework(code : str) -> list:
 	for i in a:
 		if i > old_list.pop(0):
 			true_false.append(True)
+		else:
+			true_false.append(False)
 	return true_false
 
 
-def select_homework(bot=None, message=None, day=1, new : bool =False) -> list:
+def select_homework(day=1, new : bool =False) -> list:
 	"""
 	This function collect homework day(1 - tommorow, 0 - today, -1 - yesterday, 'all_week' - homework on week) 
 	"""
 	y = YaDisk("866043d9835b4c7cb58c5ee656e7e8bd", "4566d2a405a04be89a4003d9e7b78014", os.getenv("YDISK_TOKEN"))
-	if bot == None or message == None:
-		bot = os.getenv('TELEGRAM_API_TOKEN')
-		m = '-1001503742992'
-	m = message.chat.id
 	def select(day, month, year) -> list:
 		cursor.execute(
 				'SELECT lesson, homework FROM homeworktable WHERE daynum=%s and daymonth=%s and dayYear=%s;',
@@ -151,7 +149,7 @@ def select_homework(bot=None, message=None, day=1, new : bool =False) -> list:
 	else:
 		a = f'Похоже появилась новое д\з на <i>{d}</i>:\n' + '\n'.join(map(lambda x: f'<b>{x[0]}</b>:  {x[1]}', homework))
 
-	bot.send_message(m, a, disable_web_page_preview=True)
+	
 	
 	attachment, date = [], datetime.now() + timedelta(days=-7)
 	headers = {'Accept': 'application/json', 'Authorization': f'OAuth {os.getenv("YDISK_TOKEN")}'}
@@ -163,10 +161,4 @@ def select_homework(bot=None, message=None, day=1, new : bool =False) -> list:
 				attachment.append(y.get_download_link(f'/che-zadali_files/{i["name"]}/{a["name"]}'))
 		elif int(i['name'].split('.')[0]) < int(date.strftime('%d')) and int(i['name'].split('.')[1]) < int(date.strftime('%m')):
 			y.remove(f'/che-zadali_files/{i["name"]}')
-	
-	if len(attachment) == 0:
-		return a
-	if len(attachment) == 1:
-		bot.send_document(m, attachment[0])
-	else:
-		bot.send_media_group(m, [types.InputMediaDocument(a) for a in attachment])
+	return [a, attachment]

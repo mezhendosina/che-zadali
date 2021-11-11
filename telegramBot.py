@@ -16,16 +16,16 @@ def telegramBot():
             message, 
             'Даров :)\nТы попал к боту, который достанет тебе домашку из Сетевого Города и скинет тебе.\n<b>Список команд</b> \n /che - домашнее задание на завтра \n/today - домашнее задание на сегодня\n/yesterday - домашнее задание на вчерашний день\n/lessons - узнать расписание'
         )
-   
+
     @bot.message_handler(commands=['che', 'Che'])
     def send_che(message):
         print(str(message.from_user.id) + ' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
-        select_homework(bot, message)
+        bot.send_message(message, select_homework()[0], disable_web_page_preview=True)
     @bot.message_handler(commands=['yesterday'])
     def send_yesterday(message):
         print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
         select_homework(bot, message, -1)
-
+        
     @bot.message_handler(commands=['today'])
     def send_today(message):
         print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))

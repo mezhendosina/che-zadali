@@ -24,7 +24,7 @@ def telegramBot():
     @bot.message_handler(commands=['yesterday'])
     def send_yesterday(message):
         print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
-        select_homework(bot, message, -1)
+        select_homework(-1)
 
     @bot.message_handler(commands=['today'])
     def send_today(message):
@@ -33,7 +33,7 @@ def telegramBot():
     @bot.message_handler(commands=['all_week'])
     def send_all_week(message):
         print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
-        select_homework(bot, message, 'all_week')
+        select_homework('all_week')
     @bot.message_handler(commands=['некит'])
     def n(message):
         voice = open('files/voice.ogg', 'rb')

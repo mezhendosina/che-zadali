@@ -6,19 +6,10 @@ import psycopg2, pytz, os, requests
 from datetime import datetime, timedelta
 from bs4 import BeautifulSoup
 from isoweek import Week
-from telebot import types
 from yadisk.yadisk import YaDisk
 #global variables
 connection = psycopg2.connect(os.getenv('DATABASE_URL'), sslmode='require')
 cursor = connection.cursor()#connect to database
-summerHolidays = ['06', '07', '08'] #summer holidays month number  
-holidays = [
-	'27.10.2021', '28.10.2021', '29.10.2021', '30.10.2021', '31.10.2021',
-	'01.11.2021', '02.11.2021', '03.11.2021', 
-	'29.12.2021', '30.12.2021', '31.12.2021', '01.01.2022', '02.01.2022', '03.01.2022', '04.01.2022', 
-	'05.01.2022', '06.01.2022', '07.01.2022', '08.01.2022', '09.01.2022', '10.01.2022', '11.01.2022', '12.01.2022',
-	'22.03.2022', '23.03.2022', '24.03.2022', '25.03.2022', '26.03.2022', '27.03.2022', '28.03.2022', '29.03.2022'
-	] #holidays days
 
 def months(month : int):
 	"""This function compare month name with his number"""
@@ -125,13 +116,6 @@ def select_homework(day=1, new : bool =False) -> list:
 	else:
 		date = datetime.now(pytz.timezone('Asia/Yekaterinburg')) + timedelta(days=int(day))
 
-	for i in summerHolidays:
-		if date.strftime('%m') == i:
-			return 'Какая домаха, лето жеж'
-	for i in holidays:
-		if date.strftime('%d.%m.%Y') == i:
-			return 'Какая домаха, каникулы жеж'
-	
 	try:
 		homework = select(
 			int(date.strftime(' %d').replace(' 0', '')), 
@@ -146,7 +130,7 @@ def select_homework(day=1, new : bool =False) -> list:
 		#a = f'Домашнее задание на <i>{d}</i>:\n' + '\n'.join(map(lambda x: f'<b>{x[0]}</b>:  {x[1]}', homework))
 		homework = 'Домашнее задание теперь здесь: https://t.me/joinchat/nDOBdB92pq1jOGFi'
 	else:
-		homework = f'Похоже появилась новое д\з на <i>{d}</i>:\n' + '\n'.join(map(lambda x: f'<b>{x[0]}</b>:  {x[1]}', homework))
+		homework = f'Появилась новое д\з на <i>{d}</i>:\n' + '\n'.join(map(lambda x: f'<b>{x[0]}</b>:  {x[1]}', homework))
 
 	
 	
@@ -163,3 +147,4 @@ def select_homework(day=1, new : bool =False) -> list:
 			y.remove(f'/che-zadali_files/{i["name"]}')
 	res = [homework, attachment]
 	return res
+	

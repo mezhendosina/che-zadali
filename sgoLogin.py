@@ -76,7 +76,7 @@ def sgo() -> None:
 	homework, i = extract_homework(a), 0
 	for i in homework:
 		if i == True:
-			send_homework(select_homework(0, new=True), '-1001503742992', False)
+			send_homework(select_homework(0, new=True), '-1001503742992')
 		i+1
 	#send homework
 	if datetime.datetime.now().strftime('%w') == '6':

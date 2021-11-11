@@ -28,14 +28,22 @@ def months(month : int):
 		'июн.': 6, 'июл.': 7, 'авг.': 8,
 		'сент.': 9, 'окт.': 10, 'нояб.': 11
 	}[month]
-def extract_homework(code : str) -> bool:
+def new_old() -> list:
+	i, result = 0, []
+	for i in range(2):
+		if i == 2:	
+			break
+		date = datetime.now(pytz.timezone('Asia/Yekaterinburg')) + timedelta(days=i)
+		cursor.execute(f"SELECT * FROM homeworktable WHERE daynum={date.strftime('%d')} AND daymonth={date.strftime('%m')} AND dayyear={date.strftime('%Y')};") 
+		result.append(cursor.fetchall())
+		i+1
+	return result
+
+
+def extract_homework(code : str) -> list:
 	"""This function parses code in search homework and delete old homework"""
 	
-	date = datetime.now(pytz.timezone('Asia/Yekaterinburg')) + timedelta(days=1)
-	cursor.execute(f"SELECT * FROM homeworktable WHERE daynum={date.strftime('%d')} AND daymonth={date.strftime('%m')} AND dayyear={date.strftime('%Y')};") 
-	old = cursor.fetchall()
-
-	soup =  BeautifulSoup(code, features = 'lxml')
+	soup, old_list =  BeautifulSoup(code, features = 'lxml'), new_old()
 	schoolJournal = soup.find('div', 'schooljournal_content column')
 	dayTable = schoolJournal.find_all('div', class_ = 'day_table')
 	
@@ -64,18 +72,23 @@ def extract_homework(code : str) -> bool:
 			except AttributeError as e:
 				continue
 	connection.commit()
-	cursor.execute(f"SELECT * FROM homeworktable WHERE daynum={date.strftime('%d')} AND daymonth={date.strftime('%m')} AND dayyear={date.strftime('%Y')};") 
-	new = cursor.fetchall()
-	if new > old:
-		return True
-	else:
-		return False
+
+	a, true_false = new_old(cursor), []
+	for i in a:
+		if i > old_list.pop(0):
+			true_false.append(True)
+	return true_false
+
 
 def select_homework(bot=None, message=None, day=1, new : bool =False) -> list:
 	"""
 	This function collect homework day(1 - tommorow, 0 - today, -1 - yesterday, 'all_week' - homework on week) 
 	"""
 	y = YaDisk("866043d9835b4c7cb58c5ee656e7e8bd", "4566d2a405a04be89a4003d9e7b78014", os.getenv("YDISK_TOKEN"))
+	if bot == None or message == None:
+		bot = os.getenv('TELEGRAM_API_TOKEN')
+		m = '-1001503742992'
+	m = message.chat.id
 	def select(day, month, year) -> list:
 		cursor.execute(
 				'SELECT lesson, homework FROM homeworktable WHERE daynum=%s and daymonth=%s and dayYear=%s;',
@@ -132,26 +145,28 @@ def select_homework(bot=None, message=None, day=1, new : bool =False) -> list:
 
 	d = date.strftime('%d.%m.%Y')
 	if new == False:
-		a = f'Домашнее задание на <i>{d}</i>:\n' + '\n'.join(map(lambda x: f'<b>{x[0]}</b>:  {x[1]}', homework))
+		#a = f'Домашнее задание на <i>{d}</i>:\n' + '\n'.join(map(lambda x: f'<b>{x[0]}</b>:  {x[1]}', homework))
+		a = 'Домашнее задание теперь здесь: https://t.me/joinchat/nDOBdB92pq1jOGFi'
+		return a
 	else:
 		a = f'Похоже появилась новое д\з на <i>{d}</i>:\n' + '\n'.join(map(lambda x: f'<b>{x[0]}</b>:  {x[1]}', homework))
-	if bot == None or message == None:
-		return a
-	bot.send_message(message.chat.id, a, disable_web_page_preview=True)
-	attachment = []
+
+	bot.send_message(m, a, disable_web_page_preview=True)
+	
+	attachment, date = [], datetime.now() + timedelta(days=-7)
 	headers = {'Accept': 'application/json', 'Authorization': f'OAuth {os.getenv("YDISK_TOKEN")}'}
 	r = requests.get('https://cloud-api.yandex.net/v1/disk/resources?path=%2Fche-zadali_files', headers=headers).json()
+
 	for i in r['_embedded']['items']:
 		if i['name'] == d:
 			for a in requests.get(f'https://cloud-api.yandex.net/v1/disk/resources?path=%2Fche-zadali_files%2F{i["name"]}', headers=headers).json()['_embedded']['items']:
-				y.download(f'/che-zadali_files/{i["name"]}/{a["name"]}', f'{os.getcwd()}/files/homework_attachment/{a["name"]}')
-				attachment.append(f'{os.getcwd()}/files/homework_attachment/{a["name"]}')
+				attachment.append(y.get_download_link(f'/che-zadali_files/{i["name"]}/{a["name"]}'))
+		elif int(i['name'].split('.')[0]) < int(date.strftime('%d')) and int(i['name'].split('.')[1]) < int(date.strftime('%m')):
+			y.remove(f'/che-zadali_files/{i["name"]}')
+	
 	if len(attachment) == 0:
 		return a
 	if len(attachment) == 1:
-		bot.send_document(message.chat.id, open(attachment[0], 'rb'))
+		bot.send_document(m, attachment[0])
 	else:
-		bot.send_media_group(message.chat.id, [types.InputMediaDocument(open(i, 'rb')) for i in attachment])
-
-	for i in os.listdir(f'{os.getcwd()}/files/homework_attachment'):
-		os.remove(f'{os.getcwd()}/files/homework_attachment/{i}')
+		bot.send_media_group(m, [types.InputMediaDocument(a) for a in attachment])

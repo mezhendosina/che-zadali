@@ -21,7 +21,7 @@ def send_homework(message: str, chat_id: str, notification: bool) -> dict:
 	).json()  #send request to telegram api 
 	return r1
 
-def wait(driver: str, elem: str, find_by: str, click:bool = True, select:bool = False, select_id=False):
+def wait(driver: str, elem: str, find_by: str, click:bool = True, select:bool = False, select_id=False) -> None:
 	i = 0
 	while True:
 		if i > 1404:
@@ -82,8 +82,13 @@ def sgo() -> None:
 	homework = extract_homework(a)
 	
 	#send homework
-	if homework == True:
-		send_homework(select_homework(new=True), '-1001503742992', False)
+	if homework[0] == True:
+		send_homework(select_homework(0, new=True), '-1001503742992', False)
+	elif homework[1] == True:
+		send_homework(select_homework(new = True), '-1001503742992', False)
+	elif homework[2] == True:
+		send_homework(select_homework(2, new=True), '-1001503742992', False)
+	
 	if datetime.datetime.now().strftime('%w') == '6':
 		driver.find_element(By.CLASS_NAME, 'mdi mdi-arrow-right-bold').click()
 		time.sleep(2)

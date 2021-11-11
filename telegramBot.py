@@ -94,15 +94,6 @@ def telegramBot():
             bot.answer_inline_query(message.id, [che, lessons, today, yesterday, all_week])
         except Exception as e:
             print(e)
-        #print(str(message.from_user.id) + ' ' + str(message.from_user.username) + ' ' + str(message.text))
-    '''
-    @bot.message_handler(commands=['login'], chat_types=['private'])
-    def login(message):
-        bot.send_message(message, 'Выберите школу')
-        
-        bot.send_message(message, 'Введите логин от Сетевого города')   
-    '''
-    
     bot.polling(non_stop=True)
 if __name__ == '__main__':
     telegramBot() 

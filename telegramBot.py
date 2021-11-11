@@ -25,7 +25,7 @@ def telegramBot():
     def send_yesterday(message):
         print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
         select_homework(bot, message, -1)
-        
+
     @bot.message_handler(commands=['today'])
     def send_today(message):
         print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
@@ -47,7 +47,6 @@ def telegramBot():
             message,
             text
         )
-        text.close()
     @bot.inline_handler(func=lambda query: len(query.query) >= 0)
     def query_text(message):
         try:

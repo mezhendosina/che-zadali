@@ -1,5 +1,6 @@
 #imports 
 import time, os, datetime
+import pytz
 from telebot import TeleBot
 from telebot.types import InputMediaDocument
 from selenium.webdriver.chrome.service import Service
@@ -14,8 +15,12 @@ from Homework import extract_homework, months, select_homework
 def send_homework(message: list, chat_id: str) -> dict:
 	bot = TeleBot(os.getenv('TELEGRAM_API_TOKEN'), parse_mode='html')
 	bot.send_message(chat_id, message[0])
-	bot.send_media_group(chat_id, [InputMediaDocument(i) for i in message[1]])
-
+	if len(message[1]) == 1:
+		bot.send_document(chat_id, )
+	elif len(message) > 1:
+		bot.send_media_group(chat_id, [InputMediaDocument(i) for i in message[1]])
+	else:
+		None
 def wait(driver: str, elem: str, find_by: str, click:bool = True, select:bool = False, select_id=False) -> None:
 	i = 0
 	while True:
@@ -71,12 +76,15 @@ def sgo() -> None:
 	a = driver.page_source #save page source
 	
 	#get homework
-	homework, i = extract_homework(a), 0
-	for i in homework:
-		if i == True:
-			send_homework(select_homework(0, new=True), '-1001503742992')
+	homework, i, send_time = extract_homework(a), 0, ['1400','1401','1402', '1403', '1404','1405','1406','1407','1408','1409','1410']
+	#send_homework
+	for a in homework:
+		if a == True:
+			send_homework(select_homework(i, new=True), '-1001503742992')
 		i+1
-	#send homework
+	for i in send_time:
+		if datetime.datetime.now(pytz.timezone('Asia/Yekaterinburg')) == i:
+			send_homework(select_homework())
 	if datetime.datetime.now().strftime('%w') == '6':
 		driver.find_element(By.CLASS_NAME, 'mdi mdi-arrow-right-bold').click()
 		time.sleep(2)

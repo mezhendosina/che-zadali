@@ -20,7 +20,7 @@ def months(month : int):
 		'сент.': 9, 'окт.': 10, 'нояб.': 11
 	}[month]
 def new_old() -> list:
-	i, result = 0, []
+	result = []
 	for i in range(2):
 		if i == 2:	
 			break
@@ -28,6 +28,7 @@ def new_old() -> list:
 		cursor.execute(f"SELECT * FROM homeworktable WHERE daynum={date.strftime('%d')} AND daymonth={date.strftime('%m')} AND dayyear={date.strftime('%Y')};") 
 		result.append(cursor.fetchall())
 		i+1
+		
 	return result
 
 
@@ -37,7 +38,6 @@ def extract_homework(code : str) -> list:
 	soup, old_list =  BeautifulSoup(code, features = 'lxml'), new_old()
 	schoolJournal = soup.find('div', 'schooljournal_content column')
 	dayTable = schoolJournal.find_all('div', class_ = 'day_table')
-	
 	for i in dayTable:
 		day= i.find('span', 'ng-binding').get_text()
 		dayNum = int(day.split(' ')[1])
@@ -73,7 +73,7 @@ def extract_homework(code : str) -> list:
 	return true_false
 
 
-def select_homework(day=1, new : bool =False) -> list:
+def select_homework(day=1, new : bool =False, channel=False) -> list:
 	"""
 	This function collect homework day(1 - tommorow, 0 - today, -1 - yesterday, 'all_week' - homework on week) 
 	"""
@@ -127,12 +127,12 @@ def select_homework(day=1, new : bool =False) -> list:
 
 	d = date.strftime('%d.%m.%Y')
 	if new == False:
-		#a = f'Домашнее задание на <i>{d}</i>:\n' + '\n'.join(map(lambda x: f'<b>{x[0]}</b>:  {x[1]}', homework))
 		homework = 'Домашнее задание теперь здесь: https://t.me/joinchat/nDOBdB92pq1jOGFi'
 	else:
 		homework = f'Появилась новое д\з на <i>{d}</i>:\n' + '\n'.join(map(lambda x: f'<b>{x[0]}</b>:  {x[1]}', homework))
 
-	
+	if channel == True:
+		homework = f'Домашнее задание на <i>{d}</i>:\n' + '\n'.join(map(lambda x: f'<b>{x[0]}</b>:  {x[1]}', homework))
 	
 	attachment, date = [], datetime.now() + timedelta(days=-7)
 	headers = {'Accept': 'application/json', 'Authorization': f'OAuth {os.getenv("YDISK_TOKEN")}'}
@@ -147,4 +147,3 @@ def select_homework(day=1, new : bool =False) -> list:
 			y.remove(f'/che-zadali_files/{i["name"]}')
 	res = [homework, attachment]
 	return res
-	

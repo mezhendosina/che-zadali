@@ -12,7 +12,7 @@ def telegramBot():
         print(str(message.from_user.id) +' ' + str(message.from_user.username)+ ' '+ str(message.chat.id) + ' ' + str(message.text))
         bot.reply_to(
             message, 
-            'Даров :)\nТы попал к боту, который достанет тебе домашку из Сетевого Города и скинет тебе.\n<b>Список команд</b> \n /che - домашнее задание на завтра \n/today - домашнее задание на сегодня\n/yesterday - домашнее задание на вчерашний день\n/lessons - узнать расписание'
+            'Это бот, который скидывает д\з \n<b>Список команд</b>\n/che - д\з на завтра\n/lessons - узнать расписание\n/all_week - д\з на неделю'
         )
    
     @bot.message_handler(commands=['che', 'Che'])

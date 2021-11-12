@@ -54,7 +54,7 @@ def sgo() -> None:
 	})
 	chrome_options.binary_location = os.getenv('GOOGLE_CHROME_SHIM')
 	
-	driver = webdriver.Chrome(service=Service(executable_path=os.getenv("CHROMEDRIVER_PATH")), chrome_options=chrome_options) #configurate webdriver
+	driver = webdriver.Chrome(service=Service(executable_path=os.getenv("CHROMEDRIVER_PATH")), options=chrome_options) #configurate webdriver
 	#login
 	driver.get("https://sgo.edu-74.ru") #go to sgo.edu-74.ru
 	wait(driver, 'schools', By.ID, False, True, "89") #select school

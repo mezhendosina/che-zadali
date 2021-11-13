@@ -72,11 +72,14 @@ def sgo() -> None:
 		wait(driver, '/html/body/div[1]/div/div/div/div/div[4]/div/div/div/div/button[2]', By.XPATH) #complete security check
 	finally:
 		time.sleep(2)
-	
-	a = driver.page_source #save page source
-	
+
 	#get homework
-	homework, i, send_time = extract_homework(a), 0, ['1400','1401','1402', '1403', '1404','1405','1406','1407','1408','1409','1410']
+	if datetime.datetime.now().strftime('%w') == '6':
+		wait(driver, 'button_next', By.CLASS_NAME, True)
+		time.sleep(2)
+	page_source = driver.page_source
+	
+	homework, i, send_time = extract_homework(page_source), 0, ['1400','1401','1402', '1403', '1404','1405','1406','1407','1408','1409','1410']
 	#send_homework
 	for a in homework:
 		if a == True:
@@ -85,13 +88,9 @@ def sgo() -> None:
 	for i in send_time:
 		if datetime.datetime.now(pytz.timezone('Asia/Yekaterinburg')) == i:
 			send_homework(select_homework())
-	if datetime.datetime.now().strftime('%w') == '6':
-		wait(driver, 'button_next', By.CLASS_NAME, True)
-		time.sleep(2)
-		extract_homework(driver.page_source)
-	
+
 	#download attachments
-	soup = BeautifulSoup(a, features='lxml')
+	soup = BeautifulSoup(page_source, features='lxml')
 	schoolJournal = soup.find('div', 'schooljournal_content column')
 	dayTable = schoolJournal.find_all('div', class_ = 'day_table')
 

@@ -79,15 +79,15 @@ def sgo() -> None:
 		time.sleep(2)
 	page_source = driver.page_source
 	
-	homework, i, send_time = extract_homework(page_source), 0, ['1400','1401','1402', '1403', '1404','1405','1406','1407','1408','1409','1410']
+	homework, i, send_time = extract_homework(page_source), 0, ['14:00','14:01','14:02', '14:03', '14:04','14:05','14:06','14:07','14:08','14:09','14:10']
 	#send_homework
 	for a in homework:
 		if a == True:
 			send_homework(select_homework(i, new=True), '-1001503742992')
 		i+1
 	for i in send_time:
-		if datetime.datetime.now(pytz.timezone('Asia/Yekaterinburg')) == i:
-			send_homework(select_homework())
+		if datetime.datetime.now(pytz.timezone('Asia/Yekaterinburg')).strftime('%H:%M') == i:
+			send_homework(select_homework(channel=True))
 
 	#download attachments
 	soup = BeautifulSoup(page_source, features='lxml')

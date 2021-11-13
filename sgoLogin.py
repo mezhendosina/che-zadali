@@ -86,10 +86,10 @@ def sgo() -> None:
 		if datetime.datetime.now(pytz.timezone('Asia/Yekaterinburg')) == i:
 			send_homework(select_homework())
 	if datetime.datetime.now().strftime('%w') == '6':
-		driver.find_element(By.CLASS_NAME, 'mdi mdi-arrow-right-bold').click()
+		wait(driver, 'button_next', By.CLASS_NAME, True)
 		time.sleep(2)
 		extract_homework(driver.page_source)
-
+	
 	#download attachments
 	soup = BeautifulSoup(a, features='lxml')
 	schoolJournal = soup.find('div', 'schooljournal_content column')

@@ -1,24 +1,23 @@
 #imports 
-import time, os, datetime
-import pytz
 from telebot import TeleBot
 from telebot.types import InputMediaDocument
-from selenium.webdriver.chrome.service import Service
-from yadisk import YaDisk, exceptions
 from bs4 import BeautifulSoup
+import time, os, datetime, pytz
+from yadisk import YaDisk, exceptions
+from Homework import extract_homework, months, select_homework
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
+from selenium.webdriver.chrome.service import Service
 from selenium.common.exceptions import NoSuchElementException
-from Homework import extract_homework, months, select_homework
 
 def send_homework(message: list, chat_id: str) -> dict:
 	bot = TeleBot(os.getenv('TELEGRAM_API_TOKEN'), parse_mode='html')
 	bot.send_message(chat_id, message[0])
 	if len(message[1]) == 1:
 		bot.send_document(chat_id, )
-	elif len(message) > 1:
-		bot.send_media_group(chat_id, [InputMediaDocument(i) for i in message[1]])
+	elif len(message[1]) > 1:
+		bot.send_media_group(chat_id, [types.InputMediaDocument(i) for i in message[1]])
 	else:
 		None
 def wait(driver: str, elem: str, find_by: str, click:bool = True, select:bool = False, select_id=False) -> None:
@@ -86,9 +85,10 @@ def sgo() -> None:
 			send_homework(select_homework(i, new=True), '-1001503742992')
 		i+1
 	for i in send_time:
-		if datetime.datetime.now(pytz.timezone('Asia/Yekaterinburg')).strftime('%H:%M') == i:
-			send_homework(select_homework(channel=True))
+		d = datetime.datetime.now(pytz.timezone('Asia/Yekaterinburg'))
 
+		if d.strftime('%H:%M') == i:
+			send_homework(select_homework(channel=True), '-1001503742992')
 	#download attachments
 	soup = BeautifulSoup(page_source, features='lxml')
 	schoolJournal = soup.find('div', 'schooljournal_content column')

@@ -108,7 +108,6 @@ def select_homework(day=1, new : bool =False, channel=False) -> list:
 			homework.update({i[0]: h})
 		for i in homework.keys():
 			r = str(r)+f'\n\n<i>{i}</i>я\n' + str('\n'.join(map(lambda x: f'<b>{x[0]}</b>:  {x[1]}', list(homework.get(i).items()))))
-		
 		return r
 	
 	if datetime.now(pytz.timezone('Asia/Yekaterinburg')).strftime('%w') == '6':
@@ -127,12 +126,12 @@ def select_homework(day=1, new : bool =False, channel=False) -> list:
 
 	d = date.strftime('%d.%m.%Y')
 	if new == False:
-		homework = 'Домашнее задание теперь здесь: https://t.me/joinchat/nDOBdB92pq1jOGFi'
+		homework_result = 'Домашнее задание теперь здесь: https://t.me/joinchat/nDOBdB92pq1jOGFi'
 	else:
-		homework = f'Появилась новое д\з на <i>{d}</i>:\n' + '\n'.join(map(lambda x: f'<b>{x[0]}</b>:  {x[1]}', homework))
+		homework_result = f'Появилась новое д\з на <i>{d}</i>:\n' + '\n'.join(map(lambda x: f'<b>{x[0]}</b>:  {x[1]}', homework))
 
 	if channel == True:
-		homework = f'Домашнее задание на <i>{d}</i>:\n' + '\n'.join(map(lambda x: f'<b>{x[0]}</b>:  {x[1]}', homework))
+		homework_result = f'Домашнее задание на <i>{d}</i>:\n' + '\n'.join(map(lambda x: f'<b>{x[0]}</b>:  {x[1]}', homework))
 	
 	attachment, date = [], datetime.now() + timedelta(days=-7)
 	headers = {'Accept': 'application/json', 'Authorization': f'OAuth {os.getenv("YDISK_TOKEN")}'}
@@ -145,5 +144,5 @@ def select_homework(day=1, new : bool =False, channel=False) -> list:
 				attachment.append(l)
 		elif int(i['name'].split('.')[0]) < int(date.strftime('%d')) and int(i['name'].split('.')[1]) < int(date.strftime('%m')):
 			y.remove(f'/che-zadali_files/{i["name"]}')
-	res = [homework, attachment]
+	res = [homework_result, attachment]
 	return res

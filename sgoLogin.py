@@ -12,6 +12,33 @@ from selenium.webdriver.support.ui import Select
 from selenium.webdriver.chrome.service import Service
 from selenium.common.exceptions import NoSuchElementException
 
+	
+def wait(driver: str, elem: str, find_by: str, click:bool = True, select:bool = False, select_id=False) -> None:
+	i = 0
+	while True:
+		if i > 1404:
+			raise TimeoutError('Error when wait element')
+		try:
+			if click == True:
+				driver.find_element(find_by, elem).click()
+			elif select == True:
+				assert select_id != False
+				Select(driver.find_element(find_by, elem)).select_by_value(select_id)
+			elif click == False:
+				driver.find_element(find_by, elem)
+			break
+		except NoSuchElementException:
+			i = i+1
+			continue	
+def send_homework(self, message: list, chat_id: str) -> dict:
+	bot = TeleBot(os.getenv('TELEGRAM_API_TOKEN'), parse_mode='html')
+	bot.send_message(chat_id, message[0])
+	if len(message[1]) == 1:
+		bot.send_document(chat_id, )
+	elif len(message[1]) > 1:
+		bot.send_media_group(chat_id, [types.InputMediaDocument(i) for i in message[1]])
+	else:
+		None
 
 def sgo() -> None:
 	#gloval var
@@ -127,30 +154,3 @@ def sgo() -> None:
 	driver.close() #close driver
 if __name__ == '__main__':
 	sgo()
-	
-def wait(driver: str, elem: str, find_by: str, click:bool = True, select:bool = False, select_id=False) -> None:
-	i = 0
-	while True:
-		if i > 1404:
-			raise TimeoutError('Error when wait element')
-		try:
-			if click == True:
-				driver.find_element(find_by, elem).click()
-			elif select == True:
-				assert select_id != False
-				Select(driver.find_element(find_by, elem)).select_by_value(select_id)
-			elif click == False:
-				driver.find_element(find_by, elem)
-			break
-		except NoSuchElementException:
-			i = i+1
-			continue	
-def send_homework(self, message: list, chat_id: str) -> dict:
-	bot = TeleBot(os.getenv('TELEGRAM_API_TOKEN'), parse_mode='html')
-	bot.send_message(chat_id, message[0])
-	if len(message[1]) == 1:
-		bot.send_document(chat_id, )
-	elif len(message[1]) > 1:
-		bot.send_media_group(chat_id, [types.InputMediaDocument(i) for i in message[1]])
-	else:
-		None

@@ -3,7 +3,7 @@ from Homework import select_homework
 import os, telebot
 
 token = os.getenv("TELEGRAM_API_TOKEN")
-bot, salt= telebot.AsyncTeleBot(token, parse_mode='html'), os.urandom(32)
+bot, salt= telebot.TeleBot(token, parse_mode='html'), os.urandom(32)
 keyboard, inline_keyboard = types.ReplyKeyboardMarkup(), types.InlineKeyboardMarkup()
 
 def telegramBot():

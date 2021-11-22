@@ -1,6 +1,7 @@
 #imports 
 from telebot import TeleBot
-from telebot.types import InputMediaDocument
+from telebot import types
+
 from bs4 import BeautifulSoup
 import time, os, datetime, pytz
 from yadisk import YaDisk, exceptions
@@ -11,33 +12,7 @@ from selenium.webdriver.support.ui import Select
 from selenium.webdriver.chrome.service import Service
 from selenium.common.exceptions import NoSuchElementException
 
-def send_homework(message: list, chat_id: str) -> dict:
-	bot = TeleBot(os.getenv('TELEGRAM_API_TOKEN'), parse_mode='html')
-	bot.send_message(chat_id, message[0])
-	if len(message[1]) == 1:
-		bot.send_document(chat_id, )
-	elif len(message[1]) > 1:
-		bot.send_media_group(chat_id, [types.InputMediaDocument(i) for i in message[1]])
-	else:
-		None
-def wait(driver: str, elem: str, find_by: str, click:bool = True, select:bool = False, select_id=False) -> None:
-	i = 0
-	while True:
-		if i > 1404:
-			raise TimeoutError('Error when wait element')
-		try:
-			if click == True:
-				driver.find_element(find_by, elem).click()
-			elif select == True:
-				assert select_id != False
-				Select(driver.find_element(find_by, elem)).select_by_value(select_id)
-			elif click == False:
-				driver.find_element(find_by, elem)
-			break
-		except NoSuchElementException:
-			i = i+1
-			continue		
-	
+
 def sgo() -> None:
 	#gloval var
 	y = YaDisk(os.getenv("YDISK_LOGIN"), os.getenv("YDISK_PASSWORD"), os.getenv('YDISK_TOKEN'))
@@ -62,7 +37,6 @@ def sgo() -> None:
 	#login
 	driver.get("https://sgo.edu-74.ru") #go to sgo.edu-74.ru
 	wait(driver, 'schools', By.ID, False, True, "89") #select school
-
 	driver.find_element(By.NAME, 'UN').send_keys(os.getenv('SGO_LOGIN')) #type login
 	driver.find_element(By.NAME, 'PW').send_keys(os.getenv('SGO_PASSWORD')) #type password
 	driver.find_element(By.XPATH, '//*[@id="message"]/div/div/div[11]/a/span').click() #click to login button
@@ -71,7 +45,7 @@ def sgo() -> None:
 		wait(driver, '/html/body/div[1]/div/div/div/div/div[4]/div/div/div/div/button[2]', By.XPATH) #complete security check
 	finally:
 		time.sleep(2)
-
+	
 	#get homework
 	if datetime.datetime.now().strftime('%w') == '6':
 		wait(driver, 'button_next', By.CLASS_NAME, True)
@@ -118,7 +92,6 @@ def sgo() -> None:
 				num = num + 1
 			except AttributeError:
 				continue
-			
 			try:
 				driver.find_element(
 					By.XPATH,
@@ -157,3 +130,29 @@ def sgo() -> None:
 if __name__ == '__main__':
 	sgo()
 	
+def wait(driver: str, elem: str, find_by: str, click:bool = True, select:bool = False, select_id=False) -> None:
+	i = 0
+	while True:
+		if i > 1404:
+			raise TimeoutError('Error when wait element')
+		try:
+			if click == True:
+				driver.find_element(find_by, elem).click()
+			elif select == True:
+				assert select_id != False
+				Select(driver.find_element(find_by, elem)).select_by_value(select_id)
+			elif click == False:
+				driver.find_element(find_by, elem)
+			break
+		except NoSuchElementException:
+			i = i+1
+			continue	
+def send_homework(self, message: list, chat_id: str) -> dict:
+	bot = TeleBot(os.getenv('TELEGRAM_API_TOKEN'), parse_mode='html')
+	bot.send_message(chat_id, message[0])
+	if len(message[1]) == 1:
+		bot.send_document(chat_id, )
+	elif len(message[1]) > 1:
+		bot.send_media_group(chat_id, [types.InputMediaDocument(i) for i in message[1]])
+	else:
+		None

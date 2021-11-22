@@ -20,17 +20,9 @@ def months(month : int):
 		'сент.': 9, 'окт.': 10, 'нояб.': 11
 	}[month]
 def new_old() -> list:
-	result = []
-	for i in range(2):
-		if i == 2:	
-			break
-		date = datetime.now(pytz.timezone('Asia/Yekaterinburg')) + timedelta(days=i)
-		cursor.execute(f"SELECT * FROM homeworktable WHERE daynum={date.strftime('%d')} AND daymonth={date.strftime('%m')} AND dayyear={date.strftime('%Y')};") 
-		result.append(cursor.fetchall())
-		i+1
-		
-	return result
-
+	date = datetime.now(pytz.timezone('Asia/Yekaterinburg'))
+	cursor.execute(f"SELECT * FROM homeworktable WHERE daynum={date.strftime('%d')} AND daymonth={date.strftime('%m')} AND dayyear={date.strftime('%Y')};") 
+	return cursor.fetchall() 
 
 def extract_homework(code : str) -> list:
 	"""This function parses code in search homework and delete old homework"""
@@ -64,14 +56,11 @@ def extract_homework(code : str) -> list:
 				continue
 	connection.commit()
 
-	a, true_false = new_old(), []
-	for i in a:
-		if i > old_list.pop(0):
-			true_false.append(True)
-		else:
-			true_false.append(False)
-	return true_false
-
+	true_false = new_old()
+	if old_list != true_false:
+		return True
+	else:
+		return False
 
 def select_homework(day=1, new : bool =False, channel=False) -> list:
 	"""

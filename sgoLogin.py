@@ -54,10 +54,8 @@ def sgo() -> None:
 	
 	homework, i, send_time = extract_homework(page_source), 0, ['14:00','14:01','14:02', '14:03', '14:04','14:05','14:06','14:07','14:08','14:09','14:10']
 	#send_homework
-	for a in homework:
-		if a == True:
-			send_homework(select_homework(i, new=True), '-1001503742992')
-		i+1
+	if homework == True:
+		send_homework(select_homework(new=True, channel=True)[0])
 	for i in send_time:
 		d = datetime.datetime.now(pytz.timezone('Asia/Yekaterinburg'))
 

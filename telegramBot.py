@@ -15,7 +15,7 @@ def telegram_bot():
                 message.text))
         bot.reply_to(
             message,
-            'Это бот, который скидывает д\з \n<b>Список команд</b>\n/che - д\з на завтра\n/lessons - узнать расписание\n/all_week - д\з на неделю'
+            'Это бот, который скидывает д\з \n<b>Список команд</b>\n/che - д\з на завтра\n/lessons - расписание\n/all_week - д\з на неделю'
         )
 
     @bot.message_handler(commands=['che', 'Che'])

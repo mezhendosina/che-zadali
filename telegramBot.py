@@ -43,6 +43,14 @@ def telegram_bot():
             text
         )
 
+    @bot.message_handler(commands=['некит'])
+    def n(message):
+        print(
+            str(message.from_user.id) + ' ' + str(message.from_user.username) + ' ' + str(message.chat.id) + ' ' + str(
+                message.text))
+        voice = open('files/voice.ogg', 'rb')
+        bot.send_voice(message.chat.id, voice)
+
     @bot.inline_handler(func=lambda query: len(query.query) > 0)
     def query_text(message):
         try:

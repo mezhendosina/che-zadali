@@ -50,7 +50,7 @@ def extract_homework(code: str) -> bool:
                     homework = a.find('a', class_='ng-binding ng-scope').get_text()
                 except AttributeError:
                     continue
-                cursor.execute('SELECT * FROM homeworktable')
+                cursor.execute('SELECT day, lesson, homework, dayNum, dayMonth, dayYear FROM homeworktable')
                 table = cursor.fetchall()
                 try:
                     assert (day, lesson, homework, dayNum, dayMonth, dayYear) in table

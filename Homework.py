@@ -1,13 +1,14 @@
 """
 This file works with homework recived from https://sgo.edu-74.ru/
 """
-from typing import Union, List, Any
-
-import psycopg2, pytz, os, requests
 from datetime import datetime, timedelta
+from typing import Union, Any
+
+import os
+import psycopg2
+import pytz
 from bs4 import BeautifulSoup
 from isoweek import Week
-from yadisk.yadisk import YaDisk
 
 # global variables
 connection = psycopg2.connect(os.getenv('DATABASE_URL'), sslmode='require')
@@ -106,7 +107,7 @@ def select_homework(day=1, new: bool = False, channel=False) -> Union[str, list[
         for i in homework.keys():
             r = str(r) + f'\n\n<i>{i}</i>я\n' + str(
                 '\n'.join(map(lambda
-                                  x: f'<b>{x[0]}</b> <i>(записано {datetime.strptime(x[2], "%Y.%m.%d %H:%M:%S").strftime("%H:%M %d.%m.%Y")})</i>: {x[1]}',
+                                  x: f'<b>{x[0]}</b> <i>(добавлено в {datetime.strptime(x[2], "%Y.%m.%d %H:%M:%S").strftime("%H:%M %d.%m.%Y")})</i>: {x[1]}',
                               list(homework.get(i).items()))))
         return r
 
@@ -128,18 +129,18 @@ def select_homework(day=1, new: bool = False, channel=False) -> Union[str, list[
     if new:
         homework_result = f'Появилась новое д\з на <i>{d}</i>:\n' + '\n'.join(
             map(lambda
-                    x: f'<b>{x[0]}</b> <i>(записано {datetime.strptime(x[2], "%Y.%m.%d %H:%M:%S").strftime("%H:%M %d.%m.%Y")})</i>:  {x[1]}',
+                    x: f'<b>{x[0]}</b> <i>(добавлено в {datetime.strptime(x[2], "%Y.%m.%d %H:%M:%S").strftime("%H:%M %d.%m.%Y")})</i>:  {x[1]}',
                 homework))
     else:
         homework_result = f'Домашнее задание на <i>{d}</i>\n' + '\n'.join(
             map(lambda
-                    x: f'<b>{x[0]}</b> <i>(записано {datetime.strptime(x[2], "%Y.%m.%d %H:%M:%S").strftime("%H:%M %d.%m.%Y")})</i>:  {x[1]}',
+                    x: f'<b>{x[0]}</b> <i>(добавлено в {datetime.strptime(x[2], "%Y.%m.%d %H:%M:%S").strftime("%H:%M %d.%m.%Y")})</i>:  {x[1]}',
                 homework))
 
     if channel:
         homework_result = f'Домашнее задание на <i>{d}</i>:\n' + '\n'.join(
             map(lambda
-                    x: f'<b>{x[0]}</b> <i>(записано {datetime.strptime(x[2], "%Y.%m.%d %H:%M:%S").strftime("%H:%M %d.%m.%Y")})</i>:  {x[1]}',
+                    x: f'<b>{x[0]}</b> <i>(добавлено в {datetime.strptime(x[2], "%Y.%m.%d %H:%M:%S").strftime("%H:%M %d.%m.%Y")})</i>:  {x[1]}',
                 homework))
 
     return homework_result

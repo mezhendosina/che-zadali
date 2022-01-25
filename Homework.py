@@ -55,8 +55,9 @@ def extract_homework(code: str) -> bool:
                 try:
                     assert (day, lesson, homework, dayNum, dayMonth, dayYear) in table
                 except AssertionError:
+                    date = datetime.now(pytz.timezone('Asia/Yekaterinburg')).strftime('%Y.%m.%d %H:%M:%S')
                     cursor.execute(
-                        f"INSERT INTO homeworktable VALUES('{day}', '{lesson}', '{homework}', {dayNum}, {dayMonth}, {dayYear}, {datetime.now(pytz.timezone('Asia/Yekaterinburg')).strftime('%Y.%m.%d %H:%M:%S')})"
+                        f"INSERT INTO homeworktable VALUES('{day}', '{lesson}', '{homework}', {dayNum}, {dayMonth}, {dayYear}, '{date}') "
                     )
                     continue
             except AttributeError as e:
@@ -104,7 +105,8 @@ def select_homework(day=1, new: bool = False, channel=False) -> Union[str, list[
             homework.update({i[0]: h})
         for i in homework.keys():
             r = str(r) + f'\n\n<i>{i}</i>я\n' + str(
-                '\n'.join(map(lambda x: f'<b>{x[0]}</b> <i>(записано {datetime.strptime(x[2], "%Y.%m.%d %H:%M:%S")})</i>: {x[1]}',
+                '\n'.join(map(lambda
+                                  x: f'<b>{x[0]}</b> <i>(записано {datetime.strptime(x[2], "%Y.%m.%d %H:%M:%S")})</i>: {x[1]}',
                               list(homework.get(i).items()))))
         return r
 

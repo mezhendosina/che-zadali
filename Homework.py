@@ -56,7 +56,7 @@ def extract_homework(code: str) -> bool:
                     assert (day, lesson, homework, dayNum, dayMonth, dayYear) in table
                 except AssertionError:
                     cursor.execute(
-                        f"INSERT INTO homeworktable VALUES('{day}', '{lesson}', '{homework}', {dayNum}, {dayMonth}, {dayYear})"
+                        f"INSERT INTO homeworktable VALUES('{day}', '{lesson}', '{homework}', {dayNum}, {dayMonth}, {dayYear}, {datetime.now(pytz.timezone('Asia/Yekaterinburg')).strftime('%Y.%m.%d %H:%M:%S')})"
                     )
                     continue
             except AttributeError as e:
@@ -74,11 +74,9 @@ def select_homework(day=1, new: bool = False, channel=False) -> Union[str, list[
     """This function collect homework day(1 - tommorow, 0 - today, -1 - yesterday, 'all_week' - homework on week) """
     global homework_result
 
-    y = YaDisk("866043d9835b4c7cb58c5ee656e7e8bd", "4566d2a405a04be89a4003d9e7b78014", os.getenv("YDISK_TOKEN"))
-
     def select(day, month, year) -> list:
         cursor.execute(
-            'SELECT lesson, homework FROM homeworktable WHERE daynum=%s and daymonth=%s and dayYear=%s;',
+            'SELECT lesson, homework, postDate FROM homeworktable WHERE daynum=%s and daymonth=%s and dayYear=%s;',
             (day, month, year)
         )
         return cursor.fetchall()
@@ -91,7 +89,7 @@ def select_homework(day=1, new: bool = False, channel=False) -> Union[str, list[
         week = date.isocalendar()[1]
         mon, sun = Week(date.year, week).monday(), Week(date.year, week).sunday()
         cursor.execute(
-            f'SELECT dayNum, lesson, homework FROM homeworktable WHERE dayNum >={mon.strftime("%d")} AND dayNum <={sun.strftime("%d")} AND dayMonth >= {mon.strftime("%m")} AND dayMonth <= {sun.strftime("%m")} AND dayyear BETWEEN {mon.strftime("%Y")} AND {sun.strftime("%Y")};'
+            f'SELECT dayNum, lesson, homework, postDate FROM homeworktable WHERE dayNum >={mon.strftime("%d")} AND dayNum <={sun.strftime("%d")} AND dayMonth >= {mon.strftime("%m")} AND dayMonth <= {sun.strftime("%m")} AND dayyear BETWEEN {mon.strftime("%Y")} AND {sun.strftime("%Y")};'
         )
         result = cursor.fetchall()
         cursor.execute(
@@ -106,7 +104,8 @@ def select_homework(day=1, new: bool = False, channel=False) -> Union[str, list[
             homework.update({i[0]: h})
         for i in homework.keys():
             r = str(r) + f'\n\n<i>{i}</i>я\n' + str(
-                '\n'.join(map(lambda x: f'<b>{x[0]}</b>:  {x[1]}', list(homework.get(i).items()))))
+                '\n'.join(map(lambda x: f'<b>{x[0]}</b> <i>(записано {datetime.strptime(x[2], "%Y.%m.%d %H:%M:%S")})</i>: {x[1]}',
+                              list(homework.get(i).items()))))
         return r
 
     if datetime.now(pytz.timezone('Asia/Yekaterinburg')).strftime('%w') == '6':
@@ -126,14 +125,17 @@ def select_homework(day=1, new: bool = False, channel=False) -> Union[str, list[
     d = date.strftime('%d.%m.%Y')
     if new:
         homework_result = f'Появилась новое д\з на <i>{d}</i>:\n' + '\n'.join(
-            map(lambda x: f'<b>{x[0]}</b>:  {x[1]}', homework))
+            map(lambda x: f'<b>{x[0]}</b> <i>(записано {datetime.strptime(x[2], "%Y.%m.%d %H:%M:%S")})</i>:  {x[1]}',
+                homework))
     else:
         homework_result = f'Домашнее задание на <i>{d}</i>\n' + '\n'.join(
-            map(lambda x: f'<b>{x[0]}</b>:  {x[1]}', homework))
+            map(lambda x: f'<b>{x[0]}</b> <i>(записано {datetime.strptime(x[2], "%Y.%m.%d %H:%M:%S")})</i>:  {x[1]}',
+                homework))
 
     if channel:
         homework_result = f'Домашнее задание на <i>{d}</i>:\n' + '\n'.join(
-            map(lambda x: f'<b>{x[0]}</b>:  {x[1]}', homework))
+            map(lambda x: f'<b>{x[0]}</b> <i>(записано {datetime.strptime(x[2], "%Y.%m.%d %H:%M:%S")})</i>:  {x[1]}',
+                homework))
 
     return homework_result
     # attachment, date = [], datetime.now() + timedelta(days=-7)

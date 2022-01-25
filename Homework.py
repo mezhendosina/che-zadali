@@ -106,7 +106,7 @@ def select_homework(day=1, new: bool = False, channel=False) -> Union[str, list[
         for i in homework.keys():
             r = str(r) + f'\n\n<i>{i}</i>я\n' + str(
                 '\n'.join(map(lambda
-                                  x: f'<b>{x[0]}</b> <i>(записано {datetime.strptime(x[2], "%Y.%m.%d %H:%M:%S")})</i>: {x[1]}',
+                                  x: f'<b>{x[0]}</b> <i>(записано {datetime.strptime(x[2], "%Y.%m.%d %H:%M:%S").strftime("%H:%M %d.%m.%Y")})</i>: {x[1]}',
                               list(homework.get(i).items()))))
         return r
 
@@ -127,16 +127,19 @@ def select_homework(day=1, new: bool = False, channel=False) -> Union[str, list[
     d = date.strftime('%d.%m.%Y')
     if new:
         homework_result = f'Появилась новое д\з на <i>{d}</i>:\n' + '\n'.join(
-            map(lambda x: f'<b>{x[0]}</b> <i>(записано {datetime.strptime(x[2], "%Y.%m.%d %H:%M:%S")})</i>:  {x[1]}',
+            map(lambda
+                    x: f'<b>{x[0]}</b> <i>(записано {datetime.strptime(x[2], "%Y.%m.%d %H:%M:%S").strftime("%H:%M %d.%m.%Y")})</i>:  {x[1]}',
                 homework))
     else:
         homework_result = f'Домашнее задание на <i>{d}</i>\n' + '\n'.join(
-            map(lambda x: f'<b>{x[0]}</b> <i>(записано {datetime.strptime(x[2], "%Y.%m.%d %H:%M:%S")})</i>:  {x[1]}',
+            map(lambda
+                    x: f'<b>{x[0]}</b> <i>(записано {datetime.strptime(x[2], "%Y.%m.%d %H:%M:%S").strftime("%H:%M %d.%m.%Y")})</i>:  {x[1]}',
                 homework))
 
     if channel:
         homework_result = f'Домашнее задание на <i>{d}</i>:\n' + '\n'.join(
-            map(lambda x: f'<b>{x[0]}</b> <i>(записано {datetime.strptime(x[2], "%Y.%m.%d %H:%M:%S")})</i>:  {x[1]}',
+            map(lambda
+                    x: f'<b>{x[0]}</b> <i>(записано {datetime.strptime(x[2], "%Y.%m.%d %H:%M:%S").strftime("%H:%M %d.%m.%Y")})</i>:  {x[1]}',
                 homework))
 
     return homework_result

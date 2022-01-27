@@ -84,7 +84,7 @@ def select_homework(day=1, new: bool = False, channel=False) -> Union[str, list[
         return cursor.fetchall()
 
     if day == 'all_week':
-        homework, r, date = {}, '', datetime.now(pytz.timezone('Asia/Yekaterinburg'))
+        homework, r, date = '', '', datetime.now(pytz.timezone('Asia/Yekaterinburg'))
 
         if date.strftime('%w') == '0':
             date = datetime.now(pytz.timezone('Asia/Yekaterinburg')) + timedelta(days=1)
@@ -99,7 +99,6 @@ def select_homework(day=1, new: bool = False, channel=False) -> Union[str, list[
         )
         day = cursor.fetchall()
         for i in day:
-            listHome = []
             homework = homework + f'<i>{i[0]}</i>\n'
             for a in result:
                 if a[0] == i[1]:

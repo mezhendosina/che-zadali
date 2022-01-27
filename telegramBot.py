@@ -1,4 +1,3 @@
-
 import psycopg2
 import pytz
 from telebot import types
@@ -24,6 +23,15 @@ def telegram_bot():
             message,
             'Это бот, который скидывает д\з \n<b>Список команд</b>\n/che - д\з на завтра\n/lessons - расписание\n/all_week - д\з на неделю'
         )
+
+    @bot.message_handler(commands=['stats'])
+    def send_stats(message):
+        cursor.execute('SELECT COUNT(*) FROM stats')
+        bot.reply_to(message, f'Количество использований c 25.01.2022 - <b>{cursor.fetchall()[0][0]}</b>')
+        date = datetime.now(pytz.timezone('Asia/Yekaterinburg')).strftime('%Y.%m.%d %H:%M:%S')
+        cursor.execute(
+            f"INSERT INTO stats VALUES({message.from_user.id}, '{message.from_user.username}', '{message.text}', '{date}')")
+        connection.commit()
 
     @bot.message_handler(commands=['che', 'Che'])
     def send_che(message):

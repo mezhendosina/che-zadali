@@ -99,17 +99,12 @@ def select_homework(day=1, new: bool = False, channel=False) -> Union[str, list[
         )
         day = cursor.fetchall()
         for i in day:
-            h = {}
+            listHome = []
+            homework = homework + f'<i>{i[0]}</i>\n'
             for a in result:
                 if a[0] == i[1]:
-                    h.update({a[1]: a[2]})
-            homework.update({i[0]: h})
-        for i in homework.keys():
-            r = str(r) + f'\n\n<i>{i}</i>я\n' + str(
-                '\n'.join(map(lambda
-                                  x: f'<b>{x[0]}</b> <i>(добавлено в {datetime.strptime(x[2], "%Y.%m.%d %H:%M:%S").strftime("%H:%M %d.%m.%Y")})</i>: {x[1]}',
-                              list(homework.get(i).items()))))
-        return r
+                    homework = homework + f'<b>{a[1]}</b><i>(добавлено {datetime.strptime(a[3], "%Y.%m.%d %H:%M:%S").strftime("%H:%M %d.%m.%Y")})</i>: {a[2]}\n'
+        return homework
 
     if datetime.now(pytz.timezone('Asia/Yekaterinburg')).strftime('%w') == '6':
         date = datetime.now(pytz.timezone('Asia/Yekaterinburg')) + timedelta(days=2)

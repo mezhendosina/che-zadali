@@ -42,13 +42,13 @@ def telegram_bot():
 
         bot.send_message(message.chat.id, select_homework())
 
-    @bot.message_handler(commands=['all_week'])
-    def send_all_week(message):
-        date = datetime.now(pytz.timezone('Asia/Yekaterinburg')).strftime('%Y.%m.%d %H:%M:%S')
-        cursor.execute(
-            f"INSERT INTO stats VALUES({message.from_user.id}, '{message.from_user.username}', '{message.text}', '{date}')")
-        connection.commit()
-        bot.send_message(message.chat.id, select_homework('all_week'))
+    # @bot.message_handler(commands=['all_week'])
+    # def send_all_week(message):
+    #     date = datetime.now(pytz.timezone('Asia/Yekaterinburg')).strftime('%Y.%m.%d %H:%M:%S')
+    #     cursor.execute(
+    #         f"INSERT INTO stats VALUES({message.from_user.id}, '{message.from_user.username}', '{message.text}', '{date}')")
+    #     connection.commit()
+    #     bot.send_message(message.chat.id, select_homework('all_week'))
 
     @bot.message_handler(commands=['lessons'])
     def send_list_of_lessons(message):

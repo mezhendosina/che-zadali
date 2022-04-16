@@ -1,13 +1,14 @@
+import os
+import telebot
+from datetime import datetime
+
 import psycopg2
 import pytz
-from telebot import types
-from datetime import datetime
+
 from Homework import select_homework
-import os, telebot
 
 token = os.getenv("TELEGRAM_API_TOKEN")
-bot, salt = telebot.TeleBot(token, parse_mode='html'), os.urandom(32)
-keyboard, inline_keyboard = types.ReplyKeyboardMarkup(), types.InlineKeyboardMarkup()
+bot = telebot.TeleBot(token, parse_mode='html')
 connection = psycopg2.connect(os.getenv('DATABASE_URL'), sslmode='require')
 cursor = connection.cursor()  # connect to database
 
@@ -16,10 +17,9 @@ def current_pidor() -> str:
     cursor.execute("SELECT * FROM current_duty")
     time_now = datetime.now()
     current_duty = cursor.fetchall()[0]
-
     if time_now.strftime("%d.%m.%Y") > current_duty[1] and time_now.strftime("%w") != 0:
         if current_duty[0] > 14:
-            a = 0
+            a = 1
         else:
             a = current_duty[0] + 1
         cursor.execute(f"UPDATE current_duty SET id = {a}, date = '{time_now.strftime('%d.%m.%Y')}'")
@@ -44,7 +44,7 @@ def telegram_bot():
             '<b>Список команд</b>\n'
             '/che - д\з на завтра\n'
             '/lessons - расписание\n'
-            '/all_week - д\з на неделю'
+            '/pidors_today - Дежурные сегодня'
         )
 
     @bot.message_handler(commands=['stats'])
@@ -67,13 +67,16 @@ def telegram_bot():
 
     @bot.message_handler(commands=['pidors_today'])
     def send_pidor_day(message):
-        pidor_today = current_pidor()
-        date = datetime.now(pytz.timezone('Asia/Yekaterinburg')).strftime('%Y.%m.%d %H:%M:%S')
-        cursor.execute(
-            f"INSERT INTO stats VALUES({message.from_user.id}, '{message.from_user.username}', '{message.text}', '{date}')")
-        connection.commit()
+        try:
+            pidor_today = current_pidor()
+            date = datetime.now(pytz.timezone('Asia/Yekaterinburg')).strftime('%Y.%m.%d %H:%M:%S')
+            cursor.execute(
+                f"INSERT INTO stats VALUES({message.from_user.id}, '{message.from_user.username}', '{message.text}', '{date}')")
+            connection.commit()
 
-        bot.send_message(message.chat.id, f'<s>Пидоры дня</s> Дежурные сегодня (Beta):\n{pidor_today}')
+            bot.send_message(message.chat.id, f'<s>Пидоры дня</s> Дежурные сегодня (Beta):\n{pidor_today}')
+        except BaseException as e:
+            bot.send_message(message.chat.id, f'@mezhendosina дурак: код с ошибкой написал. <i>{str(e)}</i>')
 
     @bot.message_handler(commands=['lessons'])
     def send_list_of_lessons(message):

@@ -11,6 +11,7 @@ token = os.getenv("TELEGRAM_API_TOKEN")
 bot = telebot.TeleBot(token, parse_mode='html')
 connection = psycopg2.connect(os.getenv('DATABASE_URL'), sslmode='require')
 cursor = connection.cursor()  # connect to database
+you_have_no_power_here_gif = "CgACAgIAAxkBAAIB_GJnx90AAaCKoY1VyIimxr-tEfj4SAACrgsAAjCpCUibArTOkV6_lCQE"
 
 
 def current_pidor() -> str:
@@ -55,6 +56,26 @@ def telegram_bot():
         cursor.execute(
             f"INSERT INTO stats VALUES({message.from_user.id}, '{message.from_user.username}', '{message.text}', '{date}')")
         connection.commit()
+
+    @bot.message_handler(commands=['next_pidor'])
+    def send_next_pidor(message):
+        date = datetime.now(pytz.timezone('Asia/Yekaterinburg')).strftime('%Y.%m.%d %H:%M:%S')
+        cursor.execute(
+            f"INSERT INTO stats VALUES({message.from_user.id}, '{message.from_user.username}', '{message.text}', '{date}')")
+        connection.commit()
+        if message.from_user.id == 401311369:
+            cursor.execute("SELECT * FROM current_duty")
+            current_duty = cursor.fetchall()[0]
+            if current_duty[0] > 14:
+                a = 1
+            else:
+                a = current_duty[0] + 1
+            cursor.execute(f"UPDATE current_duty SET id = {a}")
+            connection.commit()
+            bot.send_message(message.chat.id, f"Ок, дежурные сегодня:\n{current_pidor()}")
+        else:
+            bot.send_document(message.chat.id,
+                              "CgACAgIAAxkBAAIIg2Jnyw_d63v8zPCiEdRamuB8GOFBAAKuCwACMKkJSMTzFlaBnWFPJAQ")
 
     @bot.message_handler(commands=['che', 'Che'])
     def send_che(message):

@@ -43,9 +43,9 @@ def telegram_bot():
             message,
             'Это бот, который скидывает д\з \n'
             '<b>Список команд</b>\n'
-            '/che - д\з на завтра\n'
+            '/che - домашка на завтра\n'
             '/lessons - расписание\n'
-            '/pidors_today - Дежурные сегодня'
+            '/pidors_today - дежурные сегодня'
         )
 
     @bot.message_handler(commands=['stats'])
@@ -74,8 +74,8 @@ def telegram_bot():
             connection.commit()
             bot.send_message(message.chat.id, f"Ок, дежурные сегодня:\n{current_pidor()}")
         else:
-            bot.send_document(message.chat.id,
-                              "CgACAgIAAxkBAAIIg2Jnyw_d63v8zPCiEdRamuB8GOFBAAKuCwACMKkJSMTzFlaBnWFPJAQ")
+            gif = open("files/you_have_no_power_here.gif", 'rb')
+            bot.send_document(message.chat.id, gif)
 
     @bot.message_handler(commands=['che', 'Che'])
     def send_che(message):

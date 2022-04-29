@@ -112,6 +112,6 @@ def new_sgo_login():
     diary_request = session.get(
         f"https://sgo.edu-74.ru/webapi/student/diary?studentId={user_id}&vers=1651144090014&weekEnd={end_week.strftime('%Y-%m-%d')}&weekStart={start_week.strftime('%Y-%m-%d')}&withLaAssigns=true&yearId={year_id}")
 
-    session.post("https://sgo.edu-74.ru/asp/logout.asp", data={'at': login_request.json()['at']}, headers=headers)
-
+    session.post("https://sgo.edu-74.ru/asp/logout.asp", data={'at': login_request.json()['at']})
+    session.close()
     return extract_homework(diary_request.json())

@@ -3,11 +3,9 @@ __pycache__/
 .vscode/
 
 .html 
-chromedriver.exe
 Teletest.py
 SgoTest.py
 test.py
 .txt
-html.html
 new_sgo_login.py
 sgo_login.py

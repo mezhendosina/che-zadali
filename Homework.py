@@ -1,14 +1,11 @@
 """
 This file works with homework received from https://sgo.edu-74.ru/
 """
-from datetime import datetime, timedelta
-from typing import Union, Any
-
 import os
+from datetime import datetime, timedelta
+
 import psycopg2
 import pytz
-from bs4 import BeautifulSoup
-from isoweek import Week
 
 # global variables
 connection = psycopg2.connect(os.getenv('DATABASE_URL'), sslmode='require')
@@ -44,7 +41,7 @@ def select_homework() -> str:
 
     homework_result = f'Домашнее задание на <i>{d}</i>\n' + '\n'.join(
         map(lambda
-                x: f'<b>{x[0]}</b> <i>(добавлено в {datetime.strptime(x[2], "%Y.%m.%d %H:%M:%S").strftime("%H:%M %d.%m.%Y")})</i>:  {x[1]}',
+                x: f'<b>{x[0]}</b>:  {x[1]}',
             homework))
 
     return homework_result

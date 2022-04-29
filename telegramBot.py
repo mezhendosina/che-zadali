@@ -1,12 +1,11 @@
 import os
-import telebot
 from datetime import datetime
 
 import psycopg2
 import pytz
+import telebot
 
 from Homework import select_homework
-from sgo_login import new_sgo_login
 
 token = os.getenv("TELEGRAM_API_TOKEN")
 bot = telebot.TeleBot(token, parse_mode='html')
@@ -33,13 +32,16 @@ def current_pidor() -> str:
     return f'<b>{b[0]}\n{b[1]}</b>'
 
 
+def report_activity(message):
+    date = datetime.now(pytz.timezone('Asia/Yekaterinburg')).strftime('%Y.%m.%d %H:%M:%S')
+    cursor.execute(
+        f"INSERT INTO stats VALUES({message.from_user.id}, '{message.from_user.username}', '{message.text}', '{date}')")
+    connection.commit()
+
+
 def telegram_bot():
     @bot.message_handler(commands=['help', 'start'])
     def send_help(message):
-        date = datetime.now(pytz.timezone('Asia/Yekaterinburg')).strftime('%Y.%m.%d %H:%M:%S')
-        cursor.execute(
-            f"INSERT INTO stats VALUES({message.from_user.id}, '{message.from_user.username}', '{message.text}', '{date}')")
-        connection.commit()
         bot.reply_to(
             message,
             'Это бот, который скидывает д\з \n'
@@ -48,13 +50,10 @@ def telegram_bot():
             '/lessons - расписание\n'
             '/pidors_today - дежурные сегодня'
         )
+        report_activity(message)
 
     @bot.message_handler(commands=['prev_pidor'])
     def prev_pidor(message):
-        date = datetime.now(pytz.timezone('Asia/Yekaterinburg')).strftime('%Y.%m.%d %H:%M:%S')
-        cursor.execute(
-            f"INSERT INTO stats VALUES({message.from_user.id}, '{message.from_user.username}', '{message.text}', '{date}')")
-        connection.commit()
         if message.from_user.id == 401311369:
             cursor.execute("SELECT * FROM current_duty")
             current_duty = cursor.fetchall()[0]
@@ -68,22 +67,16 @@ def telegram_bot():
         else:
             gif = open("files/you_have_no_power_here.gif", 'rb')
             bot.send_document(message.chat.id, gif)
+        report_activity(message)
 
     @bot.message_handler(commands=['stats'])
     def send_stats(message):
         cursor.execute('SELECT COUNT(*) FROM stats')
         bot.reply_to(message, f'Количество использований c 25.01.2022 - <b>{cursor.fetchall()[0][0]}</b>')
-        date = datetime.now(pytz.timezone('Asia/Yekaterinburg')).strftime('%Y.%m.%d %H:%M:%S')
-        cursor.execute(
-            f"INSERT INTO stats VALUES({message.from_user.id}, '{message.from_user.username}', '{message.text}', '{date}')")
-        connection.commit()
+        report_activity(message)
 
     @bot.message_handler(commands=['next_pidor'])
     def send_next_pidor(message):
-        date = datetime.now(pytz.timezone('Asia/Yekaterinburg')).strftime('%Y.%m.%d %H:%M:%S')
-        cursor.execute(
-            f"INSERT INTO stats VALUES({message.from_user.id}, '{message.from_user.username}', '{message.text}', '{date}')")
-        connection.commit()
         if message.from_user.id == 401311369:
             cursor.execute("SELECT * FROM current_duty")
             current_duty = cursor.fetchall()[0]
@@ -98,47 +91,36 @@ def telegram_bot():
             gif = open("files/you_have_no_power_here.gif", 'rb')
             bot.send_document(message.chat.id, gif)
 
+        report_activity(message)
+
     @bot.message_handler(commands=['che', 'Che'])
     def send_che(message):
-        date = datetime.now(pytz.timezone('Asia/Yekaterinburg')).strftime('%Y.%m.%d %H:%M:%S')
-        cursor.execute(
-            f"INSERT INTO stats VALUES({message.from_user.id}, '{message.from_user.username}', '{message.text}', '{date}')")
-        connection.commit()
-        try:
-            bot.send_message(message.chat.id, select_homework())
-        except:
-            print("error")
+        bot.send_message(message.chat.id, select_homework())
+        report_activity(message)
 
     @bot.message_handler(commands=['pidors_today'])
     def send_pidor_day(message):
         try:
             pidor_today = current_pidor()
-            date = datetime.now(pytz.timezone('Asia/Yekaterinburg')).strftime('%Y.%m.%d %H:%M:%S')
-            cursor.execute(
-                f"INSERT INTO stats VALUES({message.from_user.id}, '{message.from_user.username}', '{message.text}', '{date}')")
-            connection.commit()
-
             bot.send_message(message.chat.id, f'<s>Пидоры дня</s> Дежурные сегодня (Beta):\n{pidor_today}')
         except BaseException as e:
             bot.send_message(message.chat.id, f'@mezhendosina дурак: код с ошибкой написал. <i>{str(e)}</i>')
 
+        report_activity(message)
+
     @bot.message_handler(commands=['lessons'])
     def send_list_of_lessons(message):
-        date = datetime.now(pytz.timezone('Asia/Yekaterinburg')).strftime('%Y.%m.%d %H:%M:%S')
-        cursor.execute(
-            f"INSERT INTO stats VALUES({message.from_user.id}, '{message.from_user.username}', '{message.text}', '{date}')")
-        connection.commit()
         text = open('files/lessons.txt', 'r', encoding='utf-8').read()
         bot.reply_to(message, text)
 
+        report_activity(message)
+
     @bot.message_handler(commands=['некит'])
     def n(message):
-        date = datetime.now(pytz.timezone('Asia/Yekaterinburg')).strftime('%Y.%m.%d %H:%M:%S')
-        cursor.execute(
-            f"INSERT INTO stats VALUES({message.from_user.id}, '{message.from_user.username}', '{message.text}', '{date}')")
-        connection.commit()
         voice = open('files/voice.ogg', 'rb')
         bot.send_voice(message.chat.id, voice)
+
+        report_activity(message)
 
     bot.polling(non_stop=True)
 

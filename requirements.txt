@@ -1,9 +1,4 @@
-beautifulsoup4
 psycopg2
-lxml
-selenium
 pyTelegramBotAPI
 pytz
 requests
-isoweek
-yadisk

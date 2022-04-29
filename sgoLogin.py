@@ -1,11 +1,12 @@
-from datetime import datetime, timedelta
+import hashlib
 import os
-from telegramBot import current_pidor
+from datetime import datetime, timedelta
+
 import psycopg2
 import requests
-import hashlib
 
 from Homework import extract_homework
+from telegramBot import current_pidor
 
 headers = {
     "Connection": "keep-alive",

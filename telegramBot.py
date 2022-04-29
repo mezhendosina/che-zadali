@@ -107,6 +107,7 @@ def telegram_bot():
         try:
             bot.send_message(message.chat.id, new_sgo_login())
         except:
+            print("error")
             bot.send_message(message.chat.id, select_homework())
 
     @bot.message_handler(commands=['pidors_today'])

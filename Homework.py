@@ -1,5 +1,5 @@
 """
-This file works with homework recived from https://sgo.edu-74.ru/
+This file works with homework received from https://sgo.edu-74.ru/
 """
 from datetime import datetime, timedelta
 from typing import Union, Any

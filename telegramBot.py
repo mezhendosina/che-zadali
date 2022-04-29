@@ -6,6 +6,7 @@ import psycopg2
 import pytz
 
 from Homework import select_homework
+from sgo_login import new_sgo_login
 
 token = os.getenv("TELEGRAM_API_TOKEN")
 bot = telebot.TeleBot(token, parse_mode='html')
@@ -47,7 +48,8 @@ def telegram_bot():
             '/lessons - расписание\n'
             '/pidors_today - дежурные сегодня'
         )
-    @bot.mesaage_handler(commands=['prev_pidor'])
+
+    @bot.message_handler(commands=['prev_pidor'])
     def prev_pidor(message):
         date = datetime.now(pytz.timezone('Asia/Yekaterinburg')).strftime('%Y.%m.%d %H:%M:%S')
         cursor.execute(
@@ -103,7 +105,7 @@ def telegram_bot():
             f"INSERT INTO stats VALUES({message.from_user.id}, '{message.from_user.username}', '{message.text}', '{date}')")
         connection.commit()
 
-        bot.send_message(message.chat.id, select_homework())
+        bot.send_message(message.chat.id, new_sgo_login())
 
     @bot.message_handler(commands=['pidors_today'])
     def send_pidor_day(message):

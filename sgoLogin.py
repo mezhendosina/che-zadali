@@ -1,8 +1,12 @@
+import datetime
+import os
+import time
+
 from selenium import webdriver
+from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
-from selenium.common.exceptions import NoSuchElementException
-import os, time, datetime
+
 from Homework import extract_homework
 
 

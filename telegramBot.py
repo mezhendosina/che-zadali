@@ -104,8 +104,10 @@ def telegram_bot():
         cursor.execute(
             f"INSERT INTO stats VALUES({message.from_user.id}, '{message.from_user.username}', '{message.text}', '{date}')")
         connection.commit()
-
-        bot.send_message(message.chat.id, new_sgo_login())
+        try:
+            bot.send_message(message.chat.id, new_sgo_login())
+        except:
+            bot.send_message(message.chat.id, select_homework())
 
     @bot.message_handler(commands=['pidors_today'])
     def send_pidor_day(message):

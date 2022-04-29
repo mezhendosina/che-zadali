@@ -47,6 +47,25 @@ def telegram_bot():
             '/lessons - расписание\n'
             '/pidors_today - дежурные сегодня'
         )
+    @bot.mesaage_handler(commands=['prev_pidor'])
+    def prev_pidor(message):
+        date = datetime.now(pytz.timezone('Asia/Yekaterinburg')).strftime('%Y.%m.%d %H:%M:%S')
+        cursor.execute(
+            f"INSERT INTO stats VALUES({message.from_user.id}, '{message.from_user.username}', '{message.text}', '{date}')")
+        connection.commit()
+        if message.from_user.id == 401311369:
+            cursor.execute("SELECT * FROM current_duty")
+            current_duty = cursor.fetchall()[0]
+            if current_duty[0] == 0:
+                a = 14
+            else:
+                a = current_duty[0] - 1
+            cursor.execute(f"UPDATE current_duty SET id = {a}")
+            connection.commit()
+            bot.send_message(message.chat.id, f"Ок, дежурные сегодня:\n{current_pidor()}")
+        else:
+            gif = open("files/you_have_no_power_here.gif", 'rb')
+            bot.send_document(message.chat.id, gif)
 
     @bot.message_handler(commands=['stats'])
     def send_stats(message):

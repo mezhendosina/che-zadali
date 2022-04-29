@@ -1,46 +1,101 @@
-import datetime
+from datetime import datetime, timedelta
 import os
-import time
-
-from selenium import webdriver
-from selenium.common.exceptions import NoSuchElementException
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import Select
+from telegramBot import current_pidor
+import psycopg2
+import requests
+import hashlib
 
 from Homework import extract_homework
 
+headers = {
+    "Connection": "keep-alive",
+    "Host": "sgo.edu-74.ru",
+    "Referer": "https://sgo.edu-74.ru/",
+    "sec-ch-ua": '" Not A;Brand";v="99", "Chromium";v="100", "Microsoft Edge";v="100"',
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": '"Windows"',
+    "Sec-Fetch-Dest": "empty",
+    "Sec-Fetch-Mode": "cors",
+    "Sec-Fetch-Site": "same-origin",
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36 Edg/100.0.1185.50",
+}
+connection = psycopg2.connect(os.getenv('DATABASE_URL'), sslmode='require')
+cursor = connection.cursor()  # connect to database
 
-def sgo_login() -> str:
-    chrome_options = webdriver.ChromeOptions()
-    chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
-    chrome_options.add_argument("--headless")
-    chrome_options.add_argument("--disable-dev-shm-usage")
-    chrome_options.add_argument("--no-sandbox")
 
-    driver = webdriver.Chrome(os.getenv("CHROMEDRIVER_PATH"), options=chrome_options)
-    driver.get("https://sgo.edu-74.ru/")
+def sgo_login():
+    # init session
+    session = requests.session()
+    session.headers.update(headers)
+    session.headers.update({"Origin": "https://sgo.edu-74.ru"})
+    # import vars
+    login = os.getenv("SGO_LOGIN")
+    password = os.getenv("SGO_PASSWORD")
 
-    time.sleep(2)
-    Select(driver.find_element(By.ID, "schools")).select_by_value("89")
-    driver.find_element(By.NAME, "UN").send_keys(os.getenv("SGO_LOGIN"))
-    driver.find_element(By.NAME, "PW").send_keys(os.getenv("SGO_PASSWORD"))
-    driver.find_element(By.XPATH, '//*[@id="message"]/div/div/div[11]/a/span').click()
+    # logindata request
+    session.get("https://sgo.edu-74.ru/webapi/logindata")
+    # getdata request
+    get_data = session.post("https://sgo.edu-74.ru/webapi/auth/getdata")
+    get_data_response = get_data.json()
+    get_data_cookie = get_data.headers.get("set-cookie")
 
-    try:
-        time.sleep(1)
-        driver.find_element(By.XPATH, "/html/body/div[1]/div/div/div[2]/div/div[4]/div/div/div/div/button[2]").click()
-    except NoSuchElementException:
-        pass
+    # update cookies
+    headers.update({"Cookie": get_data_cookie})
+    session.cookies.update({"NSSESSIONID": get_data_cookie.split(";")[0][12:]})
 
-    time.sleep(2)
-    if datetime.datetime.now().strftime("%w") == "6":
-        driver.find_element(By.XPATH, '//*[@id="view"]/div[2]/div/div/div[2]/div[1]/div[2]/div[3]/i').click()
-        time.sleep(2)
-    homework = driver.page_source
-    driver.close()
+    # password hashing
+    pre_password = get_data_response["salt"] + hashlib.md5(password.encode("utf-8")).hexdigest()
+    password = hashlib.md5(pre_password.encode("utf-8")).hexdigest()
 
-    return homework
+    # prepare login data
+    login_data = {
+        "LoginType": "1",
+        "cid": "2",
+        'sid': "1",
+        "pid": "-1",
+        "cn": "1",
+        "sft": "2",
+        "scid": "89",
+        "UN": login,
+        "PW": password[:6],
+        "lt": get_data_response["lt"],
+        "pw2": password,
+        "ver": get_data_response['ver']
+    }
+    # login request
+    login_request = session.post("https://sgo.edu-74.ru/webapi/login", headers=headers, data=login_data)
+    at = login_request.json()["at"]
+    user_id = login_request.json()['accountInfo']["user"]["id"]
+    session.headers.update({"at": at})
+
+    # check security warning
+    if login_request.json()["entryPoint"] == "/asp/SecurityWarning.asp":
+        session.post("https://sgo.edu-74.ru/asp/SecurityWarning.asp")
+
+    # calculate start/end week
+    start_week = (datetime.now() - timedelta(days=datetime.now().isoweekday() % 7 - 1))
+    end_week = start_week + timedelta(days=6)
+
+    # update headers
+    session.headers.update({"Referer": "https://sgo.edu-74.ru/angular/school/studentdiary/"})
+
+    # find current year
+    year_list = session.get("https://sgo.edu-74.ru/webapi/mysettings/yearlist").json()
+    year_id = 0
+    for i in year_list:
+        if i["name"].find("(*) ") == -1:
+            year_id = i["id"]
+
+    # diary request
+    diary_request = session.get(
+        f"https://sgo.edu-74.ru/webapi/student/diary?studentId={user_id}&vers=1651144090014&weekEnd={end_week.strftime('%Y-%m-%d')}&weekStart={start_week.strftime('%Y-%m-%d')}&withLaAssigns=true&yearId={year_id}")
+
+    session.post("https://sgo.edu-74.ru/asp/logout.asp", data={'at': login_request.json()['at']})
+    session.close()
+    return diary_request.json()
 
 
 if __name__ == "__main__":
     extract_homework(sgo_login())
+
+    current_pidor()

@@ -47,10 +47,9 @@ def select_homework() -> str:
     return homework_result
 
 
-def extract_homework(homework: dict) -> str:
-    # initialize return string and time at now
+def extract_homework(homework: dict):
+    # initialize time at now
     time_now = datetime.now().strftime("%w")
-    out = ""
 
     # choose correct timedelta
     if int(time_now) < 6:
@@ -65,7 +64,6 @@ def extract_homework(homework: dict) -> str:
     for week_day in homework["weekDays"]:
         if week_day["date"] == time:
             day = datetime.strptime(week_day["date"], "%Y-%m-%dT00:00:00")
-            out = f"Домашнее задание на <i>{day.strftime('%d.%m.%y')}</i>:\n"
             for lessons in week_day["lessons"]:
                 try:
                     lesson = lessons["subjectName"]
@@ -75,10 +73,10 @@ def extract_homework(homework: dict) -> str:
                     dayMonth = day.month
                     dayYear = day.year
 
-                    cursor.execute('SELECT day, lesson, homework, dayNum, dayMonth, dayYear FROM homeworktable')
+                    cursor.execute('SELECT lesson, homework, dayNum, dayMonth, dayYear FROM homeworktable')
                     table = cursor.fetchall()
                     try:
-                        assert (day, lesson, homework, dayNum, dayMonth, dayYear) in table
+                        assert (lesson, homework, dayNum, dayMonth, dayYear) in table
                     except AssertionError:
                         now = datetime.now(pytz.timezone('Asia/Yekaterinburg')).strftime('%Y.%m.%d %H:%M:%S')
                         cursor.execute(
@@ -88,4 +86,4 @@ def extract_homework(homework: dict) -> str:
                 except KeyError:
                     continue
     connection.commit()
-    return out
+

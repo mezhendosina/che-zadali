@@ -16,7 +16,7 @@ you_have_no_power_here_gif = "CgACAgIAAxkBAAIB_GJnx90AAaCKoY1VyIimxr-tEfj4SAACrg
 
 def current_pidor() -> str:
     cursor.execute("SELECT * FROM current_duty")
-    time_now = datetime.now()
+    time_now = datetime.now(pytz.timezone('Asia/Yekaterinburg'))
     current_duty = cursor.fetchall()[0]
     if time_now.strftime("%d.%m.%Y") > current_duty[1] and time_now.strftime("%w") != 0:
         if current_duty[0] > 14:

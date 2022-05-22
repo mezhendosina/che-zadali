@@ -29,13 +29,15 @@ def sgo_login():
     session = requests.session()
     session.headers.update(headers)
     session.headers.update({"Origin": "https://sgo.edu-74.ru"})
+
     # import vars
     login = os.getenv("SGO_LOGIN")
     password = os.getenv("SGO_PASSWORD")
 
-    # logindata request
+    # get NSSESSIONID
     session.get("https://sgo.edu-74.ru/webapi/logindata")
-    # getdata request
+
+    # get salt, ver and lt
     get_data = session.post("https://sgo.edu-74.ru/webapi/auth/getdata")
     get_data_response = get_data.json()
     get_data_cookie = get_data.headers.get("set-cookie")
@@ -45,7 +47,7 @@ def sgo_login():
     session.cookies.update({"NSSESSIONID": get_data_cookie.split(";")[0][12:]})
 
     # password hashing
-    pre_password = get_data_response["salt"] + hashlib.md5(password.encode("utf-8")).hexdigest()
+    pre_password = get_data_response["salt"] + password
     password = hashlib.md5(pre_password.encode("utf-8")).hexdigest()
 
     # prepare login data
@@ -65,11 +67,13 @@ def sgo_login():
     }
     # login request
     login_request = session.post("https://sgo.edu-74.ru/webapi/login", headers=headers, data=login_data)
+
+    # save at and user_id
     at = login_request.json()["at"]
     user_id = login_request.json()['accountInfo']["user"]["id"]
     session.headers.update({"at": at})
 
-    # check security warning
+    # passing security warning
     if login_request.json()["entryPoint"] == "/asp/SecurityWarning.asp":
         session.post("https://sgo.edu-74.ru/asp/SecurityWarning.asp")
 
@@ -77,7 +81,7 @@ def sgo_login():
     start_week = (datetime.now() - timedelta(days=datetime.now().isoweekday() % 7 - 1))
     end_week = start_week + timedelta(days=6)
 
-    # update headers
+    # update header
     session.headers.update({"Referer": "https://sgo.edu-74.ru/angular/school/studentdiary/"})
 
     # find current year
@@ -91,6 +95,7 @@ def sgo_login():
     diary_request = session.get(
         f"https://sgo.edu-74.ru/webapi/student/diary?studentId={user_id}&vers=1651144090014&weekEnd={end_week.strftime('%Y-%m-%d')}&weekStart={start_week.strftime('%Y-%m-%d')}&withLaAssigns=true&yearId={year_id}")
 
+    #logout
     session.post("https://sgo.edu-74.ru/asp/logout.asp", data={'at': login_request.json()['at']})
     session.close()
     return diary_request.json()
@@ -98,5 +103,3 @@ def sgo_login():
 
 if __name__ == "__main__":
     extract_homework(sgo_login())
-
-    current_pidor()

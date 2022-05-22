@@ -8,21 +8,25 @@ import telebot
 from Homework import select_homework
 
 token = os.getenv("TELEGRAM_API_TOKEN")
-bot = telebot.TeleBot(token, parse_mode='html')
-connection = psycopg2.connect(os.getenv('DATABASE_URL'), sslmode='require')
+bot = telebot.TeleBot(token, parse_mode='html')  # init bot
+connection = psycopg2.connect(os.getenv('DATABASE_URL'), sslmode='require')  # init sql database
 cursor = connection.cursor()  # connect to database
 you_have_no_power_here_gif = "CgACAgIAAxkBAAIB_GJnx90AAaCKoY1VyIimxr-tEfj4SAACrgsAAjCpCUibArTOkV6_lCQE"
 
 
 def current_pidor() -> str:
+    """Getting class attendants for today"""
+
     cursor.execute("SELECT * FROM current_duty")
     time_now = datetime.now(pytz.timezone('Asia/Yekaterinburg'))
     current_duty = cursor.fetchall()[0]
     if time_now.strftime("%d.%m.%Y") > current_duty[1] and time_now.strftime("%w") != 0:
+        # get attendant ID
         if current_duty[0] > 14:
             a = 1
         else:
             a = current_duty[0] + 1
+
         cursor.execute(f"UPDATE current_duty SET id = {a}, date = '{time_now.strftime('%d.%m.%Y')}'")
         connection.commit()
         cursor.execute(f"SELECT people FROM duty WHERE id = {a}")
@@ -33,6 +37,8 @@ def current_pidor() -> str:
 
 
 def report_activity(message):
+    """Log user activity into database"""
+
     date = datetime.now(pytz.timezone('Asia/Yekaterinburg')).strftime('%Y.%m.%d %H:%M:%S')
     cursor.execute(
         f"INSERT INTO stats VALUES({message.from_user.id}, '{message.from_user.username}', '{message.text}', '{date}')")
@@ -40,6 +46,9 @@ def report_activity(message):
 
 
 def telegram_bot():
+    """Main bot function"""
+
+    # send welcome message with list of commands
     @bot.message_handler(commands=['help', 'start'])
     def send_help(message):
         bot.reply_to(
@@ -52,6 +61,7 @@ def telegram_bot():
         )
         report_activity(message)
 
+    # switch current attendant ID to previous ID (only for @mezhendosina)
     @bot.message_handler(commands=['prev_pidor'])
     def prev_pidor(message):
         if message.from_user.id == 401311369:
@@ -69,12 +79,14 @@ def telegram_bot():
             bot.send_document(message.chat.id, gif)
         report_activity(message)
 
+    # send usage statistic
     @bot.message_handler(commands=['stats'])
     def send_stats(message):
         cursor.execute('SELECT COUNT(*) FROM stats')
         bot.reply_to(message, f'Количество использований c 25.01.2022 - <b>{cursor.fetchall()[0][0]}</b>')
         report_activity(message)
 
+    # switch current attendant ID to next ID (only for @mezhendosina)
     @bot.message_handler(commands=['next_pidor'])
     def send_next_pidor(message):
         if message.from_user.id == 401311369:
@@ -93,11 +105,13 @@ def telegram_bot():
 
         report_activity(message)
 
+    # send homework for next day (for monday if current week day is Saturday)
     @bot.message_handler(commands=['che', 'Che'])
     def send_che(message):
         bot.send_message(message.chat.id, select_homework())
         report_activity(message)
 
+    # send current  attendants
     @bot.message_handler(commands=['pidors_today'])
     def send_pidor_day(message):
         try:
@@ -108,6 +122,7 @@ def telegram_bot():
 
         report_activity(message)
 
+    # send schedule of lessons for the week
     @bot.message_handler(commands=['lessons'])
     def send_list_of_lessons(message):
         text = open('files/lessons.txt', 'r', encoding='utf-8').read()
@@ -115,6 +130,7 @@ def telegram_bot():
 
         report_activity(message)
 
+    # special command for my friend
     @bot.message_handler(commands=['некит'])
     def n(message):
         voice = open('files/voice.ogg', 'rb')
@@ -122,6 +138,7 @@ def telegram_bot():
 
         report_activity(message)
 
+    # start bot
     bot.polling(non_stop=True)
 
 

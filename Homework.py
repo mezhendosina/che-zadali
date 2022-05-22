@@ -40,9 +40,7 @@ def select_homework() -> str:
     d = date.strftime('%d.%m.%Y')
 
     homework_result = f'Домашнее задание на <i>{d}</i>\n' + '\n'.join(
-        map(lambda
-                x: f'<b>{x[0]}</b>:  {x[1]}',
-            homework))
+        map(lambda x: f'<b>{x[0]}</b>:  {x[1]}', homework))
 
     return homework_result
 
@@ -86,4 +84,3 @@ def extract_homework(homework: dict):
                 except KeyError:
                     continue
     connection.commit()
-

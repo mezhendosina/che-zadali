@@ -1,12 +1,7 @@
 import hashlib
-import os
-from datetime import datetime, timedelta
-
-import psycopg2
+import datetime
 import requests
-
-from Homework import extract_homework
-from telegramBot import current_pidor
+import time
 
 headers = {
     "Connection": "keep-alive",
@@ -18,39 +13,27 @@ headers = {
     "Sec-Fetch-Dest": "empty",
     "Sec-Fetch-Mode": "cors",
     "Sec-Fetch-Site": "same-origin",
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36 Edg/100.0.1185.50",
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
+                  "Chrome/100.0.4896.127 Safari/537.36 Edg/100.0.1185.50",
 }
-connection = psycopg2.connect(os.getenv('DATABASE_URL'), sslmode='require')
-cursor = connection.cursor()  # connect to database
 
 
-def sgo_login():
-    # init session
+def new_sgo_login():
     session = requests.session()
     session.headers.update(headers)
+
     session.headers.update({"Origin": "https://sgo.edu-74.ru"})
-
-    # import vars
-    login = os.getenv("SGO_LOGIN")
-    password = os.getenv("SGO_PASSWORD")
-
     # get NSSESSIONID
     session.get("https://sgo.edu-74.ru/webapi/logindata")
 
     # get salt, ver and lt
     get_data = session.post("https://sgo.edu-74.ru/webapi/auth/getdata")
     get_data_response = get_data.json()
-    get_data_cookie = get_data.headers.get("set-cookie")
 
-    # update cookies
-    headers.update({"Cookie": get_data_cookie})
-    session.cookies.update({"NSSESSIONID": get_data_cookie.split(";")[0][12:]})
-
-    # password hashing
-    pre_password = get_data_response["salt"] + password
+    # preparing password
+    pre_password = get_data_response["salt"] + hashlib.md5("285639".encode("utf-8")).hexdigest()
     password = hashlib.md5(pre_password.encode("utf-8")).hexdigest()
 
-    # prepare login data
     login_data = {
         "LoginType": "1",
         "cid": "2",
@@ -59,16 +42,15 @@ def sgo_login():
         "cn": "1",
         "sft": "2",
         "scid": "89",
-        "UN": login,
+        "UN": "МеньшенинЕ1",
         "PW": password[:6],
         "lt": get_data_response["lt"],
         "pw2": password,
         "ver": get_data_response['ver']
     }
-    # login request
     login_request = session.post("https://sgo.edu-74.ru/webapi/login", headers=headers, data=login_data)
 
-    # save at and user_id
+    # get at and user_id for homework request
     at = login_request.json()["at"]
     user_id = login_request.json()['accountInfo']["user"]["id"]
     session.headers.update({"at": at})
@@ -77,29 +59,30 @@ def sgo_login():
     if login_request.json()["entryPoint"] == "/asp/SecurityWarning.asp":
         session.post("https://sgo.edu-74.ru/asp/SecurityWarning.asp")
 
-    # calculate start/end week
-    start_week = (datetime.now() - timedelta(days=datetime.now().isoweekday() % 7 - 1))
-    end_week = start_week + timedelta(days=6)
+    start_week = (datetime.datetime.now() - datetime.timedelta(days=datetime.datetime.now().isoweekday() % 7 - 1))
+    end_week = start_week + datetime.timedelta(days=6)
 
     # update header
     session.headers.update({"Referer": "https://sgo.edu-74.ru/angular/school/studentdiary/"})
 
-    # find current year
+    # get year_id
     year_list = session.get("https://sgo.edu-74.ru/webapi/mysettings/yearlist").json()
     year_id = 0
     for i in year_list:
         if i["name"].find("(*) ") == -1:
             year_id = i["id"]
 
-    # diary request
-    diary_request = session.get(
-        f"https://sgo.edu-74.ru/webapi/student/diary?studentId={user_id}&vers=1651144090014&weekEnd={end_week.strftime('%Y-%m-%d')}&weekStart={start_week.strftime('%Y-%m-%d')}&withLaAssigns=true&yearId={year_id}")
+    # # get homework
+    # diary_request = session.get(
+    #     f"https://sgo.edu-74.ru/webapi/student/diary?studentId={user_id}&weekEnd=2022-04-30&weekStart=2022-04-30&withLaAssigns=true&yearId={year_id}")
+
+    print(session.post("https://sgo.edu-74.ru/angular/school/mysettings/").content)
 
     # logout
     session.post("https://sgo.edu-74.ru/asp/logout.asp", data={'at': login_request.json()['at']})
     session.close()
-    return diary_request.json()
+
+    # return diary_request.json()
 
 
-if __name__ == "__main__":
-    extract_homework(sgo_login())
+new_sgo_login()

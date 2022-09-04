@@ -130,6 +130,16 @@ def telegram_bot():
 
         report_activity(message)
 
+
+    @bot.message_handler(commands=["when_ege"])
+    def send_ege(message):
+        time_now = datetime.now(pytz.timezone('Asia/Yekaterinburg'))
+
+        math_ege = datetime(2023, 6, 2) - time_now
+        text = f"До ЕГЭ по математике {math_ege.days} дней"
+
+        bot.reply_to(message, text)
+
     # special command for my friend
     @bot.message_handler(commands=['некит'])
     def n(message):

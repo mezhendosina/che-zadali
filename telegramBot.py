@@ -20,7 +20,7 @@ def current_pidor() -> str:
     cursor.execute("SELECT * FROM current_duty")
     time_now = datetime.now(pytz.timezone('Asia/Yekaterinburg'))
     current_duty = cursor.fetchall()[0]
-    if time_now.strftime("%d.%m.%Y") > current_duty[1] and time_now.strftime("%w") != 0:
+    if time_now.strftime("%d.%m.%Y") > current_duty[1] and 0 < int(time_now.strftime("%w")) < 7:
         # get attendant ID
         if current_duty[0] > 14:
             a = 1
@@ -57,7 +57,8 @@ def telegram_bot():
             '<b>Список команд</b>\n'
             '/che - домашка на завтра\n'
             '/lessons - расписание\n'
-            '/pidors_today - дежурные сегодня'
+            '/pidors_today - дежурные сегодня\n'
+            '/when_ege - когда егэ по матану?'
         )
         report_activity(message)
 
@@ -118,7 +119,7 @@ def telegram_bot():
             pidor_today = current_pidor()
             bot.send_message(message.chat.id, f'<s>Пидоры дня</s> Дежурные сегодня (Beta):\n{pidor_today}')
         except BaseException as e:
-            bot.send_message(message.chat.id, f'@mezhendosina дурак: код с ошибкой написал. <i>{str(e)}</i>')
+            bot.send_message(message.chat.id, f'@mezhendosina дурак: код с ошибкой написал! <i>{str(e)}</i>')
 
         report_activity(message)
 
@@ -129,7 +130,6 @@ def telegram_bot():
         bot.reply_to(message, text)
 
         report_activity(message)
-
 
     @bot.message_handler(commands=["when_ege"])
     def send_ege(message):

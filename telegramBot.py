@@ -80,12 +80,12 @@ def telegram_bot():
             bot.send_document(message.chat.id, gif)
         report_activity(message)
 
-    # send usage statistic
-    @bot.message_handler(commands=['stats'])
-    def send_stats(message):
-        cursor.execute('SELECT COUNT(*) FROM stats')
-        bot.reply_to(message, f'Количество использований c 25.01.2022 - <b>{cursor.fetchall()[0][0]}</b>')
-        report_activity(message)
+    # # send usage statistic
+    # @bot.message_handler(commands=['stats'])
+    # def send_stats(message):
+    #     cursor.execute('SELECT COUNT(*) FROM stats')
+    #     bot.reply_to(message, f'Количество использований c 25.01.2022 - <b>{cursor.fetchall()[0][0]}</b>')
+    #     report_activity(message)
 
     # switch current attendant ID to next ID (only for @mezhendosina)
     @bot.message_handler(commands=['next_pidor'])

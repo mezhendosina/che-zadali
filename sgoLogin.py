@@ -102,5 +102,4 @@ def sgo_login():
 
 
 if __name__ == "__main__":
-    current_pidor()
     extract_homework(sgo_login())

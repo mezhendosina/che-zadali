@@ -4,6 +4,8 @@ from datetime import datetime, timedelta
 
 import requests
 
+from Homework import extract_homework
+from telegramBot import current_pidor
 
 headers = {
     "Connection": "keep-alive",
@@ -34,7 +36,6 @@ def sgo_login():
 
     # get salt, ver and lt
     get_data = session.post("https://sgo.edu-74.ru/webapi/auth/getdata")
-    print(get_data.json())
     get_data_response = get_data.json()
     get_data_cookie = get_data.headers.get("set-cookie")
 
@@ -65,7 +66,6 @@ def sgo_login():
     login_request = session.post("https://sgo.edu-74.ru/webapi/login", headers=headers, data=login_data)
 
     # save at and user_id
-    print(login_request.json())
     at = login_request.json()["at"]
     user_id = login_request.json()['accountInfo']["user"]["id"]
     session.headers.update({"at": at})
@@ -99,4 +99,5 @@ def sgo_login():
 
 
 if __name__ == "__main__":
-    print(sgo_login())
+    current_pidor()
+    extract_homework(sgo_login())

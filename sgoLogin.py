@@ -2,11 +2,8 @@ import hashlib
 import os
 from datetime import datetime, timedelta
 
-import psycopg2
 import requests
 
-from Homework import extract_homework
-from telegramBot import current_pidor
 
 headers = {
     "Connection": "keep-alive",
@@ -20,8 +17,6 @@ headers = {
     "Sec-Fetch-Site": "same-origin",
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36 Edg/100.0.1185.50",
 }
-connection = psycopg2.connect(os.getenv('DATABASE_URL'), sslmode='require')
-cursor = connection.cursor()  # connect to database
 
 
 def sgo_login():
@@ -32,13 +27,14 @@ def sgo_login():
 
     # import vars
     login = os.getenv("SGO_LOGIN")
-    password = os.getenv("SGO_PASSWORD")
+    s_password = os.getenv("SGO_PASSWORD")
 
     # get NSSESSIONID
     session.get("https://sgo.edu-74.ru/webapi/logindata")
 
     # get salt, ver and lt
     get_data = session.post("https://sgo.edu-74.ru/webapi/auth/getdata")
+    print(get_data.json())
     get_data_response = get_data.json()
     get_data_cookie = get_data.headers.get("set-cookie")
 
@@ -47,7 +43,7 @@ def sgo_login():
     session.cookies.update({"NSSESSIONID": get_data_cookie.split(";")[0][12:]})
 
     # password hashing
-    pre_password = get_data_response["salt"] + password
+    pre_password = get_data_response.get("salt") + hashlib.md5(s_password.encode("utf-8")).hexdigest()
     password = hashlib.md5(pre_password.encode("utf-8")).hexdigest()
 
     # prepare login data
@@ -69,6 +65,7 @@ def sgo_login():
     login_request = session.post("https://sgo.edu-74.ru/webapi/login", headers=headers, data=login_data)
 
     # save at and user_id
+    print(login_request.json())
     at = login_request.json()["at"]
     user_id = login_request.json()['accountInfo']["user"]["id"]
     session.headers.update({"at": at})
@@ -102,4 +99,4 @@ def sgo_login():
 
 
 if __name__ == "__main__":
-    extract_homework(sgo_login())
+    print(sgo_login())

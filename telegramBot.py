@@ -126,8 +126,8 @@ def telegram_bot():
     # send schedule of lessons for the week
     @bot.message_handler(commands=['lessons'])
     def send_list_of_lessons(message):
-        text = open('files/lessons.txt', 'r', encoding='utf-8').read()
-        bot.reply_to(message, text)
+        photo = open('files/img.png', 'r', encoding='utf-8')
+        bot.send_photo(message.chat.id, photo)
 
         report_activity(message)
 

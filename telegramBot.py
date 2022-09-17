@@ -20,7 +20,7 @@ def current_pidor() -> str:
     cursor.execute("SELECT * FROM current_duty")
     time_now = datetime.now(pytz.timezone('Asia/Yekaterinburg'))
     current_duty = cursor.fetchall()[0]
-    if time_now.strftime("%d.%m.%Y") > current_duty[1] and 0 < int(time_now.strftime("%w")) < 7:
+    if time_now.strftime("%d.%m.%Y") > current_duty[1] and 0 < int(time_now.strftime("%w")) < 6:
         # get attendant ID
         if current_duty[0] > 14:
             a = 1

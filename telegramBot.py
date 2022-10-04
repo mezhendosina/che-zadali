@@ -136,7 +136,7 @@ def telegram_bot():
         time_now = datetime.now(pytz.timezone('Asia/Yekaterinburg'))
 
         math_ege = datetime(2023, 6, 2, tzinfo=pytz.timezone('Asia/Yekaterinburg')) - time_now
-        text = f"До ЕГЭ по математике {math_ege.days} дней"
+        text = f"До ЕГЭ по математике <tg-spoiler>{math_ege.days} дней<\tg-spoiler>"
 
         bot.reply_to(message, text)
 

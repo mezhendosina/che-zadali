@@ -136,12 +136,12 @@ def telegram_bot():
         time_now = datetime.now(pytz.timezone('Asia/Yekaterinburg'))
 
         math_ege = datetime(2023, 6, 2, tzinfo=pytz.timezone('Asia/Yekaterinburg')) - time_now
-        soch = datetime(2022, 12, 1, tzinfo=pytz.timezone('Asia/Yekaterinburg')) - time_now
-        russ_ege = datetime(2022, 5, 30, tzinfo=pytz.timezone('Asia/Yekaterinburg')) - time_now
-        inf_ege = datetime(2022, 6, 20, tzinfo=pytz.timezone('Asia/Yekaterinburg')) - time_now
+        soch = datetime(2023, 12, 1, tzinfo=pytz.timezone('Asia/Yekaterinburg')) - time_now
+        russ_ege = datetime(2023, 5, 30, tzinfo=pytz.timezone('Asia/Yekaterinburg')) - time_now
+        inf_ege = datetime(2023, 6, 20, tzinfo=pytz.timezone('Asia/Yekaterinburg')) - time_now
         text = f"До ЕГЭ по математике <tg-spoiler>{math_ege.days} дней</tg-spoiler>\n" \
-               f"До ЕГЭ по русскому <tg-spoiler>{russ_ege.days}</tg-spoiler>\n" \
-               f"До ЕГЭ по информатике <tg-spoiler>наверное {inf_ege.days}</tg-spoiler>" \
+               f"До ЕГЭ по русскому <tg-spoiler>{russ_ege.days} дней</tg-spoiler>\n" \
+               f"До ЕГЭ по информатике <tg-spoiler>наверное {inf_ege.days} дней</tg-spoiler>" \
                f"До итогового сочинения <tg-spoiler>{soch.days} дней</tg-spoiler>\n"
 
         bot.reply_to(message, text)

@@ -22,10 +22,10 @@ def current_pidor() -> str:
     current_duty = cursor.fetchall()[0]
     if time_now.strftime("%d.%m.%Y") > current_duty[1] and 0 < int(time_now.strftime("%w")) < 6:
         # get attendant ID
+        a = current_duty[0] + 1
+
         if current_duty[0] > 14:
             a = 1
-        else:
-            a = current_duty[0] + 1
 
         cursor.execute(f"UPDATE current_duty SET id = {a}, date = '{time_now.strftime('%d.%m.%Y')}'")
         connection.commit()
@@ -137,7 +137,12 @@ def telegram_bot():
 
         math_ege = datetime(2023, 6, 2, tzinfo=pytz.timezone('Asia/Yekaterinburg')) - time_now
         soch = datetime(2022, 12, 1, tzinfo=pytz.timezone('Asia/Yekaterinburg')) - time_now
-        text = f"До ЕГЭ по математике <tg-spoiler>{math_ege.days} дней</tg-spoiler>\nДо итогового сочинения <tg-spoiler>{soch.days} дней</tg-spoiler>"
+        russ_ege = datetime(2022, 5, 30, tzinfo=pytz.timezone('Asia/Yekaterinburg')) - time_now
+        inf_ege = datetime(2022, 6, 20, tzinfo=pytz.timezone('Asia/Yekaterinburg')) - time_now
+        text = f"До ЕГЭ по математике <tg-spoiler>{math_ege.days} дней</tg-spoiler>\n" \
+               f"До ЕГЭ по русскому <tg-spoiler>{russ_ege.days}</tg-spoiler>" \
+               f"До ЕГЭ по информатике <tg-spoiler>наверное {inf_ege.days}</tg-spoiler>" \
+               f"До итогового сочинения <tg-spoiler>{soch.days} дней</tg-spoiler>\n"
 
         bot.reply_to(message, text)
 

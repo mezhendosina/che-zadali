@@ -136,7 +136,7 @@ def telegram_bot():
         time_now = datetime.now(pytz.timezone('Asia/Yekaterinburg'))
 
         math_ege = datetime(2023, 6, 2, tzinfo=pytz.timezone('Asia/Yekaterinburg')) - time_now
-        soch = datetime(2023, 12, 1, tzinfo=pytz.timezone('Asia/Yekaterinburg')) - time_now
+        soch = datetime(2022, 12, 1, tzinfo=pytz.timezone('Asia/Yekaterinburg')) - time_now
         russ_ege = datetime(2023, 5, 30, tzinfo=pytz.timezone('Asia/Yekaterinburg')) - time_now
         inf_ege = datetime(2023, 6, 20, tzinfo=pytz.timezone('Asia/Yekaterinburg')) - time_now
         text = f"До ЕГЭ по математике <tg-spoiler>{math_ege.days} дней</tg-spoiler>\n" \

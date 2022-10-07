@@ -140,7 +140,7 @@ def telegram_bot():
         russ_ege = datetime(2022, 5, 30, tzinfo=pytz.timezone('Asia/Yekaterinburg')) - time_now
         inf_ege = datetime(2022, 6, 20, tzinfo=pytz.timezone('Asia/Yekaterinburg')) - time_now
         text = f"До ЕГЭ по математике <tg-spoiler>{math_ege.days} дней</tg-spoiler>\n" \
-               f"До ЕГЭ по русскому <tg-spoiler>{russ_ege.days}</tg-spoiler>" \
+               f"До ЕГЭ по русскому <tg-spoiler>{russ_ege.days}</tg-spoiler>\n" \
                f"До ЕГЭ по информатике <tg-spoiler>наверное {inf_ege.days}</tg-spoiler>" \
                f"До итогового сочинения <tg-spoiler>{soch.days} дней</tg-spoiler>\n"
 

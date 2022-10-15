@@ -21,15 +21,11 @@ headers = {
 }
 
 
-def sgo_login():
+def sgo_login(login=os.getenv("SGO_LOGIN"), s_password=os.getenv("SGO_PASSWORD")):
     # init session
     session = requests.session()
     session.headers.update(headers)
     session.headers.update({"Origin": "https://sgo.edu-74.ru"})
-
-    # import vars
-    login = os.getenv("SGO_LOGIN")
-    s_password = os.getenv("SGO_PASSWORD")
 
     # get NSSESSIONID
     session.get("https://sgo.edu-74.ru/webapi/logindata")
@@ -75,7 +71,14 @@ def sgo_login():
         session.post("https://sgo.edu-74.ru/asp/SecurityWarning.asp")
 
     # calculate start/end week
-    start_week = (datetime.now() - timedelta(days=datetime.now().isoweekday() % 7 - 1))
+    datetime_now = datetime.now()
+    start_week = (datetime_now - timedelta(days=datetime.now().isoweekday() % 7 - 1))
+
+    if datetime_now.isoweekday() == 6:
+        start_week = datetime_now + timedelta(days=2)
+    elif datetime_now.isoweekday() == 7:
+        start_week = datetime_now + timedelta(days=1)
+
     end_week = start_week + timedelta(days=6)
 
     # update header

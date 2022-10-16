@@ -149,14 +149,13 @@ def telegram_bot():
                f"До ЕГЭ по биологии <tg-spoiler>{bio_ege.days} дней</tg-spoiler>\n"
         bot.reply_to(message, text)
 
+    # special command for my friend
+    @bot.message_handler(commands=['некит'])
+    def n(message):
+        voice = open('files/voice.ogg', 'rb')
+        bot.send_voice(message.chat.id, voice)
 
-# special command for my friend
-@bot.message_handler(commands=['некит'])
-def n(message):
-    voice = open('files/voice.ogg', 'rb')
-    bot.send_voice(message.chat.id, voice)
-
-    report_activity(message)
+        report_activity(message)
 
 
 # start bot

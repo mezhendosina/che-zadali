@@ -158,8 +158,8 @@ def telegram_bot():
         report_activity(message)
 
 
-# start bot
-bot.polling(non_stop=True)
+    # start bot
+    bot.polling(non_stop=True)
 
 if __name__ == '__main__':
     telegram_bot()

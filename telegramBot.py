@@ -145,7 +145,7 @@ def telegram_bot():
                f"До ЕГЭ по русскому <tg-spoiler>{russ_ege.days} дней</tg-spoiler>\n" \
                f"До ЕГЭ по информатике <tg-spoiler>{inf_ege.days} дней</tg-spoiler>\n" \
                f"До итогового сочинения <tg-spoiler>{soch.days} дней</tg-spoiler>\n" \
-               f"До <del>смерти Мишани</del> ЕГЭ по физике <tg-spoiler>{phys_ege.days} дней</tg-spoiler>" \
+               f"До <del>смерти Мишани</del> ЕГЭ по физике <tg-spoiler>{phys_ege.days} дней</tg-spoiler>\n" \
                f"До ЕГЭ по биологии <tg-spoiler>{bio_ege.days} дней</tg-spoiler>\n"
         bot.reply_to(message, text)
 

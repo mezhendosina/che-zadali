@@ -1,2 +1,2 @@
-telegrambot: python telegramBot.py
-sgologin: python sgoLogin.py
+telegrambot: python telegram_bot.py
+sgologin: python sgo_login.py

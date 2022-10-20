@@ -1,9 +1,10 @@
 __pycache__/
 .vs/
 .vscode/
+tests/
 
 .html 
-Teletest.py
-SgoTest.py
-test.py
+tests/Teletest.py
+tests/sgoTest.py
+tests/test.py
 .txt

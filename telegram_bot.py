@@ -5,7 +5,7 @@ import psycopg2
 import pytz
 import telebot
 
-from Homework import select_homework
+from homework import select_homework
 
 token = os.getenv("TELEGRAM_API_TOKEN")
 bot = telebot.TeleBot(token, parse_mode='html')  # init bot
@@ -157,9 +157,9 @@ def telegram_bot():
 
         report_activity(message)
 
-
     # start bot
     bot.polling(non_stop=True)
+
 
 if __name__ == '__main__':
     telegram_bot()

@@ -4,8 +4,8 @@ from datetime import datetime, timedelta
 
 import requests
 
-from Homework import extract_homework
-from telegramBot import current_pidor
+from homework import extract_homework
+from telegram_bot import current_pidor
 
 headers = {
     "Connection": "keep-alive",

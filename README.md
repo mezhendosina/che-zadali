@@ -9,7 +9,7 @@ timetable at school and class attendants for today.
 
 ## How it works
 
-Every hour, my server sends requests to the school magazine website, gets that week's homework, and stores the new
+Every hour, my server sends requests to the school journal website, gets that week's homework, and stores the new
 homework in a PostgreSQL table.
 
 Every time you send a `/che` to [the bot](https://che_zadaliBot.t.me), it receives the next day's homework from the

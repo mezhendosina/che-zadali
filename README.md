@@ -1,3 +1,5 @@
+![photo_2022-11-01_10-05-49 1](https://user-images.githubusercontent.com/80736171/199163210-41fa79d6-7b75-442a-a886-27c6d0bd3d38.png)
+# [che_zadaliBot](https://che_zadaliBot.t.me/)
 This telegram bot sends homework from [my school journal](https://sgo.edu-74.ru/). Also, they can send my class
 timetable at school and class attendants for today.
 
@@ -5,7 +7,7 @@ timetable at school and class attendants for today.
 
 - `/che` - sends homework for tomorrow
 - `/lessons` - sends timetable
-- `/pidors_today` - sends class attendants for today
+`/pidors_today` - sends class attendants for today
 
 ## How it works
 

@@ -6,8 +6,8 @@ timetable at school and class attendants for today.
 ## List of commands
 
 - `/che` - sends homework for tomorrow
-- `/lessons` - sends timetable
--`/p_today` - sends class attendants for today
+- `/lessons` - sends timetable'
+- `/p_today` - sends class attendants for today
 
 ## How it works
 

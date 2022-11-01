@@ -7,7 +7,7 @@ timetable at school and class attendants for today.
 
 - `/che` - sends homework for tomorrow
 - `/lessons` - sends timetable
-`/pidors_today` - sends class attendants for today
+-`/p_today` - sends class attendants for today
 
 ## How it works
 

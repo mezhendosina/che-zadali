@@ -57,7 +57,7 @@ def telegram_bot():
             '<b>Список команд</b>\n'
             '/che - домашка на завтра\n'
             '/lessons - расписание\n'
-            '/pidors_today - дежурные сегодня\n'
+            '/p_today - дежурные сегодня\n'
             '/when_ege - когда егэ по матану?'
         )
         report_activity(message)
@@ -113,11 +113,11 @@ def telegram_bot():
         report_activity(message)
 
     # send current  attendants
-    @bot.message_handler(commands=['pidors_today'])
+    @bot.message_handler(commands=['p_today'])
     def send_pidor_day(message):
         try:
             pidor_today = current_pidor()
-            bot.send_message(message.chat.id, f'<s>Пидоры дня</s> Дежурные сегодня (Beta):\n{pidor_today}')
+            bot.send_message(message.chat.id, f'Дежурные сегодня (Beta):\n{pidor_today}')
         except BaseException as e:
             bot.send_message(message.chat.id, f'@mezhendosina дурак: код с ошибкой написал! <i>{str(e)}</i>')
 

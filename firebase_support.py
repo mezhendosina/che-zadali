@@ -23,10 +23,9 @@ class RemoteConfig:
                 "Accept-Encoding": "gzip"
             }
         )
-        return r.json()["parameters"]["regions"]["defaultValue"]["value"]
+        return r.json()
 
     def send_regions(self, list_of_regions):
-        # out_json =
         r = requests.put(
             "https://firebaseremoteconfig.googleapis.com/v1/projects/919516648232/remoteConfig",
             headers={
@@ -36,8 +35,9 @@ class RemoteConfig:
                 "If-Match": "*",
                 "Accept-Encoding": "gzip"
             },
-            data=list_of_regions
+            data={"parameters": {"regions": {"defaultValue": {"value": list_of_regions}}}}
         )
+        print(r.json())
 
 
-print(RemoteConfig().send_regions([]))
+print(RemoteConfig().send_regions([{"name": "Челябинская область", "url": "https://sgo.edu-74.ru/"}]))

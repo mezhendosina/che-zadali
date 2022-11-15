@@ -24,7 +24,7 @@ def current_pidor() -> str:
         # get attendant ID
         a = current_duty[0] + 1
 
-        if current_duty[0] > 14:
+        if current_duty[0] >= 14:
             a = 1
 
         cursor.execute(f"UPDATE current_duty SET id = {a}, date = '{time_now.strftime('%d.%m.%Y')}'")

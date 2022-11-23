@@ -2,8 +2,9 @@ __pycache__/
 .vs/
 .vscode/
 tests/
+old/
 
-.html 
+.html
 tests/Teletest.py
 tests/sgoTest.py
 tests/test.py

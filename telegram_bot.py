@@ -1,165 +1,86 @@
-import os
 from datetime import datetime
 
 import psycopg2
 import pytz
-import telebot
+from telebot.async_telebot import AsyncTeleBot
 
-from homework import select_homework
+import config
+from bot_utils import BotUtils
+from homework import Homework
 
-token = os.getenv("TELEGRAM_API_TOKEN")
-bot = telebot.TeleBot(token, parse_mode='html')  # init bot
-connection = psycopg2.connect(os.getenv('DATABASE_URL'), sslmode='require')  # init sql database
-cursor = connection.cursor()  # connect to database
-you_have_no_power_here_gif = "CgACAgIAAxkBAAIB_GJnx90AAaCKoY1VyIimxr-tEfj4SAACrgsAAjCpCUibArTOkV6_lCQE"
+connection = psycopg2.connect(config.database_url, sslmode='require')  # init sql database
+
+utils = BotUtils(connection)
+homework = Homework(connection)
 
 
-def current_pidor() -> str:
-    """Getting class attendants for today"""
+async def send_help(message, bot):
+    await bot.send_message(
+        message.chat.id,
+        'Это бот, который скидывает д\з \n'
+        '<b>Список команд</b>\n'
+        '/che - домашка на завтра\n'
+        '/lessons - расписание\n'
+        '/p_today - дежурные сегодня\n'
+        '/when_ege - когда егэ по матану?'
+    )
+    utils.report_activity(message)
 
-    cursor.execute("SELECT * FROM current_duty")
+
+async def send_che(message, bot):
+    await bot.send_message(message.chat.id, homework.select_homework())
+    utils.report_activity(message)
+
+
+async def send_p_today(message, bot):
+    p_today = utils.p_today.current_p()
+    await bot.send_message(message.chat.id, f"Дежурные сегодня <i>(Вета)</i>:\n{p_today}")
+    utils.report_activity(message)
+
+
+async def send_lessons(message, bot):
+    photo = open("files/img.png", 'rb')
+    await bot.send_photo(message.chat.id, photo)
+    utils.report_activity(message)
+
+
+async def send_ege(message, bot):
     time_now = datetime.now(pytz.timezone('Asia/Yekaterinburg'))
-    current_duty = cursor.fetchall()[0]
-    if time_now.strftime("%d.%m.%Y") > current_duty[1] and 0 < int(time_now.strftime("%w")) < 6:
-        # get attendant ID
-        a = current_duty[0] + 1
 
-        if current_duty[0] >= 14:
-            a = 1
+    math_ege = datetime(2023, 6, 1, tzinfo=pytz.timezone('Asia/Yekaterinburg')) - time_now
+    soch = datetime(2022, 12, 7, tzinfo=pytz.timezone('Asia/Yekaterinburg')) - time_now
+    russ_ege = datetime(2023, 5, 29, tzinfo=pytz.timezone('Asia/Yekaterinburg')) - time_now
+    inf_ege = datetime(2023, 6, 19, tzinfo=pytz.timezone('Asia/Yekaterinburg')) - time_now
+    phys_ege = datetime(2023, 6, 5, tzinfo=pytz.timezone('Asia/Yekaterinburg')) - time_now
+    bio_ege = datetime(2023, 6, 13, tzinfo=pytz.timezone('Asia/Yekaterinburg')) - time_now
+    text = f"До ЕГЭ по математике <tg-spoiler>{math_ege.days} дней</tg-spoiler>\n" \
+           f"До ЕГЭ по русскому <tg-spoiler>{russ_ege.days} дней</tg-spoiler>\n" \
+           f"До ЕГЭ по информатике <tg-spoiler>{inf_ege.days} дней</tg-spoiler>\n" \
+           f"До итогового сочинения <tg-spoiler>{soch.days} дней</tg-spoiler>\n" \
+           f"До <del>смерти Мишани</del> ЕГЭ по физике <tg-spoiler>{phys_ege.days} дней</tg-spoiler>\n" \
+           f"До ЕГЭ по биологии <tg-spoiler>{bio_ege.days} дней</tg-spoiler>\n"
 
-        cursor.execute(f"UPDATE current_duty SET id = {a}, date = '{time_now.strftime('%d.%m.%Y')}'")
-        connection.commit()
-        cursor.execute(f"SELECT people FROM duty WHERE id = {a}")
-    else:
-        cursor.execute(f"SELECT people FROM duty WHERE id = {current_duty[0]}")
-    b = cursor.fetchall()[0][0].split(',')
-    return f'<b>{b[0]}\n{b[1]}</b>'
-
-
-def report_activity(message):
-    """Log user activity into database"""
-
-    date = datetime.now(pytz.timezone('Asia/Yekaterinburg')).strftime('%Y.%m.%d %H:%M:%S')
-    cursor.execute(
-        f"INSERT INTO stats VALUES({message.from_user.id}, '{message.from_user.username}', '{message.text}', '{date}')")
-    connection.commit()
+    await bot.reply_to(message, text)
+    utils.report_activity(message)
 
 
-def telegram_bot():
-    """Main bot function"""
-
-    # send welcome message with list of commands
-    @bot.message_handler(commands=['help', 'start'])
-    def send_help(message):
-        bot.reply_to(
-            message,
-            'Это бот, который скидывает д\з \n'
-            '<b>Список команд</b>\n'
-            '/che - домашка на завтра\n'
-            '/lessons - расписание\n'
-            '/p_today - дежурные сегодня\n'
-            '/when_ege - когда егэ по матану?'
-        )
-        report_activity(message)
-
-    # switch current attendant ID to previous ID (only for @mezhendosina)
-    @bot.message_handler(commands=['prev_pidor'])
-    def prev_pidor(message):
-        if message.from_user.id == 401311369:
-            cursor.execute("SELECT * FROM current_duty")
-            current_duty = cursor.fetchall()[0]
-            if current_duty[0] == 0:
-                a = 14
-            else:
-                a = current_duty[0] - 1
-            cursor.execute(f"UPDATE current_duty SET id = {a}")
-            connection.commit()
-            bot.send_message(message.chat.id, f"Ок, дежурные сегодня:\n{current_pidor()}")
-        else:
-            gif = open("files/you_have_no_power_here.gif", 'rb')
-            bot.send_document(message.chat.id, gif)
-        report_activity(message)
-
-    # # send usage statistic
-    # @bot.message_handler(commands=['stats'])
-    # def send_stats(message):
-    #     cursor.execute('SELECT COUNT(*) FROM stats')
-    #     bot.reply_to(message, f'Количество использований c 25.01.2022 - <b>{cursor.fetchall()[0][0]}</b>')
-    #     report_activity(message)
-
-    # switch current attendant ID to next ID (only for @mezhendosina)
-    @bot.message_handler(commands=['next_pidor'])
-    def send_next_pidor(message):
-        if message.from_user.id == 401311369:
-            cursor.execute("SELECT * FROM current_duty")
-            current_duty = cursor.fetchall()[0]
-            if current_duty[0] > 14:
-                a = 1
-            else:
-                a = current_duty[0] + 1
-            cursor.execute(f"UPDATE current_duty SET id = {a}")
-            connection.commit()
-            bot.send_message(message.chat.id, f"Ок, дежурные сегодня:\n{current_pidor()}")
-        else:
-            gif = open("files/you_have_no_power_here.gif", 'rb')
-            bot.send_document(message.chat.id, gif)
-
-        report_activity(message)
-
-    # send homework for next day (for monday if current week day is Saturday)
-    @bot.message_handler(commands=['che', 'Che'])
-    def send_che(message):
-        bot.send_message(message.chat.id, select_homework())
-        report_activity(message)
-
-    # send current  attendants
-    @bot.message_handler(commands=['p_today'])
-    def send_pidor_day(message):
-        try:
-            pidor_today = current_pidor()
-            bot.send_message(message.chat.id, f'Дежурные сегодня (Beta):\n{pidor_today}')
-        except BaseException as e:
-            bot.send_message(message.chat.id, f'@mezhendosina дурак: код с ошибкой написал! <i>{str(e)}</i>')
-
-        report_activity(message)
-
-    # send schedule of lessons for the week
-    @bot.message_handler(commands=['lessons'])
-    def send_list_of_lessons(message):
-        photo = open('files/img.png', 'rb')
-        bot.send_photo(message.chat.id, photo)
-
-        report_activity(message)
-
-    @bot.message_handler(commands=["when_ege"])
-    def send_ege(message):
-        time_now = datetime.now(pytz.timezone('Asia/Yekaterinburg'))
-
-        math_ege = datetime(2023, 6, 1, tzinfo=pytz.timezone('Asia/Yekaterinburg')) - time_now
-        soch = datetime(2022, 12, 7, tzinfo=pytz.timezone('Asia/Yekaterinburg')) - time_now
-        russ_ege = datetime(2023, 5, 29, tzinfo=pytz.timezone('Asia/Yekaterinburg')) - time_now
-        inf_ege = datetime(2023, 6, 19, tzinfo=pytz.timezone('Asia/Yekaterinburg')) - time_now
-        phys_ege = datetime(2023, 6, 5, tzinfo=pytz.timezone('Asia/Yekaterinburg')) - time_now
-        bio_ege = datetime(2023, 6, 13, tzinfo=pytz.timezone('Asia/Yekaterinburg')) - time_now
-        text = f"До ЕГЭ по математике <tg-spoiler>{math_ege.days} дней</tg-spoiler>\n" \
-               f"До ЕГЭ по русскому <tg-spoiler>{russ_ege.days} дней</tg-spoiler>\n" \
-               f"До ЕГЭ по информатике <tg-spoiler>{inf_ege.days} дней</tg-spoiler>\n" \
-               f"До итогового сочинения <tg-spoiler>{soch.days} дней</tg-spoiler>\n" \
-               f"До <del>смерти Мишани</del> ЕГЭ по физике <tg-spoiler>{phys_ege.days} дней</tg-spoiler>\n" \
-               f"До ЕГЭ по биологии <tg-spoiler>{bio_ege.days} дней</tg-spoiler>\n"
-        bot.reply_to(message, text)
-
-    # special command for my friend
-    @bot.message_handler(commands=['некит'])
-    def n(message):
-        voice = open('files/voice.ogg', 'rb')
-        bot.send_voice(message.chat.id, voice)
-
-        report_activity(message)
-
-    # start bot
-    bot.polling(non_stop=True)
+async def n(message, bot):
+    voice = open('/files/voice.ogg', 'rb')
+    await bot.send_voice(message.chat.id, voice)
+    utils.report_activity(message)
 
 
-if __name__ == '__main__':
-    telegram_bot()
+async def set_prev_p(message, bot):
+    if message.from_user.id == config.admin_id:
+        utils.p_today.set_prev_p()
+    current_p = f"Ок, дежурные сегодня:\n{utils.p_today.current_p()}"
+    await bot.send_message(message.chat.id, current_p)
+    utils.report_activity(message)
+
+
+async def set_next_p(message, bot):
+    if message.from_user.id == config.admin_id:
+        utils.p_today.set_next_p()
+    current_p = f"Ок, дежурные сегодня:\n{utils.p_today.current_p()}"
+    await bot.send_message(message.chat.id, current_p)
+    utils.report_activity(message)

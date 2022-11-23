@@ -1,86 +1,83 @@
-"""
-This file works with homework received from https://sgo.edu-74.ru/
-"""
-import os
 from datetime import datetime, timedelta
 
 import psycopg2
 import pytz
 
-# global variables
-connection = psycopg2.connect(os.getenv('DATABASE_URL'), sslmode='require')
-cursor = connection.cursor()  # connect to database
+from config import database_url
 
 
-def select_homework() -> str:
-    """This function collect homework """
-    global homework_result
+class Homework:
+    def __init__(self, connection):
+        self.connection = connection
+        self.cursor = self.connection.cursor()
 
-    def select(day, month, year) -> list:
-        cursor.execute(
-            'SELECT lesson, homework, postDate FROM homeworktable WHERE daynum=%s and daymonth=%s and dayYear=%s;',
-            (day, month, year)
-        )
-        return cursor.fetchall()
+    def select_homework(self) -> str:
+        """This function collect homework """
 
-    if datetime.now(pytz.timezone('Asia/Yekaterinburg')).strftime('%w') == '6':
-        date = datetime.now(pytz.timezone('Asia/Yekaterinburg')) + timedelta(days=2)
-    else:
-        date = datetime.now(pytz.timezone('Asia/Yekaterinburg')) + timedelta(days=1)
+        def select(day, month, year) -> list:
+            self.cursor.execute(
+                'SELECT lesson, homework, postDate FROM homeworktable WHERE daynum=%s and daymonth=%s and dayYear=%s;',
+                (day, month, year)
+            )
+            return self.cursor.fetchall()
 
-    try:
-        homework = select(
-            int(date.strftime(' %d').replace(' 0', '')),
-            int(date.strftime(' %m').replace(' 0' '')),
-            date.strftime('%Y')
-        )
-    except TypeError:
-        homework = select(date.strftime('%d'), date.strftime('%m'), date.strftime('%Y'))
+        if datetime.now(pytz.timezone('Asia/Yekaterinburg')).strftime('%w') == '6':
+            date = datetime.now(pytz.timezone('Asia/Yekaterinburg')) + timedelta(days=2)
+        else:
+            date = datetime.now(pytz.timezone('Asia/Yekaterinburg')) + timedelta(days=1)
 
-    d = date.strftime('%d.%m.%Y')
+        try:
+            homework = select(
+                int(date.strftime(' %d').replace(' 0', '')),
+                int(date.strftime(' %m').replace(' 0' '')),
+                date.strftime('%Y')
+            )
+        except TypeError:
+            homework = select(date.strftime('%d'), date.strftime('%m'), date.strftime('%Y'))
 
-    homework_result = f'Домашнее задание на <i>{d}</i>\n' + '\n'.join(
-        map(lambda x: f'<b>{x[0]}</b>:  {x[1]}', homework))
+        d = date.strftime('%d.%m.%Y')
 
-    return homework_result
+        homework_result = f'Домашнее задание на <i>{d}</i>\n' + '\n'.join(
+            map(lambda x: f'<b>{x[0]}</b>:  {x[1]}', homework))
 
+        return homework_result
 
-def extract_homework(homework: dict):
-    # initialize time at now
-    time_now = datetime.now().strftime("%w")
+    def extract_homework(self, homework: dict):
+        # initialize time at now
+        time_now = datetime.now().strftime("%w")
 
-    # choose correct timedelta
-    if int(time_now) < 6:
-        time_delta = 1
-    else:
-        time_delta = 2
+        # choose correct timedelta
+        if int(time_now) < 6:
+            time_delta = 1
+        else:
+            time_delta = 2
 
-    # time now + timedelta
-    time = (datetime.now() + timedelta(days=time_delta)).strftime("%Y-%m-%dT00:00:00")
+        # time now + timedelta
+        time = (datetime.now() + timedelta(days=time_delta)).strftime("%Y-%m-%dT00:00:00")
 
-    # extract homework
-    for week_day in homework["weekDays"]:
-        if week_day["date"] == time:
-            day = datetime.strptime(week_day["date"], "%Y-%m-%dT00:00:00")
-            for lessons in week_day["lessons"]:
-                try:
-                    lesson = lessons["subjectName"]
-                    homework = lessons["assignments"][0]["assignmentName"]
-
-                    dayNum = day.day
-                    dayMonth = day.month
-                    dayYear = day.year
-
-                    cursor.execute('SELECT lesson, homework, dayNum, dayMonth, dayYear FROM homeworktable')
-                    table = cursor.fetchall()
+        # extract homework
+        for week_day in homework["weekDays"]:
+            if week_day["date"] == time:
+                day = datetime.strptime(week_day["date"], "%Y-%m-%dT00:00:00")
+                for lessons in week_day["lessons"]:
                     try:
-                        assert (lesson, homework, dayNum, dayMonth, dayYear) in table
-                    except AssertionError:
-                        now = datetime.now(pytz.timezone('Asia/Yekaterinburg')).strftime('%Y.%m.%d %H:%M:%S')
-                        cursor.execute(
-                            f"INSERT INTO homeworktable VALUES('{now}', '{lesson}', '{homework}', {dayNum}, {dayMonth}, {dayYear}, '{day}') "
-                        )
+                        lesson = lessons["subjectName"]
+                        homework = lessons["assignments"][0]["assignmentName"]
+
+                        day_num = day.day
+                        day_month = day.month
+                        day_year = day.year
+
+                        self.cursor.execute('SELECT lesson, homework, daynum, daymonth, dayyear FROM homeworktable')
+                        table = self.cursor.fetchall()
+                        try:
+                            assert (lesson, homework, day_num, day_month, day_year) in table
+                        except AssertionError:
+                            now = datetime.now(pytz.timezone('Asia/Yekaterinburg')).strftime('%Y.%m.%d %H:%M:%S')
+                            self.cursor.execute(
+                                f"INSERT INTO homeworktable VALUES('{now}', '{lesson}', '{homework}', {day_num}, {day_month}, {day_year}, '{day}') "
+                            )
+                            continue
+                    except KeyError:
                         continue
-                except KeyError:
-                    continue
-    connection.commit()
+        self.connection.commit()

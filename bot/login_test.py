@@ -6,7 +6,7 @@ from sgo import SGO
 
 async def test_something():
     sgo = SGO()
-    await sgo.get_homework()
+    print(await sgo.get_parent_info_letter())
 
 
 if __name__ == '__main__':

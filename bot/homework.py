@@ -1,9 +1,6 @@
 from datetime import datetime, timedelta
 
-import psycopg2
 import pytz
-
-from config import database_url
 
 
 class Homework:
@@ -16,8 +13,8 @@ class Homework:
 
         def select(day, month, year) -> list:
             self.cursor.execute(
-                'SELECT lesson, homework, postDate FROM homeworktable WHERE daynum=%s and daymonth=%s and dayYear=%s;',
-                (day, month, year)
+                f'SELECT lesson, homework FROM homework_table WHERE date_num={day} and date_month={month} and date_year={year};',
+
             )
             return self.cursor.fetchall()
 
@@ -39,7 +36,6 @@ class Homework:
 
         homework_result = f'Домашнее задание на <i>{d}</i>\n' + '\n'.join(
             map(lambda x: f'<b>{x[0]}</b>:  {x[1]}', homework))
-
         return homework_result
 
     def extract_homework(self, homework: dict):
@@ -68,14 +64,15 @@ class Homework:
                         day_month = day.month
                         day_year = day.year
 
-                        self.cursor.execute('SELECT lesson, homework, daynum, daymonth, dayyear FROM homeworktable')
+                        self.cursor.execute(
+                            'SELECT lesson, homework, date_num, date_month, date_year FROM homework_table')
                         table = self.cursor.fetchall()
                         try:
                             assert (lesson, homework, day_num, day_month, day_year) in table
                         except AssertionError:
                             now = datetime.now(pytz.timezone('Asia/Yekaterinburg')).strftime('%Y.%m.%d %H:%M:%S')
                             self.cursor.execute(
-                                f"INSERT INTO homeworktable VALUES('{now}', '{lesson}', '{homework}', {day_num}, {day_month}, {day_year}, '{day}') "
+                                f"INSERT INTO homework_table VALUES('{now}', '{lesson}', '{homework}', {day_num}, {day_month}, {day_year}) "
                             )
                             continue
                     except KeyError:

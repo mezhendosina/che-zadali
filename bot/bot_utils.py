@@ -1,9 +1,7 @@
 from datetime import datetime
 
-import psycopg2
 import pytz
-from telebot.async_telebot import AsyncTeleBot
-from p_today import PToday
+from bot.p_today import PToday
 
 
 class BotUtils:
